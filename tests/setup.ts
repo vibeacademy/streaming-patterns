@@ -25,8 +25,8 @@ afterEach(() => {
  * IntersectionObserver is not available in jsdom, so we provide a minimal mock
  * for components that use it (e.g., for lazy loading or scroll detection).
  */
-if (!global.IntersectionObserver) {
-  global.IntersectionObserver = class IntersectionObserver {
+if (!globalThis.IntersectionObserver) {
+  globalThis.IntersectionObserver = class IntersectionObserver {
     constructor() {}
     disconnect() {}
     observe() {}
@@ -43,8 +43,8 @@ if (!global.IntersectionObserver) {
  * ResizeObserver is not available in jsdom, so we provide a minimal mock
  * for components that use it (e.g., for responsive layouts).
  */
-if (!global.ResizeObserver) {
-  global.ResizeObserver = class ResizeObserver {
+if (!globalThis.ResizeObserver) {
+  globalThis.ResizeObserver = class ResizeObserver {
     constructor() {}
     disconnect() {}
     observe() {}
