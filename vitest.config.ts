@@ -35,7 +35,7 @@ export default defineConfig({
         'specs/',
         '**/*.config.{ts,js}',
         '**/*.d.ts',
-        '**/types.ts',
+        'src/types/**/*.ts',
         '**/*.test.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
         'src/main.tsx',
