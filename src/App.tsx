@@ -6,7 +6,7 @@ import { useState } from 'react';
  * This is the main entry point for the educational pattern library
  * demonstrating streaming AI/LLM UX patterns for the StreamFlow PM product.
  */
-function App(): JSX.Element {
+function App() {
   const [count, setCount] = useState<number>(0);
 
   return (
