@@ -137,10 +137,13 @@ describe('EventList', () => {
 
       const { container } = render(<EventList events={events} onEventSelect={onEventSelect} />);
 
-      const eventElement = container.querySelector('[role="button"]') as HTMLElement;
+      const eventElement = container.querySelector('[role="button"]');
       expect(eventElement).toBeTruthy();
 
-      eventElement.focus();
+      // Focus and trigger keyboard event
+      if (eventElement && 'focus' in eventElement && typeof eventElement.focus === 'function') {
+        eventElement.focus();
+      }
       await user.keyboard('{Enter}');
       expect(onEventSelect).toHaveBeenCalledTimes(1);
 
