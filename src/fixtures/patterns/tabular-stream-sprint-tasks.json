@@ -1,0 +1,169 @@
+{
+  "metadata": {
+    "id": "tabular-stream-sprint-tasks",
+    "name": "Sprint Task List Streaming",
+    "pattern": "tabular-stream-view",
+    "description": "AI generates sprint task list as streaming table rows with schema definition and progress metadata",
+    "eventCount": 8,
+    "tags": ["table", "tasks", "sprint", "streaming"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "schema-1",
+      "type": "schema",
+      "timestamp": 1699568000000,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "sprint-tasks-schema",
+        "name": "Sprint Tasks",
+        "description": "Task breakdown for Sprint 24",
+        "columns": [
+          {
+            "id": "task_id",
+            "name": "Task ID",
+            "type": "string",
+            "required": true
+          },
+          {
+            "id": "title",
+            "name": "Title",
+            "type": "string",
+            "required": true
+          },
+          {
+            "id": "assignee",
+            "name": "Assignee",
+            "type": "string",
+            "required": false
+          },
+          {
+            "id": "points",
+            "name": "Story Points",
+            "type": "number",
+            "required": true
+          },
+          {
+            "id": "status",
+            "name": "Status",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "row-1",
+      "type": "table_row",
+      "timestamp": 1699568000500,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "row-1",
+        "rowNumber": 1,
+        "data": {
+          "task_id": "STREAM-401",
+          "title": "Implement OAuth 2.0 authentication",
+          "assignee": "Sarah Chen",
+          "points": 8,
+          "status": "In Progress"
+        },
+        "timestamp": 1699568000500
+      }
+    },
+    {
+      "id": "row-2",
+      "type": "table_row",
+      "timestamp": 1699568001000,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "row-2",
+        "rowNumber": 2,
+        "data": {
+          "task_id": "STREAM-402",
+          "title": "Dashboard widget lazy loading",
+          "assignee": "Marcus Johnson",
+          "points": 5,
+          "status": "Todo"
+        },
+        "timestamp": 1699568001000
+      }
+    },
+    {
+      "id": "row-3",
+      "type": "table_row",
+      "timestamp": 1699568001500,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "row-3",
+        "rowNumber": 3,
+        "data": {
+          "task_id": "STREAM-403",
+          "title": "WebSocket notification system",
+          "assignee": "Priya Patel",
+          "points": 5,
+          "status": "Todo"
+        },
+        "timestamp": 1699568001500
+      }
+    },
+    {
+      "id": "row-4",
+      "type": "table_row",
+      "timestamp": 1699568002000,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "row-4",
+        "rowNumber": 4,
+        "data": {
+          "task_id": "STREAM-404",
+          "title": "Fix date picker timezone bug",
+          "assignee": "Alex Rivera",
+          "points": 2,
+          "status": "In Review"
+        },
+        "timestamp": 1699568002000
+      }
+    },
+    {
+      "id": "row-5",
+      "type": "table_row",
+      "timestamp": 1699568002500,
+      "sessionId": "task-table-001",
+      "data": {
+        "id": "row-5",
+        "rowNumber": 5,
+        "data": {
+          "task_id": "STREAM-405",
+          "title": "CSV export formatting",
+          "assignee": "Jordan Lee",
+          "points": 1,
+          "status": "Done"
+        },
+        "timestamp": 1699568002500
+      }
+    },
+    {
+      "id": "meta-1",
+      "type": "table_meta",
+      "timestamp": 1699568003000,
+      "sessionId": "task-table-001",
+      "data": {
+        "totalRows": 5,
+        "progress": 1.0,
+        "isComplete": true,
+        "statusMessage": "Sprint task list complete: 5 tasks, 21 total points"
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699568003500,
+      "sessionId": "task-table-001",
+      "data": {
+        "text": "Sprint 24 task breakdown is ready. The team is working on 21 story points across 5 tasks, with OAuth implementation as the largest item.",
+        "isFinal": true
+      }
+    }
+  ]
+}

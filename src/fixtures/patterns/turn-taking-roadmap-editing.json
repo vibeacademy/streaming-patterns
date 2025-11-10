@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "id": "turn-taking-roadmap-editing",
+    "name": "Collaborative Roadmap Editing",
+    "pattern": "turn-taking-co-creation",
+    "description": "User and AI collaboratively edit a product roadmap using JSON Patch operations, demonstrating turn-based co-creation",
+    "eventCount": 6,
+    "tags": ["collaboration", "patches", "roadmap", "co-creation"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "agent-patch-1",
+      "type": "agent_patch",
+      "timestamp": 1699569000000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "id": "agent-patch-1",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/quarters/Q1",
+            "value": {
+              "themes": ["Performance", "Scalability"],
+              "initiatives": []
+            }
+          },
+          {
+            "op": "add",
+            "path": "/quarters/Q1/initiatives/0",
+            "value": {
+              "id": "init-1",
+              "title": "Database optimization",
+              "owner": "Backend Team",
+              "status": "planned"
+            }
+          }
+        ],
+        "explanation": "Starting Q1 2025 with performance focus",
+        "timestamp": 1699569000000
+      }
+    },
+    {
+      "id": "user-patch-1",
+      "type": "user_patch",
+      "timestamp": 1699569002000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "id": "user-patch-1",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/quarters/Q1/initiatives/1",
+            "value": {
+              "id": "init-2",
+              "title": "Mobile app launch",
+              "owner": "Mobile Team",
+              "status": "in-progress"
+            }
+          }
+        ],
+        "timestamp": 1699569002000
+      }
+    },
+    {
+      "id": "agent-patch-2",
+      "type": "agent_patch",
+      "timestamp": 1699569004000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "id": "agent-patch-2",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/quarters/Q2",
+            "value": {
+              "themes": ["User Experience", "Accessibility"],
+              "initiatives": [
+                {
+                  "id": "init-3",
+                  "title": "Redesigned dashboard",
+                  "owner": "Design Team",
+                  "status": "planned"
+                }
+              ]
+            }
+          }
+        ],
+        "explanation": "Building on Q1 performance work with UX improvements",
+        "timestamp": 1699569004000
+      }
+    },
+    {
+      "id": "user-patch-2",
+      "type": "user_patch",
+      "timestamp": 1699569006000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "id": "user-patch-2",
+        "operations": [
+          {
+            "op": "replace",
+            "path": "/quarters/Q1/initiatives/0/status",
+            "value": "in-progress"
+          }
+        ],
+        "timestamp": 1699569006000
+      }
+    },
+    {
+      "id": "agent-patch-3",
+      "type": "agent_patch",
+      "timestamp": 1699569008000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "id": "agent-patch-3",
+        "operations": [
+          {
+            "op": "add",
+            "path": "/quarters/Q1/initiatives/2",
+            "value": {
+              "id": "init-4",
+              "title": "API rate limiting improvements",
+              "owner": "Platform Team",
+              "status": "planned"
+            }
+          }
+        ],
+        "explanation": "Adding critical infrastructure work to support mobile launch",
+        "timestamp": 1699569008000
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699569010000,
+      "sessionId": "roadmap-collab-001",
+      "data": {
+        "text": "# 2025 Product Roadmap\n\n## Q1: Performance & Scalability\n- Database optimization (In Progress)\n- Mobile app launch (In Progress)\n- API rate limiting improvements (Planned)\n\n## Q2: User Experience & Accessibility\n- Redesigned dashboard (Planned)\n\nRoadmap collaboratively created with 5 patches (3 agent, 2 user).",
+        "isFinal": true
+      }
+    }
+  ]
+}

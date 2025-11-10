@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "id": "agent-await-feature-requirements",
+    "name": "Feature Requirements Gathering",
+    "pattern": "agent-await-prompt",
+    "description": "Agent gathering feature requirements through interactive prompts, pausing for user input at key decision points",
+    "eventCount": 6,
+    "tags": ["requirements", "interactive", "input", "feature-planning"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699566000000,
+      "sessionId": "feature-req-001",
+      "data": {
+        "text": "I'll help you plan the new notification system. Let me gather some requirements.",
+        "isFinal": false
+      }
+    },
+    {
+      "id": "await-1",
+      "type": "await_input",
+      "timestamp": 1699566000500,
+      "sessionId": "feature-req-001",
+      "data": {
+        "requestId": "req-1",
+        "prompt": "Which delivery channels should we support?",
+        "inputType": "multiselect",
+        "validation": {
+          "required": true,
+          "options": ["Email", "SMS", "Push Notifications", "In-App Toast", "Slack"]
+        },
+        "placeholder": "Select one or more channels"
+      }
+    },
+    {
+      "id": "input-1",
+      "type": "input_submission",
+      "timestamp": 1699566005000,
+      "sessionId": "feature-req-001",
+      "data": {
+        "requestId": "req-1",
+        "value": ["Email", "In-App Toast", "Slack"],
+        "submittedAt": 1699566005000
+      }
+    },
+    {
+      "id": "await-2",
+      "type": "await_input",
+      "timestamp": 1699566005500,
+      "sessionId": "feature-req-001",
+      "data": {
+        "requestId": "req-2",
+        "prompt": "What's the priority level for this feature?",
+        "inputType": "select",
+        "validation": {
+          "required": true,
+          "options": ["P0 - Critical", "P1 - High", "P2 - Medium", "P3 - Low"]
+        }
+      }
+    },
+    {
+      "id": "input-2",
+      "type": "input_submission",
+      "timestamp": 1699566008000,
+      "sessionId": "feature-req-001",
+      "data": {
+        "requestId": "req-2",
+        "value": "P1 - High",
+        "submittedAt": 1699566008000
+      }
+    },
+    {
+      "id": "answer-2",
+      "type": "answer",
+      "timestamp": 1699566009000,
+      "sessionId": "feature-req-001",
+      "data": {
+        "text": "# Notification System Requirements\n\n## Delivery Channels\n- Email notifications\n- In-app toast messages\n- Slack integration\n\n## Priority\nP1 - High Priority\n\n## Next Steps\n1. Design notification schema\n2. Set up email templates\n3. Implement Slack webhook\n4. Build toast UI component\n\nEstimated effort: 2-3 sprints",
+        "isFinal": true
+      }
+    }
+  ]
+}

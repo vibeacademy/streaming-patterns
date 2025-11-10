@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "id": "schema-governed-release-notes",
+    "name": "Release Notes Generation with Schema",
+    "pattern": "schema-governed-exchange",
+    "description": "AI generates release notes conforming to a defined JSON schema, with validation errors and corrections",
+    "eventCount": 7,
+    "tags": ["schema", "validation", "release-notes", "structured-data"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "schema-def-1",
+      "type": "schema_definition",
+      "timestamp": 1699570000000,
+      "sessionId": "release-notes-001",
+      "data": {
+        "schema": {
+          "$id": "release-notes-schema",
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "version": {
+              "type": "string",
+              "pattern": "^\\d+\\.\\d+\\.\\d+$"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "features": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["title", "description"]
+              }
+            },
+            "bugfixes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "issueId": { "type": "string" },
+                  "description": { "type": "string" }
+                },
+                "required": ["issueId", "description"]
+              }
+            }
+          },
+          "required": ["version", "date", "features"]
+        },
+        "description": "Release notes schema for StreamFlow PM v2.0.0"
+      }
+    },
+    {
+      "id": "payload-1",
+      "type": "payload",
+      "timestamp": 1699570001000,
+      "sessionId": "release-notes-001",
+      "data": {
+        "id": "payload-1",
+        "schemaId": "release-notes-schema",
+        "payload": {
+          "version": "2.0.0-beta",
+          "date": "2024-11-15",
+          "features": [
+            {
+              "title": "Real-time collaboration",
+              "description": "Multiple users can now edit roadmaps simultaneously"
+            }
+          ]
+        },
+        "timestamp": 1699570001000
+      }
+    },
+    {
+      "id": "error-1",
+      "type": "schema_error",
+      "timestamp": 1699570001500,
+      "sessionId": "release-notes-001",
+      "data": {
+        "id": "error-1",
+        "path": "/version",
+        "message": "Version must match semantic versioning pattern",
+        "expected": "Format: X.Y.Z (e.g., 2.0.0)",
+        "actual": "2.0.0-beta",
+        "timestamp": 1699570001500
+      }
+    },
+    {
+      "id": "payload-2",
+      "type": "payload",
+      "timestamp": 1699570002000,
+      "sessionId": "release-notes-001",
+      "data": {
+        "id": "payload-2",
+        "schemaId": "release-notes-schema",
+        "payload": {
+          "version": "2.0.0",
+          "date": "2024-11-15",
+          "features": [
+            {
+              "title": "Real-time collaboration",
+              "description": "Multiple users can now edit roadmaps simultaneously with live cursors"
+            },
+            {
+              "title": "Dark mode",
+              "description": "Full dark theme support across all views"
+            }
+          ],
+          "bugfixes": [
+            {
+              "issueId": "STREAM-401",
+              "description": "Fixed timezone handling in date picker"
+            },
+            {
+              "issueId": "STREAM-402",
+              "description": "Resolved CSV export formatting issues"
+            }
+          ]
+        },
+        "timestamp": 1699570002000
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699570002500,
+      "sessionId": "release-notes-001",
+      "data": {
+        "text": "# StreamFlow PM v2.0.0 - November 15, 2024\n\n## New Features\n- **Real-time collaboration**: Multiple users can now edit roadmaps simultaneously with live cursors\n- **Dark mode**: Full dark theme support across all views\n\n## Bug Fixes\n- STREAM-401: Fixed timezone handling in date picker\n- STREAM-402: Resolved CSV export formatting issues\n\nRelease notes generated and validated against schema.",
+        "isFinal": false
+      }
+    },
+    {
+      "id": "meta-1",
+      "type": "table_meta",
+      "timestamp": 1699570003000,
+      "sessionId": "release-notes-001",
+      "data": {
+        "isComplete": true,
+        "statusMessage": "Release notes validated and formatted"
+      }
+    },
+    {
+      "id": "answer-2",
+      "type": "answer",
+      "timestamp": 1699570003500,
+      "sessionId": "release-notes-001",
+      "data": {
+        "text": "\n\nSchema validation passed. Release notes are ready for publication.",
+        "isFinal": true
+      }
+    }
+  ]
+}

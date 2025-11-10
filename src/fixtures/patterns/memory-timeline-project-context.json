@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "id": "memory-timeline-project-context",
+    "name": "Project Context Memory Timeline",
+    "pattern": "multi-turn-memory-timeline",
+    "description": "Multi-turn conversation about project status with visible memory operations (create, update, recall, prune)",
+    "eventCount": 8,
+    "tags": ["memory", "conversation", "context", "project-management"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "memory-1",
+      "type": "memory",
+      "timestamp": 1699565000000,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-1",
+        "operation": "create",
+        "content": "Project: StreamFlow PM Dashboard Redesign. Status: In progress. Timeline: Q4 2024.",
+        "importance": 0.95,
+        "turn": 1,
+        "tags": ["project", "dashboard", "timeline"],
+        "timestamp": 1699565000000
+      }
+    },
+    {
+      "id": "memory-2",
+      "type": "memory",
+      "timestamp": 1699565000500,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-2",
+        "operation": "create",
+        "content": "Team composition: 3 frontend engineers, 2 backend engineers, 1 designer",
+        "importance": 0.80,
+        "turn": 1,
+        "tags": ["team", "resources"],
+        "timestamp": 1699565000500
+      }
+    },
+    {
+      "id": "memory-3",
+      "type": "memory",
+      "timestamp": 1699565001000,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-3",
+        "operation": "create",
+        "content": "Current blocker: API rate limiting affecting real-time updates",
+        "importance": 0.92,
+        "turn": 2,
+        "tags": ["blocker", "api", "technical"],
+        "timestamp": 1699565001000
+      }
+    },
+    {
+      "id": "memory-4",
+      "type": "memory",
+      "timestamp": 1699565001500,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-4",
+        "operation": "recall",
+        "content": "Recalling: Project: StreamFlow PM Dashboard Redesign. Status: In progress. Timeline: Q4 2024.",
+        "importance": 0.95,
+        "turn": 3,
+        "tags": ["project", "dashboard", "timeline"],
+        "timestamp": 1699565001500
+      }
+    },
+    {
+      "id": "memory-5",
+      "type": "memory",
+      "timestamp": 1699565002000,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-5",
+        "operation": "update",
+        "content": "Current blocker: API rate limiting - Backend team working on caching solution, ETA 2 days",
+        "importance": 0.94,
+        "turn": 3,
+        "tags": ["blocker", "api", "technical", "resolution"],
+        "timestamp": 1699565002000
+      }
+    },
+    {
+      "id": "memory-6",
+      "type": "memory",
+      "timestamp": 1699565002500,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-6",
+        "operation": "create",
+        "content": "Design review completed: 8/10 mockups approved, 2 need revisions for accessibility",
+        "importance": 0.85,
+        "turn": 4,
+        "tags": ["design", "review", "accessibility"],
+        "timestamp": 1699565002500
+      }
+    },
+    {
+      "id": "memory-7",
+      "type": "memory",
+      "timestamp": 1699565003000,
+      "sessionId": "project-context-001",
+      "data": {
+        "id": "memory-7",
+        "operation": "prune",
+        "content": "Pruning low-importance memory: Team composition details (already documented)",
+        "importance": 0.60,
+        "turn": 5,
+        "tags": ["team", "resources"],
+        "timestamp": 1699565003000
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699565003500,
+      "sessionId": "project-context-001",
+      "data": {
+        "text": "Based on our conversation, the StreamFlow PM Dashboard Redesign is on track for Q4 2024 completion. The API rate limiting blocker is being addressed with a caching solution (ETA 2 days). Design reviews are nearly complete with strong accessibility focus. The team is effectively managing the workload.",
+        "isFinal": true
+      }
+    }
+  ]
+}

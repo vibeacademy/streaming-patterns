@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "id": "chain-of-reasoning-sprint-planning",
+    "name": "Sprint Planning with Chain-of-Reasoning",
+    "pattern": "chain-of-reasoning",
+    "description": "AI plans a 2-week sprint with visible reasoning steps, demonstrating intermediate thought process before final plan",
+    "eventCount": 7,
+    "tags": ["sprint", "planning", "reasoning", "agile"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "reason-1",
+      "type": "reasoning",
+      "timestamp": 1699564800000,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "id": "reason-1",
+        "summary": "Analyzing backlog priorities and business value",
+        "confidence": 0.92,
+        "details": "Reviewing 24 backlog items based on customer feedback scores, revenue impact, and strategic alignment",
+        "timestamp": 1699564800000
+      }
+    },
+    {
+      "id": "reason-2",
+      "type": "reasoning",
+      "timestamp": 1699564800500,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "id": "reason-2",
+        "summary": "Estimating team capacity for next 2 weeks",
+        "confidence": 0.88,
+        "details": "Team of 6 engineers, accounting for 1 PTO day and Thanksgiving holiday, leaves ~52 engineering days",
+        "timestamp": 1699564800500
+      }
+    },
+    {
+      "id": "reason-3",
+      "type": "reasoning",
+      "timestamp": 1699564801000,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "id": "reason-3",
+        "summary": "Identifying dependencies and blockers",
+        "confidence": 0.85,
+        "details": "User authentication work blocks payment integration. API rate limiting issue needs resolution first.",
+        "timestamp": 1699564801000
+      }
+    },
+    {
+      "id": "reason-4",
+      "type": "reasoning",
+      "timestamp": 1699564801500,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "id": "reason-4",
+        "summary": "Balancing quick wins with long-term goals",
+        "confidence": 0.90,
+        "details": "Including 2 small bug fixes for immediate customer relief while advancing dashboard redesign",
+        "timestamp": 1699564801500
+      }
+    },
+    {
+      "id": "reason-5",
+      "type": "reasoning",
+      "timestamp": 1699564802000,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "id": "reason-5",
+        "summary": "Allocating buffer for unknowns",
+        "confidence": 0.87,
+        "details": "Reserving 20% capacity for bug fixes, code reviews, and unexpected technical challenges",
+        "timestamp": 1699564802000
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699564803000,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "text": "# Sprint 24 Plan (Nov 13-24)\n\n## High Priority (Must Complete)\n1. **User Authentication Overhaul** (13 points)\n   - OAuth 2.0 integration\n   - Session management\n   - Password reset flow\n   \n2. **Dashboard Performance** (8 points)\n   - Lazy loading for widgets\n   - Cache optimization\n   \n## Medium Priority (Should Complete)\n3. **Real-time Notifications** (5 points)\n   - WebSocket connection\n   - Toast UI component\n   \n4. **Bug Fixes** (3 points)\n   - Date picker timezone issue\n   - Export CSV formatting\n   \n## Stretch Goals\n5. **Dark Mode Theme** (5 points)\n   - If auth work completes early\n   \n**Total Committed:** 29 points\n**Team Velocity:** 28-32 points\n**Confidence:** High (88%)",
+        "isFinal": true
+      }
+    },
+    {
+      "id": "meta-1",
+      "type": "table_meta",
+      "timestamp": 1699564803100,
+      "sessionId": "sprint-plan-001",
+      "data": {
+        "isComplete": true,
+        "statusMessage": "Sprint plan generated successfully"
+      }
+    }
+  ]
+}
