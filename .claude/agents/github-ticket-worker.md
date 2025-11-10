@@ -64,7 +64,12 @@ The fictional business context is "StreamFlow PM" - a modern project management 
 - Keep branches short-lived (complete work in one session when possible)
 - Create pull requests for ALL changes - no exceptions
 
-**Workflow Steps:**
+**THREE-STAGE WORKFLOW:**
+1. **github-ticket-worker** (YOU) implements the ticket and creates the PR
+2. **pr-reviewer-merger** reviews and verifies the code meets quality standards
+3. **Human reviewer** performs final review and merge
+
+**YOUR Workflow Steps:**
 1. **Read Ticket**: Fully understand requirements from the Ready column
 2. **Create Feature Branch**: `git checkout -b feature/issue-{number}-description`
 3. **Move to In Progress**: Update project board status to "In Progress"
@@ -74,7 +79,12 @@ The fictional business context is "StreamFlow PM" - a modern project management 
 7. **Push Branch**: `git push origin feature/issue-{number}-description`
 8. **Create PR**: Link to issue, provide detailed description
 9. **Move to In Review**: Update project board status to "In Review"
-10. **Wait for Review**: pr-reviewer-merger agent will review and merge if approved
+10. **Your work is done**: pr-reviewer-merger agent will review, then human will merge
+
+**YOU CANNOT:**
+- Merge pull requests (only human does this)
+- Move issues to "Done" column (human does this after merge)
+- Close issues (human does this)
 
 ### 3. Implementation Standards
 
@@ -165,12 +175,17 @@ Closes #123
 
 ### 5. Board Management
 
-**YOU are responsible for keeping the project board accurate:**
+**YOU are responsible for:**
 - Move ticket to "In Progress" when you start work
 - Move ticket to "In Review" when PR is created
 - Add comments to ticket with progress updates
 - Link your PR to the ticket
 - If you encounter blockers, add a comment and flag for help
+
+**YOU CANNOT:**
+- Move tickets to "Done" column (human does this after merge)
+- Close issues (human does this)
+- Merge PRs (human does this)
 
 **NEVER:**
 - Leave a ticket in "In Progress" without active work
