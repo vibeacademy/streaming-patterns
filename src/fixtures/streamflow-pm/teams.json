@@ -1,0 +1,136 @@
+{
+  "teams": [
+    {
+      "id": "team-001",
+      "name": "Frontend Team",
+      "description": "React, TypeScript, and UI/UX implementation",
+      "members": [
+        {
+          "id": "user-001",
+          "name": "Sarah Chen",
+          "role": "Senior Frontend Engineer",
+          "email": "sarah.chen@streamflow.pm"
+        },
+        {
+          "id": "user-002",
+          "name": "Emily Rodriguez",
+          "role": "Frontend Engineer",
+          "email": "emily.rodriguez@streamflow.pm"
+        },
+        {
+          "id": "user-003",
+          "name": "David Kim",
+          "role": "UI/UX Engineer",
+          "email": "david.kim@streamflow.pm"
+        }
+      ],
+      "capacity": 24,
+      "currentLoad": 21
+    },
+    {
+      "id": "team-002",
+      "name": "Backend Team",
+      "description": "API, database, and infrastructure",
+      "members": [
+        {
+          "id": "user-004",
+          "name": "Alex Rivera",
+          "role": "Senior Backend Engineer",
+          "email": "alex.rivera@streamflow.pm"
+        },
+        {
+          "id": "user-005",
+          "name": "Michael Zhang",
+          "role": "Backend Engineer",
+          "email": "michael.zhang@streamflow.pm"
+        }
+      ],
+      "capacity": 16,
+      "currentLoad": 14
+    },
+    {
+      "id": "team-003",
+      "name": "Mobile Team",
+      "description": "iOS and Android applications",
+      "members": [
+        {
+          "id": "user-006",
+          "name": "Marcus Johnson",
+          "role": "Mobile Lead",
+          "email": "marcus.johnson@streamflow.pm"
+        },
+        {
+          "id": "user-007",
+          "name": "Lisa Park",
+          "role": "iOS Engineer",
+          "email": "lisa.park@streamflow.pm"
+        },
+        {
+          "id": "user-008",
+          "name": "James Wilson",
+          "role": "Android Engineer",
+          "email": "james.wilson@streamflow.pm"
+        }
+      ],
+      "capacity": 24,
+      "currentLoad": 22
+    },
+    {
+      "id": "team-004",
+      "name": "Platform Team",
+      "description": "Core infrastructure, DevOps, and platform services",
+      "members": [
+        {
+          "id": "user-009",
+          "name": "Priya Patel",
+          "role": "Platform Lead",
+          "email": "priya.patel@streamflow.pm"
+        },
+        {
+          "id": "user-010",
+          "name": "Thomas Anderson",
+          "role": "DevOps Engineer",
+          "email": "thomas.anderson@streamflow.pm"
+        }
+      ],
+      "capacity": 16,
+      "currentLoad": 15
+    },
+    {
+      "id": "team-005",
+      "name": "Design Team",
+      "description": "Product design, UX research, and visual design",
+      "members": [
+        {
+          "id": "user-011",
+          "name": "Sophia Martinez",
+          "role": "Lead Product Designer",
+          "email": "sophia.martinez@streamflow.pm"
+        },
+        {
+          "id": "user-012",
+          "name": "Oliver Taylor",
+          "role": "UX Researcher",
+          "email": "oliver.taylor@streamflow.pm"
+        }
+      ],
+      "capacity": 16,
+      "currentLoad": 12
+    },
+    {
+      "id": "team-006",
+      "name": "Security Team",
+      "description": "Application security and compliance",
+      "members": [
+        {
+          "id": "user-013",
+          "name": "Jordan Lee",
+          "role": "Security Engineer",
+          "email": "jordan.lee@streamflow.pm"
+        }
+      ],
+      "capacity": 8,
+      "currentLoad": 6
+    }
+  ]
+}

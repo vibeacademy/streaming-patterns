@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "id": "validation-loop-api-spec",
+    "name": "API Specification Validation",
+    "pattern": "streaming-validation-loop",
+    "description": "AI generates API spec with multiple validation checkpoints, showing pass/fail states and retry attempts",
+    "eventCount": 9,
+    "tags": ["validation", "api", "spec", "quality"],
+    "author": "StreamFlow PM Team",
+    "version": "1.0"
+  },
+  "events": [
+    {
+      "id": "checkpoint-1",
+      "type": "checkpoint",
+      "timestamp": 1699567000000,
+      "sessionId": "api-validation-001",
+      "data": {
+        "id": "checkpoint-1",
+        "name": "Schema Definition",
+        "status": "pending",
+        "criteria": "All endpoints must have OpenAPI 3.0 schema definitions",
+        "timestamp": 1699567000000
+      }
+    },
+    {
+      "id": "validation-1",
+      "type": "validation",
+      "timestamp": 1699567000500,
+      "sessionId": "api-validation-001",
+      "data": {
+        "checkpointId": "checkpoint-1",
+        "passed": true,
+        "message": "All 12 endpoints have valid schema definitions",
+        "timestamp": 1699567000500
+      }
+    },
+    {
+      "id": "checkpoint-2",
+      "type": "checkpoint",
+      "timestamp": 1699567001000,
+      "sessionId": "api-validation-001",
+      "data": {
+        "id": "checkpoint-2",
+        "name": "Security Headers",
+        "status": "validating",
+        "criteria": "All endpoints must specify authentication and authorization requirements",
+        "timestamp": 1699567001000
+      }
+    },
+    {
+      "id": "validation-2",
+      "type": "validation",
+      "timestamp": 1699567001500,
+      "sessionId": "api-validation-001",
+      "data": {
+        "checkpointId": "checkpoint-2",
+        "passed": false,
+        "message": "3 endpoints missing authentication requirements",
+        "suggestions": [
+          "Add 'security' field to /api/projects endpoint",
+          "Add 'security' field to /api/teams endpoint",
+          "Add 'security' field to /api/reports endpoint"
+        ],
+        "timestamp": 1699567001500
+      }
+    },
+    {
+      "id": "checkpoint-2-retry",
+      "type": "checkpoint",
+      "timestamp": 1699567002000,
+      "sessionId": "api-validation-001",
+      "data": {
+        "id": "checkpoint-2",
+        "name": "Security Headers (Retry)",
+        "status": "validating",
+        "criteria": "All endpoints must specify authentication and authorization requirements",
+        "timestamp": 1699567002000
+      }
+    },
+    {
+      "id": "validation-2-retry",
+      "type": "validation",
+      "timestamp": 1699567002500,
+      "sessionId": "api-validation-001",
+      "data": {
+        "checkpointId": "checkpoint-2",
+        "passed": true,
+        "message": "All endpoints now have proper security configuration",
+        "timestamp": 1699567002500
+      }
+    },
+    {
+      "id": "checkpoint-3",
+      "type": "checkpoint",
+      "timestamp": 1699567003000,
+      "sessionId": "api-validation-001",
+      "data": {
+        "id": "checkpoint-3",
+        "name": "Error Responses",
+        "status": "validating",
+        "criteria": "All endpoints must document 4xx and 5xx error responses",
+        "timestamp": 1699567003000
+      }
+    },
+    {
+      "id": "validation-3",
+      "type": "validation",
+      "timestamp": 1699567003500,
+      "sessionId": "api-validation-001",
+      "data": {
+        "checkpointId": "checkpoint-3",
+        "passed": true,
+        "message": "Error responses documented for all endpoints",
+        "timestamp": 1699567003500
+      }
+    },
+    {
+      "id": "answer-1",
+      "type": "answer",
+      "timestamp": 1699567004000,
+      "sessionId": "api-validation-001",
+      "data": {
+        "text": "# API Specification Validation Complete\n\n✅ Schema Definition: Passed\n✅ Security Headers: Passed (after fixes)\n✅ Error Responses: Passed\n\n## Summary\nAPI specification meets all quality standards. 12 endpoints fully documented with OpenAPI 3.0 schema, security requirements, and comprehensive error handling.\n\n## Issues Fixed\n- Added authentication to 3 endpoints\n- Standardized error response format",
+        "isFinal": true
+      }
+    }
+  ]
+}

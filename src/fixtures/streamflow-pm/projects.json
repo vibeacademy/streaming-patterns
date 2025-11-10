@@ -1,0 +1,65 @@
+{
+  "projects": [
+    {
+      "id": "proj-001",
+      "name": "Dashboard Redesign",
+      "description": "Complete redesign of the main dashboard with improved UX and performance",
+      "status": "in-progress",
+      "startDate": "2024-10-01",
+      "targetDate": "2024-12-31",
+      "owner": "Sarah Chen",
+      "team": "Frontend Team",
+      "budget": 150000,
+      "priority": "P0"
+    },
+    {
+      "id": "proj-002",
+      "name": "Mobile App Launch",
+      "description": "Native iOS and Android apps for StreamFlow PM",
+      "status": "in-progress",
+      "startDate": "2024-09-15",
+      "targetDate": "2025-03-31",
+      "owner": "Marcus Johnson",
+      "team": "Mobile Team",
+      "budget": 300000,
+      "priority": "P1"
+    },
+    {
+      "id": "proj-003",
+      "name": "API v3 Migration",
+      "description": "Upgrade to GraphQL-based API with improved performance",
+      "status": "planned",
+      "startDate": "2025-01-15",
+      "targetDate": "2025-06-30",
+      "owner": "Alex Rivera",
+      "team": "Backend Team",
+      "budget": 200000,
+      "priority": "P1"
+    },
+    {
+      "id": "proj-004",
+      "name": "Real-time Collaboration",
+      "description": "Live co-editing of roadmaps and documents",
+      "status": "in-progress",
+      "startDate": "2024-11-01",
+      "targetDate": "2025-02-28",
+      "owner": "Priya Patel",
+      "team": "Platform Team",
+      "budget": 180000,
+      "priority": "P0"
+    },
+    {
+      "id": "proj-005",
+      "name": "Enterprise SSO",
+      "description": "SAML and OAuth 2.0 support for enterprise customers",
+      "status": "completed",
+      "startDate": "2024-07-01",
+      "targetDate": "2024-10-31",
+      "completedDate": "2024-10-28",
+      "owner": "Jordan Lee",
+      "team": "Security Team",
+      "budget": 120000,
+      "priority": "P0"
+    }
+  ]
+}
