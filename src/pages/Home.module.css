@@ -1,0 +1,219 @@
+/**
+ * Home Page Styles - Landing page for the Streaming Patterns library
+ */
+
+.home {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: 4rem 0;
+  margin-bottom: 4rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.heroSubtitle {
+  font-size: 1.5rem;
+  color: #6b7280;
+  margin: 0 0 1.5rem;
+  font-weight: 500;
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  color: #4b5563;
+  max-width: 42rem;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* Patterns Section */
+.patternsSection {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 2rem;
+  color: #111827;
+}
+
+.patternsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.patternLink {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.patternLink:hover {
+  transform: translateY(-4px);
+}
+
+.patternLink:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.patternCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+.patternCard:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.patternHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.patternTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+  flex: 1;
+}
+
+.patternStatus {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.patternDescription {
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.patternMeta {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  flex-grow: 1;
+}
+
+.patternScenario {
+  margin-bottom: 1rem;
+}
+
+.patternScenario strong {
+  color: #111827;
+}
+
+.patternTechniques strong {
+  color: #111827;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.techniquesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.techniquesList li {
+  padding-left: 1.25rem;
+  position: relative;
+  margin-bottom: 0.25rem;
+}
+
+.techniquesList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.patternCta {
+  font-weight: 600;
+  color: #3b82f6;
+  margin-top: auto;
+}
+
+/* About Section */
+.aboutSection {
+  margin-bottom: 4rem;
+}
+
+.aboutGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+  color: #111827;
+}
+
+.featureDescription {
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.25rem;
+  }
+
+  .heroDescription {
+    font-size: 1rem;
+  }
+
+  .patternsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .aboutGrid {
+    grid-template-columns: 1fr;
+  }
+}

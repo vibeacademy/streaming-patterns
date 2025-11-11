@@ -15,6 +15,7 @@
  */
 
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './AppShell.module.css';
 
 export interface AppShellProps {
@@ -87,12 +88,12 @@ export function AppShell({
             </div>
 
             <nav className={styles.nav} aria-label="Main navigation">
-              <a href="/" className={styles.navLink}>
+              <Link to="/" className={styles.navLink}>
                 Home
-              </a>
-              <a href="/patterns" className={styles.navLink}>
+              </Link>
+              <Link to="/patterns" className={styles.navLink}>
                 Patterns
-              </a>
+              </Link>
               <a
                 href="https://github.com/vibeacademy/streaming-patterns"
                 className={styles.navLink}
