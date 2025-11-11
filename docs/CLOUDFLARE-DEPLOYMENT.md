@@ -1,17 +1,334 @@
 # Cloudflare Workers Deployment Plan - Streaming Patterns Library
 
 ## Table of Contents
-1. [Executive Summary](#executive-summary)
-2. [Architecture Overview](#architecture-overview)
-3. [Wrangler Configuration](#wrangler-configuration)
-4. [GitHub Actions Workflows](#github-actions-workflows)
-5. [Custom Domain Setup](#custom-domain-setup)
-6. [Environment Management](#environment-management)
-7. [Step-by-Step Implementation](#step-by-step-implementation)
-8. [Security Considerations](#security-considerations)
-9. [Monitoring and Logging](#monitoring-and-logging)
-10. [Cost Estimate](#cost-estimate)
-11. [Troubleshooting](#troubleshooting)
+1. [Quick Start: GitHub Secrets Configuration](#quick-start-github-secrets-configuration)
+2. [Executive Summary](#executive-summary)
+3. [Architecture Overview](#architecture-overview)
+4. [Wrangler Configuration](#wrangler-configuration)
+5. [GitHub Actions Workflows](#github-actions-workflows)
+6. [Custom Domain Setup](#custom-domain-setup)
+7. [Environment Management](#environment-management)
+8. [Step-by-Step Implementation](#step-by-step-implementation)
+9. [Security Considerations](#security-considerations)
+10. [Monitoring and Logging](#monitoring-and-logging)
+11. [Cost Estimate](#cost-estimate)
+12. [Troubleshooting](#troubleshooting)
+
+---
+
+## Quick Start: GitHub Secrets Configuration
+
+This section provides a focused guide for configuring GitHub Secrets required for CI/CD workflows. **Complete this setup before implementing GitHub Actions workflows.**
+
+### Prerequisites
+- GitHub repository admin access (to add secrets)
+- Cloudflare account with Workers enabled
+- Repository: `vibeacademy/streaming-patterns`
+
+### Required Secrets
+
+Two secrets are required for automated deployments:
+
+| Secret Name | Purpose | Where It's Used |
+|-------------|---------|-----------------|
+| `CLOUDFLARE_API_TOKEN` | Authenticates GitHub Actions to deploy Workers | All deployment workflows |
+| `CLOUDFLARE_ACCOUNT_ID` | Identifies your Cloudflare account | All deployment workflows |
+
+---
+
+### Step 1: Get Your Cloudflare Account ID
+
+1. Log in to Cloudflare Dashboard: https://dash.cloudflare.com
+2. Navigate to **Workers & Pages**
+3. Look for **Account ID** in the right sidebar
+4. Copy the Account ID (format: `<32-character-hex-string>`)
+
+Example:
+```
+Account ID: a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+```
+
+**Save this value** - you'll add it to GitHub Secrets in Step 3.
+
+---
+
+### Step 2: Create Cloudflare API Token
+
+#### 2.1: Navigate to API Tokens Page
+
+1. Go to: https://dash.cloudflare.com/profile/api-tokens
+2. Click **Create Token** button
+
+#### 2.2: Use the "Edit Cloudflare Workers" Template
+
+1. Find the **Edit Cloudflare Workers** template
+2. Click **Use template**
+
+#### 2.3: Configure Token Permissions
+
+The template provides most permissions, but verify/adjust as follows:
+
+**Account Permissions:**
+- `Workers Scripts` → **Edit** ✅
+- `Account Settings` → **Read** ✅
+
+**Zone Permissions (if using custom domains):**
+- `Workers Routes` → **Edit** ✅
+- `DNS` → **Edit** ✅ (for wildcard DNS configuration)
+
+#### 2.4: Configure Token Resources
+
+**Account Resources:**
+- Select: **Include** → **Your Account** (`vibeacademy` or your account name)
+
+**Zone Resources (if using custom domains):**
+- Select: **Include** → **Specific zone** → `streamingpatterns.com`
+- Or select: **Include** → **All zones** (if you have multiple domains)
+
+#### 2.5: Set Token Expiration (Optional)
+
+- **Default**: No expiration (recommended for CI/CD)
+- **Alternative**: Set expiration date (requires periodic rotation)
+
+**Recommendation**: No expiration for production CI/CD, but document rotation procedure.
+
+#### 2.6: Create and Copy Token
+
+1. Click **Continue to summary**
+2. Review permissions carefully
+3. Click **Create Token**
+4. **IMPORTANT**: Copy the token immediately (shown only once!)
+   - Format: `<long-base64-encoded-string>`
+   - Example: `AbCdEfGhIjKlMnOpQrStUvWxYz123456789...`
+
+**Save this token securely** - you cannot view it again. If lost, you must create a new token.
+
+---
+
+### Step 3: Add Secrets to GitHub Repository
+
+#### 3.1: Navigate to Repository Secrets
+
+1. Go to: https://github.com/vibeacademy/streaming-patterns/settings/secrets/actions
+2. Or navigate manually:
+   - Repository → **Settings** tab
+   - Left sidebar → **Secrets and variables** → **Actions**
+
+#### 3.2: Add CLOUDFLARE_API_TOKEN Secret
+
+1. Click **New repository secret**
+2. **Name**: `CLOUDFLARE_API_TOKEN`
+3. **Secret**: Paste the API token from Step 2.6
+4. Click **Add secret**
+
+You should see:
+```
+CLOUDFLARE_API_TOKEN
+Updated X seconds ago
+```
+
+#### 3.3: Add CLOUDFLARE_ACCOUNT_ID Secret
+
+1. Click **New repository secret** again
+2. **Name**: `CLOUDFLARE_ACCOUNT_ID`
+3. **Secret**: Paste the Account ID from Step 1
+4. Click **Add secret**
+
+You should see both secrets listed:
+```
+CLOUDFLARE_API_TOKEN
+CLOUDFLARE_ACCOUNT_ID
+```
+
+---
+
+### Step 4: Verify Secrets Configuration
+
+#### 4.1: Check Secrets Exist
+
+1. Go to: https://github.com/vibeacademy/streaming-patterns/settings/secrets/actions
+2. Verify both secrets are listed:
+   - `CLOUDFLARE_API_TOKEN` ✅
+   - `CLOUDFLARE_ACCOUNT_ID` ✅
+
+#### 4.2: Test Secrets with Verification Workflow (Optional)
+
+Create a temporary workflow to verify secrets are accessible:
+
+```yaml
+# .github/workflows/verify-secrets.yml
+name: Verify Cloudflare Secrets
+
+on:
+  workflow_dispatch: # Manual trigger only
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Token Exists
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
+            echo "❌ CLOUDFLARE_API_TOKEN is not set"
+            exit 1
+          fi
+          echo "✅ CLOUDFLARE_API_TOKEN is set (length: ${#CLOUDFLARE_API_TOKEN})"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Check Account ID Exists
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" ]; then
+            echo "❌ CLOUDFLARE_ACCOUNT_ID is not set"
+            exit 1
+          fi
+          echo "✅ CLOUDFLARE_ACCOUNT_ID is set (length: ${#CLOUDFLARE_ACCOUNT_ID})"
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Test Wrangler Authentication (Optional)
+        run: |
+          npm install -g wrangler
+          wrangler whoami
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+```
+
+**To run verification:**
+1. Commit the workflow file to your branch
+2. Go to: https://github.com/vibeacademy/streaming-patterns/actions
+3. Select "Verify Cloudflare Secrets" workflow
+4. Click "Run workflow"
+5. Verify all steps pass ✅
+
+**Delete verification workflow after testing** (optional, can keep for debugging).
+
+---
+
+### Troubleshooting
+
+#### Secret Not Found in Workflow
+
+**Symptom**: Workflow fails with "secret not found" error
+
+**Solutions**:
+1. Verify secret names are EXACT (case-sensitive):
+   - ✅ `CLOUDFLARE_API_TOKEN`
+   - ❌ `cloudflare_api_token`
+   - ❌ `CLOUDFLARE_TOKEN`
+
+2. Check secret scope:
+   - Secrets must be **Repository secrets**, not Environment secrets
+   - Go to: Settings → Secrets and variables → **Actions** (not Codespaces or Dependabot)
+
+3. Verify workflow syntax:
+   ```yaml
+   # ✅ Correct
+   ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+   # ❌ Incorrect
+   ${{ secrets.CLOUDFLARE_TOKEN }}
+   ```
+
+#### API Token Permission Denied
+
+**Symptom**: Deployment fails with "Permission denied" or "Insufficient permissions"
+
+**Solutions**:
+1. Re-create API token with correct permissions (see Step 2.3)
+2. Ensure token includes:
+   - **Workers Scripts** → Edit
+   - **Account Settings** → Read
+   - **Workers Routes** → Edit (if using custom domains)
+
+3. Verify token hasn't expired:
+   - Go to: https://dash.cloudflare.com/profile/api-tokens
+   - Check token status and expiration date
+
+4. Regenerate token if necessary:
+   - Delete old token
+   - Create new token (Step 2)
+   - Update `CLOUDFLARE_API_TOKEN` secret in GitHub
+
+#### Account ID Incorrect
+
+**Symptom**: Deployment fails with "Account not found" error
+
+**Solutions**:
+1. Verify Account ID format (32-character hex string)
+2. Re-copy from Cloudflare Dashboard:
+   - Workers & Pages → Right sidebar → Account ID
+3. Update `CLOUDFLARE_ACCOUNT_ID` secret in GitHub
+
+#### Token Leaked in Logs
+
+**Symptom**: API token visible in GitHub Actions logs
+
+**Prevention**:
+1. **NEVER** echo secrets directly:
+   ```yaml
+   # ❌ DANGEROUS - Token will appear in logs
+   run: echo ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+   # ✅ Safe - Length only
+   run: echo "Token length: ${#CLOUDFLARE_API_TOKEN}"
+   env:
+     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+   ```
+
+2. GitHub automatically masks secrets in logs, but don't rely on this alone
+
+**If token leaked**:
+1. **Immediately** revoke token in Cloudflare Dashboard
+2. Create new token (Step 2)
+3. Update GitHub Secret
+4. Review workflow files for echo/print statements
+5. Consider rotating all secrets as precaution
+
+---
+
+### Security Best Practices
+
+#### Token Rotation
+
+- **Frequency**: Rotate tokens every 90 days (for high-security environments)
+- **Process**:
+  1. Create new API token in Cloudflare
+  2. Update `CLOUDFLARE_API_TOKEN` secret in GitHub
+  3. Verify deployment works
+  4. Revoke old token in Cloudflare
+
+#### Access Control
+
+- Limit GitHub repository admin access (only trusted team members can view/edit secrets)
+- Use branch protection rules to require reviews for workflow changes
+- Audit secret access logs periodically
+
+#### Token Scoping
+
+- Use **least privilege principle**: Only grant permissions needed for deployment
+- Avoid account-wide tokens when possible
+- Scope tokens to specific zones (domains)
+
+#### Backup Credentials
+
+- Document token creation process (this guide)
+- Store Account ID in team password manager (not the API token)
+- Maintain runbook for token regeneration
+
+---
+
+### Next Steps
+
+After completing this configuration:
+
+1. ✅ Secrets are configured in GitHub
+2. ⏭️ Proceed to implement GitHub Actions workflows (see [GitHub Actions Workflows](#github-actions-workflows))
+3. ⏭️ Test deployment workflows with pull requests
+
+For workflow implementation, see:
+- [Step-by-Step Implementation](#step-by-step-implementation) → Phase 5: GitHub Actions Setup
+- [GitHub Actions Workflows](#github-actions-workflows) for complete workflow examples
 
 ---
 
