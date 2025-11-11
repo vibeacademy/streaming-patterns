@@ -205,7 +205,7 @@ export function ChainOfReasoningDemo(): JSX.Element {
             onClick={handleToggleInspector}
             variant="ghost"
             size="sm"
-            aria-pressed={showInspector}
+            aria-pressed={String(showInspector)}
             aria-label={
               showInspector ? 'Hide Network Inspector' : 'Show Network Inspector'
             }
@@ -229,7 +229,7 @@ export function ChainOfReasoningDemo(): JSX.Element {
                 variant={speed === option.value ? 'primary' : 'secondary'}
                 size="sm"
                 disabled={isStreaming}
-                aria-pressed={speed === option.value}
+                aria-pressed={String(speed === option.value)}
                 title={option.description}
               >
                 {option.label}
