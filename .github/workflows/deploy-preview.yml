@@ -109,18 +109,25 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler-preview.toml
 
-      # 11. Get preview URL
+      # 11. Get preview URL from deployment output
       - name: Get preview URL
         id: preview-url
         run: |
           PR_NUMBER="${{ github.event.pull_request.number }}"
           WORKER_NAME="streaming-patterns-pr-${PR_NUMBER}"
-          ACCOUNT_SUBDOMAIN="${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
 
-          # Cloudflare Workers preview URL format
-          # Note: The actual subdomain may vary based on account configuration
-          # This is the standard workers.dev URL format
-          PREVIEW_URL="https://${WORKER_NAME}.workers.dev"
+          # Extract the actual preview URL from the deployment output
+          # Wrangler outputs the URL in the format: https://worker-name.subdomain.workers.dev
+          PREVIEW_URL="${{ steps.deploy.outputs.deployment-url }}"
+
+          # If deployment-url is not available, construct it
+          # (This is a fallback - wrangler-action should provide it)
+          if [ -z "$PREVIEW_URL" ]; then
+            echo "⚠️ Warning: deployment-url not found, using fallback"
+            # Note: workers.dev URLs include the account subdomain
+            # The actual URL will be shown in the Wrangler deployment logs
+            PREVIEW_URL="Check deployment logs for actual URL"
+          fi
 
           echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
           echo "worker_name=${WORKER_NAME}" >> $GITHUB_OUTPUT
