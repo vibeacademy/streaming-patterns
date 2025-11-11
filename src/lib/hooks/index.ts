@@ -18,3 +18,6 @@ export type {
   UseStreamProcessorOptions,
   UseStreamProcessorResult,
 } from './useStreamProcessor';
+
+export { useTheme } from './useTheme';
+export type { Theme, ResolvedTheme, ContrastMode } from './useTheme';

@@ -16,6 +16,7 @@
 
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { ThemeToggle } from '../ThemeToggle';
 import styles from './AppShell.module.css';
 
 export interface AppShellProps {
@@ -62,30 +63,18 @@ export function AppShell({
       {header || (
         <header className={styles.header}>
           <div className={styles.headerContent}>
-            <div className={styles.logo}>
-              <svg
+            <Link to="/" className={styles.logo}>
+              <img
+                src="/streamflow-logo.svg"
+                alt="StreamFlow PM"
                 width="32"
                 height="32"
-                viewBox="0 0 32 32"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <rect width="32" height="32" rx="8" fill="#3B82F6" />
-                <path
-                  d="M16 8L8 12V20L16 24L24 20V12L16 8Z"
-                  fill="white"
-                  fillOpacity="0.9"
-                />
-                <path
-                  d="M16 12L12 14V18L16 20L20 18V14L16 12Z"
-                  fill="#3B82F6"
-                />
-              </svg>
+                className={styles.logoImage}
+              />
               <h1 className={styles.logoText}>
                 <span className={styles.logoHighlight}>StreamFlow</span> PM
               </h1>
-            </div>
+            </Link>
 
             <nav className={styles.nav} aria-label="Main navigation">
               <Link to="/" className={styles.navLink}>
@@ -102,6 +91,7 @@ export function AppShell({
               >
                 GitHub
               </a>
+              <ThemeToggle />
             </nav>
           </div>
         </header>
