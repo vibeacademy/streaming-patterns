@@ -1,0 +1,109 @@
+/**
+ * Spinner Component Styles
+ */
+
+.spinnerContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinnerContainer--with-label {
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ===== SPINNER ===== */
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinnerCircle {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 0;
+  animation: spinnerDash 1.5s ease-in-out infinite;
+}
+
+@keyframes spinnerDash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+/* ===== SIZE VARIANTS ===== */
+
+.spinner--sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.spinner--md {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.spinner--lg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.spinner--xl {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* ===== COLOR VARIANTS ===== */
+
+.spinner--primary {
+  color: var(--color-primary);
+}
+
+.spinner--secondary {
+  color: var(--color-secondary);
+}
+
+.spinner--neutral {
+  color: var(--color-neutral-500);
+}
+
+/* ===== LABEL ===== */
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+
+  .spinnerCircle {
+    animation: none;
+    stroke-dasharray: 150;
+    stroke-dashoffset: 0;
+  }
+}
