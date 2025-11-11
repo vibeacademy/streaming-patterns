@@ -1,0 +1,350 @@
+/**
+ * Annotated Source Code Viewer Styles
+ *
+ * Professional code viewer design with syntax highlighting, line numbers,
+ * and interactive annotations.
+ */
+
+/* ===== CONTAINER ===== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}
+
+/* ===== HEADER ===== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-bg-tertiary);
+  border-bottom: var(--border-width-thin) solid var(--color-border-light);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.fileName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+}
+
+.language {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-secondary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  text-transform: uppercase;
+  font-family: var(--font-sans);
+}
+
+/* ===== COPY BUTTON ===== */
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-primary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.copyButton:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.copyButton:active {
+  transform: translateY(1px);
+}
+
+.copyButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.copyButtonText {
+  font-size: var(--font-size-sm);
+}
+
+/* ===== CODE WRAPPER ===== */
+
+.codeWrapper {
+  position: relative;
+  overflow: auto;
+  background-color: #2d2d2d; /* Match Prism tomorrow theme */
+}
+
+.codeContainer {
+  display: flex;
+  position: relative;
+  min-width: max-content;
+}
+
+/* ===== LINE NUMBERS ===== */
+
+.lineNumbers {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-2) var(--space-4) var(--space-4);
+  background-color: #1e1e1e;
+  border-right: var(--border-width-thin) solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+}
+
+.lineNumber {
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.lineNumberHighlighted {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ===== CODE CONTENT ===== */
+
+.codeContent {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.pre {
+  margin: 0;
+  padding: var(--space-4);
+  background: transparent;
+  overflow: visible;
+}
+
+.pre code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.5rem;
+  color: #ccc;
+  text-shadow: none;
+}
+
+/* ===== LINE HIGHLIGHTS ===== */
+
+.lineHighlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid var(--color-primary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== ANNOTATIONS ===== */
+
+.annotation {
+  position: absolute;
+  right: var(--space-4);
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  z-index: 2;
+}
+
+.annotationToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: var(--border-width-thin) solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.annotationToggle:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.annotationToggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.annotationIcon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.annotationContent {
+  position: absolute;
+  right: 2rem;
+  top: 0;
+  min-width: 300px;
+  max-width: 500px;
+  padding: var(--space-3);
+  background-color: var(--color-bg-primary);
+  border: var(--border-width-thin) solid var(--color-border-medium);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  z-index: 10;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.annotationContent strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.annotationContent em {
+  font-style: italic;
+  color: var(--color-text-secondary);
+}
+
+.annotationContent code {
+  padding: 2px 6px;
+  background-color: var(--color-bg-tertiary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--color-primary);
+}
+
+/* Annotation type variants */
+
+.annotation--info .annotationToggle {
+  border-color: var(--color-info-500);
+}
+
+.annotation--info .annotationContent {
+  border-color: var(--color-info-500);
+  border-left-width: 3px;
+}
+
+.annotation--warning .annotationToggle {
+  border-color: var(--color-warning-500);
+}
+
+.annotation--warning .annotationContent {
+  border-color: var(--color-warning-500);
+  border-left-width: 3px;
+}
+
+.annotation--tip .annotationToggle {
+  border-color: var(--color-success-500);
+}
+
+.annotation--tip .annotationContent {
+  border-color: var(--color-success-500);
+  border-left-width: 3px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .copyButton {
+    align-self: flex-end;
+  }
+
+  .annotationContent {
+    position: fixed;
+    left: var(--space-4);
+    right: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: auto;
+    max-width: none;
+  }
+
+  .lineNumbers {
+    padding-left: var(--space-2);
+    padding-right: var(--space-1);
+  }
+
+  .lineNumber {
+    padding-right: var(--space-2);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* Hidden but accessible to screen readers */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Keyboard focus states */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
