@@ -12,3 +12,9 @@ export type {
   EventFilter,
   NetworkCaptureResult,
 } from './useNetworkCapture';
+
+export { useStreamProcessor } from './useStreamProcessor';
+export type {
+  UseStreamProcessorOptions,
+  UseStreamProcessorResult,
+} from './useStreamProcessor';
