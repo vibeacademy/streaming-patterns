@@ -1,72 +1,101 @@
+/**
+ * Test suite for App component with routing
+ *
+ * Tests the main App component with React Router integration,
+ * verifying navigation and route handling.
+ */
+
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import App from './App';
 
-/**
- * Test suite for App component
- *
- * This test verifies the basic functionality of the root App component
- * and serves as a smoke test for the entire Vitest testing infrastructure.
- */
 describe('App', () => {
-  it('renders the main heading', () => {
-    render(<App />);
+  describe('routing', () => {
+    it('renders the home page by default', () => {
+      render(<App />);
 
-    const heading = screen.getByRole('heading', { name: /streaming patterns/i });
-    expect(heading).toBeInTheDocument();
+      // Check for home page content
+      const heading = screen.getByRole('heading', { name: /streaming patterns/i, level: 1 });
+      expect(heading).toBeInTheDocument();
+
+      const subtitle = screen.getByText(/Educational Pattern Library for Streaming AI\/LLM UX/i);
+      expect(subtitle).toBeInTheDocument();
+    });
+
+    it('renders AppShell with navigation', () => {
+      render(<App />);
+
+      // Check for navigation links
+      const homeLink = screen.getByRole('link', { name: /^home$/i });
+      expect(homeLink).toBeInTheDocument();
+
+      const patternsLink = screen.getByRole('link', { name: /^patterns$/i });
+      expect(patternsLink).toBeInTheDocument();
+
+      const githubLink = screen.getByRole('link', { name: /github/i });
+      expect(githubLink).toBeInTheDocument();
+    });
+
+    it('displays StreamFlow PM branding', () => {
+      render(<App />);
+
+      // Check for logo heading in header
+      const logoHeading = screen.getByRole('heading', { name: /StreamFlow PM/i, level: 1 });
+      expect(logoHeading).toBeInTheDocument();
+    });
+
+    it('displays footer content', () => {
+      render(<App />);
+
+      // Check for footer
+      const footerText = screen.getByText(/Streaming Patterns Library/i);
+      expect(footerText).toBeInTheDocument();
+
+      const copyright = screen.getByText(/StreamFlow PM. MIT License/i);
+      expect(copyright).toBeInTheDocument();
+    });
   });
 
-  it('renders the educational description', () => {
-    render(<App />);
+  describe('home page content', () => {
+    it('displays available patterns section', () => {
+      render(<App />);
 
-    const description = screen.getByText(
-      /Educational Pattern Library for Streaming AI\/LLM UX/i
-    );
-    expect(description).toBeInTheDocument();
-  });
+      const heading = screen.getByRole('heading', { name: /available patterns/i });
+      expect(heading).toBeInTheDocument();
+    });
 
-  it('renders the counter button with initial count', () => {
-    render(<App />);
+    it('displays Chain-of-Reasoning pattern card', () => {
+      render(<App />);
 
-    const button = screen.getByRole('button', { name: /count is 0/i });
-    expect(button).toBeInTheDocument();
-  });
+      const patternTitle = screen.getByText(/chain-of-reasoning guide/i);
+      expect(patternTitle).toBeInTheDocument();
 
-  it('increments count when button is clicked', async () => {
-    const user = userEvent.setup();
-    render(<App />);
+      const patternDescription = screen.getByText(/expose intermediate reasoning tokens/i);
+      expect(patternDescription).toBeInTheDocument();
+    });
 
-    const button = screen.getByRole('button', { name: /count is 0/i });
+    it('displays about section', () => {
+      render(<App />);
 
-    // Click the button
-    await user.click(button);
+      const aboutHeading = screen.getByRole('heading', { name: /about this library/i });
+      expect(aboutHeading).toBeInTheDocument();
 
-    // Verify count increased
-    expect(screen.getByRole('button', { name: /count is 1/i })).toBeInTheDocument();
-  });
+      const educationalTitle = screen.getByRole('heading', { name: /educational focus/i });
+      expect(educationalTitle).toBeInTheDocument();
 
-  it('increments count multiple times', async () => {
-    const user = userEvent.setup();
-    render(<App />);
+      const mockStreamingTitle = screen.getByRole('heading', { name: /mock streaming/i });
+      expect(mockStreamingTitle).toBeInTheDocument();
 
-    const button = screen.getByRole('button', { name: /count is 0/i });
+      const productionTitle = screen.getByRole('heading', { name: /production ready/i });
+      expect(productionTitle).toBeInTheDocument();
+    });
 
-    // Click three times
-    await user.click(button);
-    await user.click(screen.getByRole('button', { name: /count is 1/i }));
-    await user.click(screen.getByRole('button', { name: /count is 2/i }));
+    it('has a link to the chain-of-reasoning pattern', () => {
+      render(<App />);
 
-    // Verify final count
-    expect(screen.getByRole('button', { name: /count is 3/i })).toBeInTheDocument();
-  });
-
-  it('displays success message', () => {
-    render(<App />);
-
-    const message = screen.getByText(
-      /Vite \+ React \+ TypeScript foundation initialized successfully/i
-    );
-    expect(message).toBeInTheDocument();
+      const patternLink = screen.getByRole('link', { name: /chain-of-reasoning guide/i });
+      expect(patternLink).toBeInTheDocument();
+      expect(patternLink).toHaveAttribute('href', '/patterns/chain-of-reasoning');
+    });
   });
 });

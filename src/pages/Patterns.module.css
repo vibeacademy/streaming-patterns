@@ -1,0 +1,164 @@
+/**
+ * Patterns Page Styles - Directory view of all patterns
+ */
+
+.patterns {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header */
+.header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 1rem;
+  color: #111827;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: #6b7280;
+  max-width: 48rem;
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* Section */
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem;
+  color: #111827;
+}
+
+/* Pattern Grid */
+.patternGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.patternLink {
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+  display: block;
+}
+
+.patternLink:hover {
+  transform: translateY(-4px);
+}
+
+.patternLink:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.patternCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+}
+
+.patternLink .patternCard:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.comingSoonCard {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.patternHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.patternTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #111827;
+  flex: 1;
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.comingSoonBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.patternDescription {
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.patternMeta {
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  flex-grow: 1;
+}
+
+.metaItem {
+  margin-bottom: 0.5rem;
+}
+
+.metaItem strong {
+  color: #111827;
+}
+
+.patternCta {
+  font-weight: 600;
+  color: #3b82f6;
+  margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .patternGrid {
+    grid-template-columns: 1fr;
+  }
+}
