@@ -1,0 +1,307 @@
+/**
+ * ErrorBoundary Component Styles
+ *
+ * Styles for the error boundary fallback UI, including:
+ * - Container layout (centered, full viewport)
+ * - Error icon and messaging
+ * - Action buttons
+ * - Error details expansion
+ * - Responsive design
+ * - Accessibility features
+ */
+
+/* Main container - full viewport, centered content */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-6);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Content wrapper */
+.content {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Icon wrapper */
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--space-6);
+  background: var(--color-error-bg);
+  border-radius: var(--border-radius-full);
+  color: var(--color-error);
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  stroke-width: 2.5;
+}
+
+/* Heading */
+.heading {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
+}
+
+/* User-friendly error message */
+.message {
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Error details (development mode) */
+.details {
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: var(--color-bg-secondary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  text-align: left;
+}
+
+.detailsSummary {
+  padding: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.detailsSummary:hover {
+  color: var(--color-text-primary);
+}
+
+.detailsSummary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+.detailsContent {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--border-width-thin) solid var(--color-border-light);
+}
+
+.errorBlock {
+  margin-bottom: var(--space-4);
+}
+
+.errorBlock:last-child {
+  margin-bottom: 0;
+}
+
+.errorBlock strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.errorPre {
+  padding: var(--space-3);
+  background: var(--color-bg-tertiary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  line-height: var(--line-height-relaxed);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Action buttons */
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-8);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border: var(--border-width-medium) solid transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+/* Primary button (Try Again) */
+.button--primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+}
+
+.button--primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.button--primary:active {
+  background: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+
+/* Secondary button (Reload, Report Issue) */
+.button--secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-medium);
+}
+
+.button--secondary:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-dark);
+}
+
+.button--secondary:active {
+  background: var(--color-bg-quaternary);
+}
+
+.buttonIcon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Tips section */
+.tips {
+  padding: var(--space-5);
+  background: var(--color-bg-secondary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  text-align: left;
+}
+
+.tipsHeading {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.tipsList {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.tipsList li {
+  margin-bottom: var(--space-2);
+}
+
+.tipsList li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .container {
+    padding: var(--space-4);
+  }
+
+  .iconWrapper {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--space-4);
+  }
+
+  .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .heading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .message {
+    font-size: var(--font-size-base);
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tips {
+    padding: var(--space-4);
+  }
+}
+
+/* Accessibility - high contrast mode */
+@media (prefers-contrast: high) {
+  .container {
+    border: var(--border-width-medium) solid var(--color-border-dark);
+  }
+
+  .button {
+    border-width: var(--border-width-thick);
+  }
+
+  .details {
+    border-width: var(--border-width-medium);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .detailsSummary {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+}
