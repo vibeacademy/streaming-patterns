@@ -173,6 +173,53 @@ export function NetworkInspector({
     {} as Record<string, number>
   );
 
+  /**
+   * Filter events based on current filter settings
+   * - Type filter: Show only events matching selected types (OR logic)
+   * - Search filter: Search across event type, data, and timestamps
+   */
+  const filteredEvents = events.filter((captured) => {
+    // Apply type filter if types are selected
+    if (selectedTypes.length > 0) {
+      if (!selectedTypes.includes(captured.event.type)) {
+        return false;
+      }
+    }
+
+    // Apply search filter if search query exists
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+
+      // Search in event type
+      if (captured.event.type.toLowerCase().includes(query)) {
+        return true;
+      }
+
+      // Search in event data (convert to JSON string)
+      const dataStr = JSON.stringify(captured.event.data).toLowerCase();
+      if (dataStr.includes(query)) {
+        return true;
+      }
+
+      // Search in timestamp
+      const timestampStr = new Date(captured.event.timestamp).toISOString().toLowerCase();
+      if (timestampStr.includes(query)) {
+        return true;
+      }
+
+      // Search in event ID if present
+      if (captured.event.id?.toLowerCase().includes(query)) {
+        return true;
+      }
+
+      // No match found
+      return false;
+    }
+
+    // No filters applied, include event
+    return true;
+  });
+
   if (compact) {
     return (
       <div
@@ -376,12 +423,30 @@ export function NetworkInspector({
                 overflow: 'hidden',
               }}
             >
-              <EventList
-                events={events}
-                onEventSelect={setSelectedEvent}
-                selectedEvent={selectedEvent}
-                showCount={false}
-              />
+              {filteredEvents.length === 0 && events.length > 0 ? (
+                <div
+                  style={{
+                    padding: '24px',
+                    textAlign: 'center',
+                    color: '#57606a',
+                    fontSize: '14px',
+                  }}
+                >
+                  <div style={{ marginBottom: '8px', fontWeight: 500 }}>
+                    No matching events
+                  </div>
+                  <div style={{ fontSize: '12px' }}>
+                    Try adjusting your filters or search query
+                  </div>
+                </div>
+              ) : (
+                <EventList
+                  events={filteredEvents}
+                  onEventSelect={setSelectedEvent}
+                  selectedEvent={selectedEvent}
+                  showCount={false}
+                />
+              )}
             </div>
 
             {/* Event details panel */}
