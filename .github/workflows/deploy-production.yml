@@ -42,20 +42,15 @@ jobs:
       - name: Type check
         run: npm run type-check
 
-      # 6. Run test suite
-      - name: Run tests
-        run: npm run test:run
-
-      # 7. Run tests with coverage
+      # 6. Run tests with coverage
       - name: Run tests with coverage
         run: npm run test:coverage
-        continue-on-error: true
 
-      # 8. Build production bundle
+      # 7. Build production bundle
       - name: Build production bundle
         run: npm run build
 
-      # 9. Verify build output exists
+      # 8. Verify build output exists
       - name: Verify build output
         run: |
           if [ ! -d "dist" ]; then
@@ -70,18 +65,15 @@ jobs:
           echo "Build contents:"
           ls -lah dist/
 
-      # 10. Deploy to Cloudflare Workers (production)
+      # 9. Deploy to Cloudflare Workers (production)
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # 11. Post deployment notification (success)
+      # 10. Post deployment notification (success)
       - name: Post deployment success notification
         if: success()
         run: |
@@ -90,7 +82,7 @@ jobs:
           echo "📦 Build size: $(du -sh dist | cut -f1)"
           echo "🕐 Deployment time: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
 
-      # 12. Post deployment notification (failure)
+      # 11. Post deployment notification (failure)
       - name: Post deployment failure notification
         if: failure()
         run: |
@@ -103,7 +95,7 @@ jobs:
           echo "   - Tests failed"
           exit 1
 
-      # 13. Upload build artifacts (for debugging)
+      # 12. Upload build artifacts (for debugging)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         if: always()
@@ -112,7 +104,7 @@ jobs:
           path: dist/
           retention-days: 7
 
-      # 14. Upload coverage reports (for debugging)
+      # 13. Upload coverage reports (for debugging)
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         if: always()
