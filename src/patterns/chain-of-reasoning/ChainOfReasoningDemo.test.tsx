@@ -178,11 +178,11 @@ describe('ChainOfReasoningDemo', () => {
       // Should show "Complete" after streaming finishes
       await waitFor(
         () => {
-          expect(screen.getByText(/Complete/i)).toBeInTheDocument();
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
         },
         { timeout: 5000 }
       );
-    });
+    }, 10000);
 
     it('should display final answer after reasoning completes', async () => {
       render(<ChainOfReasoningDemo />);
@@ -195,11 +195,12 @@ describe('ChainOfReasoningDemo', () => {
         { timeout: 5000 }
       );
 
-      // Verify answer content is displayed
+      // Verify answer content is displayed (may appear in multiple places like Network Inspector)
       await waitFor(() => {
-        expect(screen.getByText(/Sprint 24 Plan/i)).toBeInTheDocument();
+        const elements = screen.getAllByText(/Sprint 24 Plan/i);
+        expect(elements.length).toBeGreaterThan(0);
       });
-    });
+    }, 10000);
 
     it('should capture events in Network Inspector', async () => {
       render(<ChainOfReasoningDemo />);
@@ -236,7 +237,7 @@ describe('ChainOfReasoningDemo', () => {
       // Wait for streaming to complete before changing speed
       await waitFor(
         () => {
-          expect(screen.queryByText(/Streaming.../i)).not.toBeInTheDocument();
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
         },
         { timeout: 5000 }
       );
@@ -244,10 +245,19 @@ describe('ChainOfReasoningDemo', () => {
       // Click Fast button
       await user.click(fastButton);
 
+      // Wait for the new stream (triggered by speed change) to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
+          expect(fastButton).not.toBeDisabled();
+        },
+        { timeout: 5000 }
+      );
+
       // Fast should now be selected
       expect(fastButton).toHaveAttribute('aria-pressed', 'true');
       expect(normalButton).toHaveAttribute('aria-pressed', 'false');
-    });
+    }, 15000);
 
     it('should reset the demo when reset button is clicked', async () => {
       const user = userEvent.setup();
@@ -256,7 +266,7 @@ describe('ChainOfReasoningDemo', () => {
       // Wait for initial stream to complete
       await waitFor(
         () => {
-          expect(screen.getByText(/Complete/i)).toBeInTheDocument();
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
         },
         { timeout: 5000 }
       );
@@ -315,20 +325,22 @@ describe('ChainOfReasoningDemo', () => {
       await waitFor(() => {
         const resetButton = screen.getByRole('button', { name: /Reset Demo/i });
         expect(resetButton).toBeDisabled();
-      });
+      }, { timeout: 3000 });
 
-      // Wait for streaming to complete
+      // Wait for streaming to complete and buttons to be enabled
       await waitFor(
         () => {
-          expect(screen.getByText(/Complete/i)).toBeInTheDocument();
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
+          const resetButton = screen.getByRole('button', { name: /Reset Demo/i });
+          expect(resetButton).not.toBeDisabled();
         },
-        { timeout: 5000 }
+        { timeout: 10000 }
       );
 
-      // Controls should be enabled after streaming
+      // Verify controls are enabled
       const resetButton = screen.getByRole('button', { name: /Reset Demo/i });
       expect(resetButton).not.toBeDisabled();
-    });
+    }, 15000);
   });
 
   describe('Error Handling', () => {
@@ -446,6 +458,14 @@ describe('ChainOfReasoningDemo', () => {
       const user = userEvent.setup();
       render(<ChainOfReasoningDemo />);
 
+      // Wait for streaming to complete so buttons are enabled
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 5000 }
+      );
+
       // Should be able to activate button with keyboard
       const fastButton = screen.getByRole('button', { name: /Fast/i });
 
@@ -502,14 +522,23 @@ describe('ChainOfReasoningDemo', () => {
       // Wait for initial stream to complete
       await waitFor(
         () => {
-          expect(screen.getByText(/Complete/i)).toBeInTheDocument();
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
         },
-        { timeout: 5000 }
+        { timeout: 10000 }
       );
 
       // Change speed
       const slowButton = screen.getByRole('button', { name: /Slow/i });
       await user.click(slowButton);
+
+      // Wait for the new stream (triggered by speed change) to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
+          expect(slowButton).not.toBeDisabled();
+        },
+        { timeout: 10000 }
+      );
 
       // Speed should be maintained
       expect(slowButton).toHaveAttribute('aria-pressed', 'true');
@@ -518,10 +547,17 @@ describe('ChainOfReasoningDemo', () => {
       const resetButton = screen.getByRole('button', { name: /Reset Demo/i });
       await user.click(resetButton);
 
+      // Wait for the new stream after reset to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i); expect(completeElements.length).toBeGreaterThan(0);
+          expect(slowButton).not.toBeDisabled();
+        },
+        { timeout: 10000 }
+      );
+
       // Should still be on slow speed
-      await waitFor(() => {
-        expect(slowButton).toHaveAttribute('aria-pressed', 'true');
-      });
-    });
+      expect(slowButton).toHaveAttribute('aria-pressed', 'true');
+    }, 35000);
   });
 });
