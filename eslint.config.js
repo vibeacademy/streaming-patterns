@@ -31,6 +31,7 @@ export default [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         fetch: 'readonly',
+        localStorage: 'readonly',
         // Node globals (for config files)
         process: 'readonly',
         __dirname: 'readonly',
@@ -51,6 +52,10 @@ export default [
         HTMLInputElement: 'readonly',
         HTMLSpanElement: 'readonly',
         React: 'readonly',
+        Element: 'readonly',
+        Storage: 'readonly',
+        MediaQueryList: 'readonly',
+        MediaQueryListEvent: 'readonly',
       },
     },
     plugins: {

@@ -2,7 +2,6 @@
  * useTheme Hook Tests
  */
 
-/* eslint-disable no-undef */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { useTheme } from './useTheme';
