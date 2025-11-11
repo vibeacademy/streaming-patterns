@@ -25,13 +25,6 @@ workers_dev = false  # Don't deploy to workers.dev subdomain
 directory = "./dist"
 binding = "ASSETS"
 
-# Custom settings
-[build]
-command = "npm run build"
-
-[build.upload]
-format = "service-worker"
-
 # Environment variables
 [vars]
 ENVIRONMENT = "production"

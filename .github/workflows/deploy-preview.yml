@@ -91,13 +91,6 @@ jobs:
           directory = "./dist"
           binding = "ASSETS"
 
-          # Custom settings
-          [build]
-          command = "npm run build"
-
-          [build.upload]
-          format = "service-worker"
-
           # Environment variables
           [vars]
           ENVIRONMENT = "preview"
