@@ -103,10 +103,46 @@ export default [
     },
   },
 
+  // Configuration for Cloudflare Worker files
+  {
+    files: ['worker/**/*.ts'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        // Cloudflare Workers globals
+        Request: 'readonly',
+        Response: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        Headers: 'readonly',
+        fetch: 'readonly',
+        Fetcher: 'readonly',
+        ExecutionContext: 'readonly',
+        console: 'readonly',
+      },
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      }],
+      '@typescript-eslint/no-explicit-any': 'error',
+      'no-console': 'off', // Allow console in Workers
+    },
+  },
+
   // Ignore patterns
   {
     ignores: [
       'dist/**',
+      'dist-worker/**',
       'node_modules/**',
       'coverage/**',
       'specs/**',
