@@ -1,0 +1,240 @@
+/**
+ * Theme System - Light & Dark Mode Support
+ *
+ * This file defines theme-specific CSS variables that override the base tokens
+ * from variables.css when dark mode is active.
+ *
+ * Implementation:
+ * - Light mode uses base variables from variables.css
+ * - Dark mode overrides via [data-theme="dark"] selector
+ * - System preference detection via useTheme hook
+ * - Theme persists to localStorage
+ *
+ * Accessibility:
+ * - All colors meet WCAG 2.1 AA contrast ratio requirements (4.5:1 for text)
+ * - Enhanced contrast mode available for AAA compliance (7:1)
+ */
+
+/* ===== LIGHT MODE (DEFAULT) ===== */
+/* Light mode uses variables defined in variables.css */
+/* No overrides needed - this is the base theme */
+
+/* ===== DARK MODE ===== */
+[data-theme='dark'] {
+  /* Primary Colors - Adjusted for dark backgrounds */
+  --color-primary-50: #1E3A8A;
+  --color-primary-100: #1E40AF;
+  --color-primary-200: #1D4ED8;
+  --color-primary-300: #2563EB;
+  --color-primary-400: #3B82F6;
+  --color-primary-500: #60A5FA;
+  --color-primary-600: #93C5FD;
+  --color-primary-700: #BFDBFE;
+  --color-primary-800: #DBEAFE;
+  --color-primary-900: #EFF6FF;
+  --color-primary: var(--color-primary-500);
+
+  /* Secondary Colors - Adjusted for dark backgrounds */
+  --color-secondary-50: #581C87;
+  --color-secondary-100: #6B21A8;
+  --color-secondary-200: #7E22CE;
+  --color-secondary-300: #9333EA;
+  --color-secondary-400: #A855F7;
+  --color-secondary-500: #C084FC;
+  --color-secondary-600: #D8B4FE;
+  --color-secondary-700: #E9D5FF;
+  --color-secondary-800: #F3E8FF;
+  --color-secondary-900: #FAF5FF;
+  --color-secondary: var(--color-secondary-500);
+
+  /* Neutral Grays - Dark mode palette */
+  --color-neutral-50: #111827;
+  --color-neutral-100: #1F2937;
+  --color-neutral-200: #374151;
+  --color-neutral-300: #4B5563;
+  --color-neutral-400: #6B7280;
+  --color-neutral-500: #9CA3AF;
+  --color-neutral-600: #D1D5DB;
+  --color-neutral-700: #E5E7EB;
+  --color-neutral-800: #F3F4F6;
+  --color-neutral-900: #F9FAFB;
+
+  /* Semantic Colors - Dark mode adjustments */
+  --color-success-50: #064E3B;
+  --color-success-500: #34D399;
+  --color-success-700: #6EE7B7;
+  --color-success: var(--color-success-500);
+
+  --color-warning-50: #78350F;
+  --color-warning-500: #FBBF24;
+  --color-warning-700: #FCD34D;
+  --color-warning: var(--color-warning-500);
+
+  --color-error-50: #7F1D1D;
+  --color-error-500: #F87171;
+  --color-error-700: #FCA5A5;
+  --color-error: var(--color-error-500);
+
+  --color-info-50: #1E3A8A;
+  --color-info-500: #60A5FA;
+  --color-info-700: #93C5FD;
+  --color-info: var(--color-info-500);
+
+  /* Text Colors - Dark mode */
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #D1D5DB;
+  --color-text-tertiary: #9CA3AF;
+  --color-text-inverse: #111827;
+  --color-text-link: var(--color-primary-400);
+
+  /* Border Colors - Dark mode */
+  --color-border-light: #374151;
+  --color-border-medium: #4B5563;
+  --color-border-dark: #6B7280;
+
+  /* Background Colors - Dark mode */
+  --color-bg-primary: #111827;
+  --color-bg-secondary: #1F2937;
+  --color-bg-tertiary: #374151;
+  --color-bg-overlay: rgba(0, 0, 0, 0.75);
+
+  /* Shadows - Adjusted for dark mode (lighter, more subtle) */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+
+  /* Focus Ring - Adjusted for dark mode */
+  --shadow-focus: 0 0 0 3px rgba(96, 165, 250, 0.5);
+}
+
+/* ===== HIGH CONTRAST MODE ===== */
+/* Enhanced contrast for accessibility (WCAG AAA - 7:1 ratio) */
+[data-theme='dark'][data-contrast='high'] {
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #E5E7EB;
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #111827;
+  --color-border-light: #4B5563;
+  --color-border-medium: #6B7280;
+}
+
+[data-theme='light'][data-contrast='high'] {
+  --color-text-primary: #000000;
+  --color-text-secondary: #374151;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F9FAFB;
+  --color-border-light: #9CA3AF;
+  --color-border-medium: #6B7280;
+}
+
+/* ===== SYSTEM PREFERENCE DETECTION ===== */
+/* Automatically apply dark mode if user's system preference is dark */
+/* This is overridden by explicit theme selection in localStorage */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* Apply dark mode variables when no explicit theme is set */
+    --color-primary: #60A5FA;
+    --color-secondary: #C084FC;
+    --color-text-primary: #F9FAFB;
+    --color-text-secondary: #D1D5DB;
+    --color-text-tertiary: #9CA3AF;
+    --color-text-inverse: #111827;
+    --color-text-link: #3B82F6;
+    --color-border-light: #374151;
+    --color-border-medium: #4B5563;
+    --color-border-dark: #6B7280;
+    --color-bg-primary: #111827;
+    --color-bg-secondary: #1F2937;
+    --color-bg-tertiary: #374151;
+    --color-bg-overlay: rgba(0, 0, 0, 0.75);
+  }
+}
+
+/* ===== THEME TRANSITION ===== */
+/* Smooth transition when switching themes */
+/* Applied to common elements that change with theme */
+:root[data-theme-transition] {
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base);
+}
+
+:root[data-theme-transition] * {
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+/* Disable transitions for elements that shouldn't animate */
+:root[data-theme-transition] img,
+:root[data-theme-transition] video,
+:root[data-theme-transition] iframe {
+  transition: none;
+}
+
+/* ===== STREAMFLOW PM BRAND COLORS ===== */
+/* Custom brand colors for StreamFlow PM identity */
+/* These are theme-agnostic and work in both light and dark modes */
+
+:root {
+  /* StreamFlow Primary Brand */
+  --brand-streamflow-blue: #3B82F6;
+  --brand-streamflow-blue-light: #60A5FA;
+  --brand-streamflow-blue-dark: #2563EB;
+
+  /* StreamFlow Accent Colors */
+  --brand-accent-purple: #A855F7;
+  --brand-accent-teal: #14B8A6;
+  --brand-accent-amber: #F59E0B;
+
+  /* StreamFlow Gradients */
+  --brand-gradient-primary: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+  --brand-gradient-secondary: linear-gradient(135deg, #14B8A6 0%, #3B82F6 100%);
+  --brand-gradient-accent: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+}
+
+/* Dark mode adjustments for brand colors */
+[data-theme='dark'] {
+  --brand-streamflow-blue: #60A5FA;
+  --brand-streamflow-blue-light: #93C5FD;
+  --brand-streamflow-blue-dark: #3B82F6;
+
+  --brand-accent-purple: #C084FC;
+  --brand-accent-teal: #2DD4BF;
+  --brand-accent-amber: #FBBF24;
+}
+
+/* ===== PATTERN-SPECIFIC THEME OVERRIDES ===== */
+/* Specific adjustments for pattern demo components in dark mode */
+
+[data-theme='dark'] {
+  /* Reasoning Bead colors for better visibility in dark mode */
+  --pattern-bead-bg: var(--color-neutral-200);
+  --pattern-bead-border: var(--color-neutral-300);
+  --pattern-bead-hover: var(--color-neutral-300);
+
+  /* Code blocks - already dark, just adjust borders */
+  --pattern-code-border: var(--color-neutral-300);
+
+  /* Network inspector - adjust for readability */
+  --pattern-inspector-bg: var(--color-neutral-100);
+  --pattern-inspector-border: var(--color-neutral-300);
+}
+
+[data-theme='light'] {
+  --pattern-bead-bg: var(--color-neutral-50);
+  --pattern-bead-border: var(--color-neutral-200);
+  --pattern-bead-hover: var(--color-neutral-100);
+
+  --pattern-code-border: var(--color-neutral-200);
+
+  --pattern-inspector-bg: var(--color-neutral-50);
+  --pattern-inspector-border: var(--color-neutral-200);
+}
