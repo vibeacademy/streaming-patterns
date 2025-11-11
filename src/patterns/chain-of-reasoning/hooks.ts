@@ -295,15 +295,12 @@ export function useReasoningStreamWithReset(
     setResetTrigger((prev) => prev + 1);
   }, []);
 
-  // Use the base hook - it will automatically re-run when dependencies change
-  const state = useReasoningStream(prompt, options);
+  // Create a modified prompt that includes the reset trigger
+  // This ensures the effect re-runs when reset is called
+  const promptWithTrigger = `${prompt}__trigger_${resetTrigger}`;
 
-  // Add effect to force re-run when resetTrigger changes
-  useEffect(() => {
-    // This effect re-runs when resetTrigger changes
-    // The cleanup of useReasoningStream will cancel the current stream
-    // and a new one will start
-  }, [resetTrigger]);
+  // Use the base hook - it will automatically re-run when prompt changes
+  const state = useReasoningStream(promptWithTrigger, options);
 
   return {
     ...state,

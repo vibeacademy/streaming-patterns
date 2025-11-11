@@ -1,0 +1,450 @@
+/**
+ * ChainOfReasoningDemo Component Styles
+ *
+ * Professional, clean layout for the Chain-of-Reasoning pattern demo.
+ * Designed to match the StreamFlow PM design system and provide an
+ * educational, distraction-free learning experience.
+ *
+ * Layout Strategy:
+ * - Single-column layout for clarity
+ * - Clear visual hierarchy with sections
+ * - Responsive design for mobile and desktop
+ * - Accessible color contrast (WCAG AA compliant)
+ */
+
+/* ===== DEMO CONTAINER ===== */
+
+.demoContainer {
+  /* DemoContainer component handles the outer container */
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* ===== CONTROLS SECTION ===== */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-6);
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.controlLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.speedButtons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ===== STATUS INDICATOR ===== */
+
+.statusIndicator {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.statusStreaming {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-primary-600);
+}
+
+.statusComplete {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-success-600);
+}
+
+.statusIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: var(--font-size-base);
+}
+
+.statusReady {
+  color: var(--color-text-secondary);
+}
+
+/* ===== PROMPT SECTION ===== */
+
+.promptSection {
+  margin-bottom: var(--space-6);
+}
+
+.promptCard {
+  background-color: var(--color-primary-50);
+  border-left: 4px solid var(--color-primary-500);
+}
+
+.promptHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.promptLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-primary-500);
+  color: white;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--border-radius-md);
+}
+
+.promptText {
+  margin: 0;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+/* ===== MAIN CONTENT ===== */
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+/* ===== SECTION HEADERS ===== */
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.sectionDescription {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* ===== REASONING SECTION ===== */
+
+.reasoningSection {
+  /* Section container */
+}
+
+.stepCount {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background-color: var(--color-neutral-100);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-full);
+}
+
+.beadline {
+  /* ReasoningBeadline component handles its own styling */
+}
+
+.emptyState {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius-lg);
+  border: 2px dashed var(--color-border-medium);
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: var(--font-size-base);
+}
+
+/* ===== ANSWER SECTION ===== */
+
+.answerSection {
+  /* Section container */
+}
+
+.answerBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--color-success-50);
+  color: var(--color-success-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-md);
+}
+
+.answerIcon {
+  font-size: var(--font-size-base);
+}
+
+.answerCard {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border-light);
+}
+
+.answerContent {
+  /* Answer text container */
+}
+
+.answerText {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* ===== NETWORK INSPECTOR SECTION ===== */
+
+.inspectorSection {
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: 2px solid var(--color-border-light);
+}
+
+/* ===== EDUCATIONAL NOTE ===== */
+
+.educationalNote {
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: 2px solid var(--color-border-light);
+}
+
+.noteCard {
+  background-color: var(--color-secondary-50);
+  border-left: 4px solid var(--color-secondary-500);
+}
+
+.noteTitle {
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.noteList {
+  margin: 0;
+  padding-left: var(--space-5);
+  list-style-type: disc;
+}
+
+.noteList li {
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+.noteList li:last-child {
+  margin-bottom: 0;
+}
+
+.noteList strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-secondary-700);
+}
+
+/* ===== ERROR STATE ===== */
+
+.errorCard {
+  background-color: var(--color-error-50);
+  border: 1px solid var(--color-error-200);
+  padding: var(--space-8);
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.errorTitle {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error-700);
+}
+
+.errorMessage {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  max-width: 500px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controlGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .speedButtons {
+    width: 100%;
+  }
+
+  .speedButtons button {
+    flex: 1;
+  }
+
+  .statusIndicator {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .stepCount,
+  .answerBadge {
+    align-self: flex-start;
+  }
+
+  .answerText {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .controls {
+    padding: var(--space-3);
+  }
+
+  .sectionTitle {
+    font-size: var(--font-size-lg);
+  }
+
+  .promptText {
+    font-size: var(--font-size-sm);
+  }
+
+  .noteList {
+    padding-left: var(--space-4);
+  }
+
+  .noteList li {
+    font-size: var(--font-size-sm);
+  }
+
+  .errorIcon {
+    font-size: 2rem;
+  }
+
+  .errorTitle {
+    font-size: var(--font-size-lg);
+  }
+
+  .errorMessage {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .promptCard,
+  .answerCard,
+  .noteCard {
+    border-width: 2px;
+  }
+
+  .emptyState {
+    border-width: 3px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .controls,
+  .headerActions,
+  .inspectorSection {
+    display: none;
+  }
+
+  .promptCard,
+  .answerCard,
+  .noteCard {
+    border: 1px solid var(--color-neutral-400);
+    page-break-inside: avoid;
+  }
+
+  .mainContent {
+    page-break-inside: avoid;
+  }
+}
