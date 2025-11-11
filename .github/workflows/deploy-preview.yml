@@ -1,0 +1,252 @@
+name: Deploy Preview Environment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+# Allow concurrent previews for different PRs, but cancel in-progress runs for the same PR
+concurrency:
+  group: preview-deployment-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    name: Deploy Preview (pr-${{ github.event.pull_request.number }})
+    runs-on: ubuntu-latest
+
+    # Set permissions for PR comments
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js with caching
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Run linter
+      - name: Lint code
+        run: npm run lint
+
+      # 5. Run type checking
+      - name: Type check
+        run: npm run type-check
+
+      # 6. Run tests with coverage
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      # 7. Build production bundle
+      - name: Build production bundle
+        run: npm run build
+
+      # 8. Verify build output exists
+      - name: Verify build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "Error: dist directory not found after build"
+            exit 1
+          fi
+          if [ ! -f "dist/index.html" ]; then
+            echo "Error: dist/index.html not found after build"
+            exit 1
+          fi
+          echo "✅ Build output verified successfully"
+          echo "Build contents:"
+          ls -lah dist/
+
+      # 9. Generate preview wrangler.toml with dynamic worker name
+      - name: Generate preview wrangler.toml
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          WORKER_NAME="streaming-patterns-pr-${PR_NUMBER}"
+
+          echo "Generating preview wrangler.toml for PR #${PR_NUMBER}"
+          echo "Worker name: ${WORKER_NAME}"
+
+          cat > wrangler-preview.toml << EOF
+          # Cloudflare Workers configuration for Preview Environment
+          # Generated for PR #${PR_NUMBER}
+
+          name = "${WORKER_NAME}"
+          main = "worker/index.ts"
+          compatibility_date = "2024-11-11"
+
+          # Workers configuration
+          workers_dev = true  # Deploy to workers.dev subdomain for preview
+
+          # Assets binding (serves static files from dist/)
+          [assets]
+          directory = "./dist"
+          binding = "ASSETS"
+
+          # Environment variables
+          [vars]
+          ENVIRONMENT = "preview"
+          PR_NUMBER = "${PR_NUMBER}"
+          EOF
+
+          echo "✅ Preview wrangler.toml generated"
+          cat wrangler-preview.toml
+
+      # 10. Deploy to Cloudflare Workers (preview)
+      - name: Deploy to Cloudflare Workers (Preview)
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy --config wrangler-preview.toml
+
+      # 11. Get preview URL from deployment output
+      - name: Get preview URL
+        id: preview-url
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          WORKER_NAME="streaming-patterns-pr-${PR_NUMBER}"
+
+          # Extract the actual preview URL from the deployment output
+          # Wrangler outputs the URL in the format: https://worker-name.subdomain.workers.dev
+          PREVIEW_URL="${{ steps.deploy.outputs.deployment-url }}"
+
+          # If deployment-url is not available, construct it
+          # (This is a fallback - wrangler-action should provide it)
+          if [ -z "$PREVIEW_URL" ]; then
+            echo "⚠️ Warning: deployment-url not found, using fallback"
+            # Note: workers.dev URLs include the account subdomain
+            # The actual URL will be shown in the Wrangler deployment logs
+            PREVIEW_URL="Check deployment logs for actual URL"
+          fi
+
+          echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+          echo "worker_name=${WORKER_NAME}" >> $GITHUB_OUTPUT
+          echo "✅ Preview URL: ${PREVIEW_URL}"
+
+      # 12. Calculate build metrics
+      - name: Calculate build metrics
+        id: metrics
+        run: |
+          BUILD_SIZE=$(du -sh dist | cut -f1)
+          BUILD_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+
+          echo "build_size=${BUILD_SIZE}" >> $GITHUB_OUTPUT
+          echo "build_time=${BUILD_TIME}" >> $GITHUB_OUTPUT
+          echo "commit_sha=${COMMIT_SHA}" >> $GITHUB_OUTPUT
+
+      # 13. Find existing preview comment
+      - name: Find existing preview comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '## 🚀 Preview Deployment'
+
+      # 14. Post or update PR comment with preview URL
+      - name: Post preview deployment comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ## 🚀 Preview Deployment
+
+            Your preview environment is ready!
+
+            **Preview URL**: [${{ steps.preview-url.outputs.preview_url }}](${{ steps.preview-url.outputs.preview_url }})
+
+            ### ✅ Testing Checklist
+
+            Please verify the following before merging:
+
+            - [ ] Chain-of-Reasoning demo loads correctly
+            - [ ] Network Inspector captures events
+            - [ ] Dark mode toggle works
+            - [ ] No console errors
+            - [ ] Page loads in <3 seconds
+
+            ### 📊 Build Information
+
+            - **Commit**: `${{ steps.metrics.outputs.commit_sha }}`
+            - **Build Time**: ${{ steps.metrics.outputs.build_time }}
+            - **Bundle Size**: ${{ steps.metrics.outputs.build_size }}
+            - **Worker Name**: `${{ steps.preview-url.outputs.worker_name }}`
+            - **Test Coverage**: ✅ Passed
+
+            ### 🔗 Resources
+
+            - [View Deployment Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - [View Source Code](${{ github.event.pull_request.head.repo.html_url }}/tree/${{ github.event.pull_request.head.sha }})
+
+            ---
+
+            🤖 Deployed via GitHub Actions • Updated at ${{ steps.metrics.outputs.build_time }}
+
+      # 15. Post deployment success notification
+      - name: Post deployment success notification
+        if: success()
+        run: |
+          echo "✅ Preview deployment successful!"
+          echo "🚀 Preview URL: ${{ steps.preview-url.outputs.preview_url }}"
+          echo "📦 Build size: ${{ steps.metrics.outputs.build_size }}"
+          echo "🕐 Deployment time: ${{ steps.metrics.outputs.build_time }}"
+          echo "💬 PR comment updated with preview URL"
+
+      # 16. Handle deployment failure
+      - name: Post deployment failure comment
+        if: failure()
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ❌ Preview Deployment Failed
+
+            The preview deployment encountered an error. Please check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+
+            ### Common Issues
+
+            - Build failures (lint, type-check, or test errors)
+            - Missing or invalid Cloudflare secrets
+            - Worker deployment limits reached
+            - Network connectivity issues
+
+            ### Next Steps
+
+            1. Review the workflow logs above
+            2. Fix any issues in your code
+            3. Push a new commit to trigger a new deployment
+
+            ---
+
+            🤖 Deployment failed at ${{ steps.metrics.outputs.build_time }}
+
+      # 17. Upload build artifacts (for debugging)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preview-build-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          path: dist/
+          retention-days: 7
+
+      # 18. Upload coverage reports (for debugging)
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preview-coverage-pr-${{ github.event.pull_request.number }}-${{ github.sha }}
+          path: coverage/
+          retention-days: 7
