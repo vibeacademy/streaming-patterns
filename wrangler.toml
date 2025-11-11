@@ -1,0 +1,37 @@
+# Cloudflare Workers configuration for Streaming Patterns Library
+# Environment: Production
+
+name = "streaming-patterns-production"
+main = "worker/index.ts"
+compatibility_date = "2024-11-11"
+
+# Account details (set via environment variable or GitHub secrets)
+# account_id will be provided via CLOUDFLARE_ACCOUNT_ID secret in CI/CD
+# For local development, set via: wrangler login
+
+# Workers configuration
+workers_dev = false  # Don't deploy to workers.dev subdomain
+
+# Routes - bind to custom domain
+# Note: These routes will be configured after DNS setup
+# For now, commenting out until domain DNS is configured
+# routes = [
+#   { pattern = "streamingpatterns.com/*", zone_name = "streamingpatterns.com" },
+#   { pattern = "www.streamingpatterns.com/*", zone_name = "streamingpatterns.com" }
+# ]
+
+# Assets binding (serves static files from dist/)
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# Custom settings
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "service-worker"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
