@@ -238,6 +238,7 @@
   font-size: var(--font-size-sm);
   line-height: var(--line-height-relaxed);
   color: var(--color-text-primary);
+  background: transparent;
   white-space: pre-wrap;
   overflow-x: auto;
 }
