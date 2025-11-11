@@ -1,0 +1,368 @@
+/**
+ * ReasoningBeadline Component Styles
+ *
+ * Visual design:
+ * - Vertical timeline with connecting lines
+ * - Numbered circular beads with confidence color coding
+ * - Smooth entrance animations for streaming effect
+ * - Responsive layout for mobile and desktop
+ * - High contrast for accessibility (WCAG AA compliant)
+ */
+
+/* ===== CONTAINER ===== */
+
+.beadline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  padding: var(--spacing-4) 0;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* ===== EMPTY STATE ===== */
+
+.emptyState {
+  color: var(--color-neutral-500);
+  font-size: var(--font-size-base);
+  text-align: center;
+  padding: var(--spacing-8) var(--spacing-4);
+  font-style: italic;
+}
+
+/* ===== BEAD (REASONING STEP CONTAINER) ===== */
+
+.bead {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: var(--spacing-4);
+  position: relative;
+  padding-bottom: var(--spacing-6);
+
+  /* Entrance animation for streaming effect */
+  animation: beadSlideIn 0.3s ease-out forwards;
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+@keyframes beadSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .bead {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== BEAD HEADER (NUMBER + CONFIDENCE) ===== */
+
+.beadHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.beadNumber {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: white;
+  border: 3px solid;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  cursor: help; /* Indicates tooltip on hover */
+}
+
+.beadNumber:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Confidence levels - color coding */
+.confidenceHigh {
+  background-color: var(--color-success-500);
+  border-color: var(--color-success-700);
+}
+
+.confidenceMedium {
+  background-color: var(--color-warning-500);
+  border-color: var(--color-warning-700);
+}
+
+.confidenceLow {
+  background-color: var(--color-error-500);
+  border-color: var(--color-error-700);
+}
+
+/* ===== TIMELINE CONNECTORS ===== */
+
+.connector,
+.connectorNext {
+  position: absolute;
+  left: 24px; /* Center of bead number (48px / 2) */
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    var(--color-neutral-300),
+    var(--color-neutral-200)
+  );
+  z-index: 1;
+}
+
+.connector {
+  top: -var(--spacing-6);
+  height: calc(var(--spacing-6) + 20px); /* Connect to previous bead */
+}
+
+.connectorNext {
+  top: 40px; /* Below bead number */
+  bottom: 0;
+}
+
+/* ===== BEAD CONTENT ===== */
+
+.beadContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding-top: var(--spacing-1);
+}
+
+.summary {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-neutral-900);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ===== CONFIDENCE BADGE ===== */
+
+.confidenceBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-neutral-600);
+}
+
+.confidenceDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid;
+}
+
+.confidenceText {
+  font-weight: 500;
+}
+
+/* ===== EXPANDABLE DETAILS ===== */
+
+.details {
+  margin-top: var(--spacing-2);
+  border-left: 3px solid var(--color-neutral-200);
+  padding-left: var(--spacing-3);
+  transition: border-color 0.2s ease-out;
+}
+
+.details[open] {
+  border-left-color: var(--color-primary-400);
+}
+
+.detailsSummary {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-primary-600);
+  cursor: pointer;
+  padding: var(--spacing-2) 0;
+  list-style: none; /* Remove default disclosure triangle */
+  user-select: none;
+  transition: color 0.2s ease-out;
+}
+
+/* Custom disclosure triangle */
+.detailsSummary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: var(--spacing-2);
+  transition: transform 0.2s ease-out;
+  color: var(--color-primary-500);
+}
+
+.details[open] .detailsSummary::before {
+  transform: rotate(90deg);
+}
+
+.detailsSummary:hover {
+  color: var(--color-primary-700);
+}
+
+.detailsSummary:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default disclosure triangle in WebKit browsers */
+.detailsSummary::-webkit-details-marker {
+  display: none;
+}
+
+.detailsContent {
+  padding: var(--spacing-3) 0 var(--spacing-2);
+  animation: detailsSlideDown 0.2s ease-out;
+}
+
+@keyframes detailsSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detailsContent p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-neutral-700);
+}
+
+/* ===== ACTION BUTTONS ===== */
+
+.actions {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  .bead {
+    grid-template-columns: 40px 1fr;
+  }
+
+  .beadNumber {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-sm);
+  }
+
+  .connector,
+  .connectorNext {
+    left: 20px; /* Adjust for smaller bead */
+  }
+
+  .connectorNext {
+    top: 36px; /* Adjust for smaller bead */
+  }
+
+  .summary {
+    font-size: var(--font-size-base);
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .beadline {
+    padding: var(--spacing-2) 0;
+  }
+
+  .bead {
+    grid-template-columns: 36px 1fr;
+    gap: var(--spacing-3);
+    padding-bottom: var(--spacing-4);
+  }
+
+  .beadNumber {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-xs);
+  }
+
+  .connector,
+  .connectorNext {
+    left: 18px;
+    width: 2px;
+  }
+
+  .connectorNext {
+    top: 32px;
+  }
+
+  .summary {
+    font-size: var(--font-size-sm);
+  }
+
+  .confidenceBadge {
+    font-size: var(--font-size-xs);
+  }
+
+  .actions button {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .beadNumber {
+    border-width: 4px;
+  }
+
+  .connector,
+  .connectorNext {
+    width: 4px;
+  }
+
+  .details {
+    border-left-width: 4px;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.bead:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 4px;
+  border-radius: var(--radius-md);
+}
+
+/* Print styles */
+@media print {
+  .bead {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    break-inside: avoid;
+  }
+
+  .details[open] {
+    border-left-color: var(--color-neutral-400);
+  }
+
+  .actions {
+    display: none;
+  }
+}
