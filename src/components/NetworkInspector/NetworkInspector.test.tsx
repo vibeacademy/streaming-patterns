@@ -395,6 +395,226 @@ describe('NetworkInspector', () => {
     });
   });
 
+  describe('event filtering', () => {
+    it('should filter events by type when badge is clicked', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+        createMockCapturedEvent(2, 'reasoning', { summary: 'Step 2' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Verify all 3 events are initially shown
+      const eventItems = container.querySelectorAll('[role="button"]');
+      expect(eventItems.length).toBe(3);
+
+      // Click reasoning filter
+      const reasoningButton = screen.getByRole('button', { name: /reasoning \(2\)/ });
+      await user.click(reasoningButton);
+
+      // Should only show 2 reasoning events
+      const filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(2);
+    });
+
+    it('should support multiple type filters with OR logic', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+        createMockCapturedEvent(2, 'memory', { content: 'Memory 1' }),
+        createMockCapturedEvent(3, 'reasoning', { summary: 'Step 2' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Click reasoning filter
+      const reasoningButton = screen.getByRole('button', { name: /reasoning \(2\)/ });
+      await user.click(reasoningButton);
+
+      // Should show 2 reasoning events
+      let filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(2);
+
+      // Click answer filter (add to existing filter)
+      const answerButton = screen.getByRole('button', { name: /answer \(1\)/ });
+      await user.click(answerButton);
+
+      // Should show 3 events (2 reasoning + 1 answer)
+      filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(3);
+    });
+
+    it('should remove filter when clicking active badge', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Click reasoning filter
+      const reasoningButton = screen.getByRole('button', { name: /reasoning \(1\)/ });
+      await user.click(reasoningButton);
+
+      // Should show 1 event
+      let filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+
+      // Click again to remove filter
+      await user.click(reasoningButton);
+
+      // Should show all 2 events again
+      filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(2);
+    });
+
+    it('should show empty state when no events match type filter', async () => {
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+        createMockCapturedEvent(2, 'memory', { content: 'Memory 1' }),
+      ];
+
+      // Render with memory filter active (which would filter out reasoning and answer)
+      render(
+        <NetworkInspector events={events} filter={{ types: ['checkpoint'] }} />
+      );
+
+      // Should show empty state since no checkpoint events exist
+      expect(screen.getByText('No matching events')).toBeInTheDocument();
+      expect(screen.getByText(/Try adjusting your filters/)).toBeInTheDocument();
+    });
+
+    it('should filter events by search query', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Analyzing backlog' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Sprint plan created' }),
+        createMockCapturedEvent(2, 'reasoning', { summary: 'Checking capacity' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Type search query
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.type(searchInput, 'backlog');
+
+      // Should only show 1 event matching "backlog"
+      const filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+    });
+
+    it('should search across event type, data, and timestamps', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Search by event type
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.clear(searchInput);
+      await user.type(searchInput, 'reasoning');
+
+      let filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+
+      // Search by data content
+      await user.clear(searchInput);
+      await user.type(searchInput, 'Answer');
+
+      filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+    });
+
+    it('should perform case-insensitive search', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Analyzing Backlog' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.type(searchInput, 'BACKLOG');
+
+      const filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+    });
+
+    it('should show empty state when search has no matches', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+      ];
+
+      render(<NetworkInspector events={events} />);
+
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.type(searchInput, 'nonexistent');
+
+      expect(screen.getByText('No matching events')).toBeInTheDocument();
+      expect(screen.getByText(/Try adjusting your filters/)).toBeInTheDocument();
+    });
+
+    it('should combine type filter and search filter', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Analyzing backlog' }),
+        createMockCapturedEvent(1, 'reasoning', { summary: 'Checking capacity' }),
+        createMockCapturedEvent(2, 'answer', { text: 'Sprint plan' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Apply type filter for reasoning
+      const reasoningButton = screen.getByRole('button', { name: /reasoning \(2\)/ });
+      await user.click(reasoningButton);
+
+      // Should show 2 reasoning events
+      let filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(2);
+
+      // Add search filter
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.type(searchInput, 'backlog');
+
+      // Should show 1 event (reasoning + contains "backlog")
+      filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+    });
+
+    it('should clear search filter when input is cleared', async () => {
+      const user = userEvent.setup();
+      const events = [
+        createMockCapturedEvent(0, 'reasoning', { summary: 'Step 1' }),
+        createMockCapturedEvent(1, 'answer', { text: 'Answer 1' }),
+      ];
+
+      const { container } = render(<NetworkInspector events={events} />);
+
+      // Apply search filter
+      const searchInput = screen.getByPlaceholderText('Search events...');
+      await user.type(searchInput, 'reasoning');
+
+      let filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(1);
+
+      // Clear search
+      await user.clear(searchInput);
+
+      // Should show all events
+      filteredItems = container.querySelectorAll('[role="button"]');
+      expect(filteredItems.length).toBe(2);
+    });
+  });
+
   describe('integration', () => {
     it('should work end-to-end with multiple events and filters', async () => {
       const user = userEvent.setup();
