@@ -8,7 +8,7 @@
  */
 
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
 import { Home } from './pages/Home';
@@ -67,8 +67,8 @@ function NotFound(): JSX.Element {
         The pattern you're looking for doesn't exist or hasn't been implemented
         yet.
       </p>
-      <a
-        href="/"
+      <Link
+        to="/"
         style={{
           color: '#3b82f6',
           textDecoration: 'none',
@@ -76,7 +76,7 @@ function NotFound(): JSX.Element {
         }}
       >
         ← Back to Home
-      </a>
+      </Link>
     </div>
   );
 }
