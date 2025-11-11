@@ -21,6 +21,7 @@
  * ```
  */
 
+/* eslint-disable no-undef */
 import { useEffect, useState, useCallback } from 'react';
 
 /**
