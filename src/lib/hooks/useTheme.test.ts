@@ -10,40 +10,50 @@ describe('useTheme', () => {
   let localStorageMock: { [key: string]: string };
   let mediaQueryListMock: {
     matches: boolean;
+    media: string;
+    onchange: null;
     addEventListener: ReturnType<typeof vi.fn>;
     removeEventListener: ReturnType<typeof vi.fn>;
     addListener: ReturnType<typeof vi.fn>;
     removeListener: ReturnType<typeof vi.fn>;
+    dispatchEvent: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
     // Mock localStorage
     localStorageMock = {};
-    global.localStorage = {
-      getItem: vi.fn((key: string) => localStorageMock[key] || null),
-      setItem: vi.fn((key: string, value: string) => {
-        localStorageMock[key] = value;
-      }),
-      removeItem: vi.fn((key: string) => {
-        delete localStorageMock[key];
-      }),
-      clear: vi.fn(() => {
-        localStorageMock = {};
-      }),
-      length: 0,
-      key: vi.fn()
-    } as Storage;
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn((key: string) => localStorageMock[key] || null),
+        setItem: vi.fn((key: string, value: string) => {
+          localStorageMock[key] = value;
+        }),
+        removeItem: vi.fn((key: string) => {
+          delete localStorageMock[key];
+        }),
+        clear: vi.fn(() => {
+          localStorageMock = {};
+        }),
+        length: 0,
+        key: vi.fn()
+      } as Storage,
+      writable: true,
+      configurable: true
+    });
 
     // Mock matchMedia
     mediaQueryListMock = {
       matches: false,
+      media: '(prefers-color-scheme: dark)',
+      onchange: null,
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
       addListener: vi.fn(),
-      removeListener: vi.fn()
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn()
     };
 
-    global.window.matchMedia = vi.fn(() => mediaQueryListMock as MediaQueryList);
+    window.matchMedia = vi.fn(() => mediaQueryListMock as MediaQueryList);
 
     // Mock document.documentElement
     Object.defineProperty(document, 'documentElement', {
@@ -351,7 +361,7 @@ describe('useTheme', () => {
         .spyOn(console, 'warn')
         .mockImplementation(() => {});
 
-      vi.spyOn(global.localStorage, 'setItem').mockImplementation(() => {
+      vi.spyOn(window.localStorage, 'setItem').mockImplementation(() => {
         throw new Error('Storage quota exceeded');
       });
 
