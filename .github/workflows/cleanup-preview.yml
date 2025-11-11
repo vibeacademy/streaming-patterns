@@ -1,0 +1,134 @@
+name: Cleanup Preview Environment
+
+on:
+  pull_request:
+    types: [closed]
+
+# Ensures only one cleanup runs per PR
+concurrency:
+  group: preview-cleanup-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup-preview:
+    name: Cleanup Preview (pr-${{ github.event.pull_request.number }})
+    runs-on: ubuntu-latest
+
+    # Set permissions for PR comments
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      # 1. Extract PR number and construct Worker name
+      - name: Set environment variables
+        id: vars
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          WORKER_NAME="streaming-patterns-pr-${PR_NUMBER}"
+
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "worker_name=${WORKER_NAME}" >> $GITHUB_OUTPUT
+          echo "📝 PR Number: ${PR_NUMBER}"
+          echo "🔧 Worker Name: ${WORKER_NAME}"
+
+      # 2. Setup Node.js (required for wrangler)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      # 3. Install wrangler globally
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      # 4. Delete Cloudflare Worker
+      - name: Delete preview Worker
+        id: delete
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          WORKER_NAME="${{ steps.vars.outputs.worker_name }}"
+
+          echo "🗑️ Attempting to delete Worker: ${WORKER_NAME}"
+
+          # Use wrangler delete with --force flag to skip confirmation
+          if wrangler delete "${WORKER_NAME}" --force; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "message=Worker deleted successfully" >> $GITHUB_OUTPUT
+            echo "✅ Worker deleted successfully"
+          else
+            EXIT_CODE=$?
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "message=Worker deletion failed (exit code: ${EXIT_CODE})" >> $GITHUB_OUTPUT
+            echo "⚠️ Worker deletion failed (exit code: ${EXIT_CODE})"
+            echo "💡 This may be expected if the Worker was already deleted or never existed"
+          fi
+
+      # 5. Find existing preview comment
+      - name: Find existing preview comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '## 🚀 Preview Deployment'
+
+      # 6. Update preview comment with cleanup status
+      - name: Update preview comment with cleanup status
+        if: steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: append
+          body: |
+
+            ---
+
+            ## 🗑️ Preview Cleanup
+
+            Preview environment has been cleaned up.
+
+            - **Worker**: `${{ steps.vars.outputs.worker_name }}`
+            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || '⚠️ Already deleted or not found' }}
+            - **Preview URL**: No longer accessible
+
+            🤖 Cleaned up at $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+      # 7. Post new cleanup comment (if no preview comment found)
+      - name: Post cleanup status comment
+        if: steps.find-comment.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🗑️ Preview Cleanup
+
+            Preview environment cleanup attempted.
+
+            - **Worker**: `${{ steps.vars.outputs.worker_name }}`
+            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || '⚠️ Already deleted or not found' }}
+            - **Note**: ${{ steps.delete.outputs.message }}
+
+            ---
+
+            🤖 Cleaned up at $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+      # 8. Post cleanup success notification
+      - name: Post cleanup success notification
+        if: steps.delete.outputs.status == 'success'
+        run: |
+          echo "✅ Preview cleanup successful!"
+          echo "🗑️ Worker deleted: ${{ steps.vars.outputs.worker_name }}"
+          echo "💬 PR comment updated with cleanup status"
+
+      # 9. Post cleanup skipped notification
+      - name: Post cleanup skipped notification
+        if: steps.delete.outputs.status != 'success'
+        run: |
+          echo "⚠️ Preview cleanup completed with warnings"
+          echo "🗑️ Worker: ${{ steps.vars.outputs.worker_name }}"
+          echo "💡 This may be expected if the Worker was already deleted or never existed"
+          echo "💬 PR comment updated with cleanup status"
