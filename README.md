@@ -226,14 +226,11 @@ npm run type-check
 # Linting
 npm run lint
 
-# Run tests
+# Run tests in watch mode (interactive)
 npm test
 
-# Run tests with coverage
-npm test:coverage
-
-# Run tests in watch mode
-npm run test
+# Run tests with coverage report
+npm run test:coverage
 
 # Build for production
 npm run build
