@@ -11,6 +11,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { Home } from './pages/Home';
 import { Patterns } from './pages/Patterns';
 
@@ -83,34 +84,39 @@ function NotFound(): JSX.Element {
 
 /**
  * Main App component with routing
+ *
+ * Wrapped with ErrorBoundary to catch and handle any React errors
+ * that occur during rendering, preventing white screen of death.
  */
 function App(): JSX.Element {
   return (
-    <BrowserRouter>
-      <AppShell>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            {/* Home page */}
-            <Route path="/" element={<Home />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppShell>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              {/* Home page */}
+              <Route path="/" element={<Home />} />
 
-            {/* Patterns directory */}
-            <Route path="/patterns" element={<Patterns />} />
+              {/* Patterns directory */}
+              <Route path="/patterns" element={<Patterns />} />
 
-            {/* Chain-of-Reasoning Pattern Demo */}
-            <Route
-              path="/patterns/chain-of-reasoning"
-              element={<ChainOfReasoningDemo />}
-            />
+              {/* Chain-of-Reasoning Pattern Demo */}
+              <Route
+                path="/patterns/chain-of-reasoning"
+                element={<ChainOfReasoningDemo />}
+              />
 
-            {/* Redirect old routes to new structure */}
-            <Route path="/chain-of-reasoning" element={<Navigate to="/patterns/chain-of-reasoning" replace />} />
+              {/* Redirect old routes to new structure */}
+              <Route path="/chain-of-reasoning" element={<Navigate to="/patterns/chain-of-reasoning" replace />} />
 
-            {/* 404 Not Found */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </AppShell>
-    </BrowserRouter>
+              {/* 404 Not Found */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AppShell>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
