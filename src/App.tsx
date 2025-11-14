@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { PatternErrorBoundary } from './components/ErrorBoundary/PatternErrorBoundary';
 import { Home } from './pages/Home';
 import { Patterns } from './pages/Patterns';
 
@@ -104,7 +105,11 @@ function App(): JSX.Element {
               {/* Chain-of-Reasoning Pattern Demo */}
               <Route
                 path="/patterns/chain-of-reasoning"
-                element={<ChainOfReasoningDemo />}
+                element={
+                  <PatternErrorBoundary patternName="Chain-of-Reasoning">
+                    <ChainOfReasoningDemo />
+                  </PatternErrorBoundary>
+                }
               />
 
               {/* Redirect old routes to new structure */}
