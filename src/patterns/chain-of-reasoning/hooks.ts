@@ -114,13 +114,30 @@ function calculateRetryDelay(
 }
 
 /**
- * Async delay utility function.
+ * Async delay utility function with cancellation support.
  *
  * @param ms - Milliseconds to wait
- * @returns Promise that resolves after the delay
+ * @param signal - Optional abort signal to cancel the delay
+ * @returns Promise that resolves after the delay or rejects if aborted
  */
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function delay(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // If already aborted, reject immediately
+    if (signal?.aborted) {
+      reject(new Error('Delay aborted'));
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      resolve();
+    }, ms);
+
+    // Listen for abort and clear timeout
+    signal?.addEventListener('abort', () => {
+      clearTimeout(timeoutId);
+      reject(new Error('Delay aborted'));
+    });
+  });
 }
 
 /**
@@ -375,7 +392,16 @@ export function useReasoningStream(
             );
 
             // Wait before retrying (with exponential backoff)
-            await delay(delayMs);
+            // Pass abort signal to ensure timeout is cancelled on unmount
+            try {
+              await delay(delayMs, abortController.signal);
+            } catch (delayErr) {
+              // Delay was aborted - exit retry loop
+              if (delayErr instanceof Error && delayErr.message === 'Delay aborted') {
+                return;
+              }
+              throw delayErr;
+            }
 
             // Check again before retrying (component might have unmounted during delay)
             if (abortController.signal.aborted || !isMountedRef.current) {
