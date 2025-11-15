@@ -454,7 +454,7 @@ export function useReasoningStream(
  */
 export function useReasoningStreamWithReset(
   prompt: string,
-  options?: Omit<ReasoningStreamConfig, 'prompt'>
+  options?: Omit<ReasoningStreamConfig, 'prompt'> & { retryConfig?: RetryConfig }
 ): ReasoningStreamState & { reset: () => void } {
   // Use a counter to force re-running the stream
   // Incrementing this will cause useReasoningStream's effect to re-run
