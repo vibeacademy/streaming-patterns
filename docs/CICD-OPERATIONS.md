@@ -20,6 +20,7 @@
 - **Production Deployment**: `.github/workflows/deploy-production.yml`
 - **Preview Deployment**: `.github/workflows/deploy-preview.yml`
 - **Preview Cleanup**: `.github/workflows/cleanup-preview.yml`
+- **Weekly Worker Audit**: `.github/workflows/audit-preview-workers.yml` ⭐ NEW
 - **CI Tests**: `.github/workflows/ci.yml`
 - **Secrets Verification**: `.github/workflows/verify-secrets.yml`
 
@@ -132,9 +133,10 @@ wrangler list
 2. Construct Worker name (`streaming-patterns-pr-{number}`)
 3. Setup Node.js and install wrangler
 4. Delete Cloudflare Worker (`wrangler delete --force`)
-5. Find existing preview comment
-6. Update comment with cleanup status
-7. Post cleanup notification
+5. Intelligently handle deletion result
+6. Find existing preview comment
+7. Update comment with cleanup status
+8. Generate workflow summary
 
 **Expected Duration**: 30-60 seconds
 
@@ -142,11 +144,105 @@ wrangler list
 - Worker deleted successfully (or gracefully handles non-existent Worker)
 - PR comment updated with cleanup status
 - Preview URL no longer accessible
+- Workflow summary shows clear status
 
-**Error Handling**:
-- Continues on error if Worker doesn't exist
-- Logs cleanup status regardless of outcome
-- Never fails the workflow (cleanup is best-effort)
+**Error Handling** ⭐ UPDATED:
+- **Worker not found**: Treated as success (likely already deleted) - workflow succeeds ✅
+- **Worker deleted**: Success - workflow succeeds ✅
+- **Real deletion error**: Workflow FAILS - requires investigation ❌
+- Captures and logs all deletion output for debugging
+- Provides detailed status in PR comment (success/not_found/failed)
+- Generates workflow summary with status
+
+**Status States**:
+- ✅ **success**: Worker deleted successfully
+- 💡 **not_found**: Worker already deleted (expected, not an error)
+- ❌ **failed**: Real error occurred (workflow fails, alerts needed)
+
+---
+
+### 4. Weekly Worker Audit Workflow ⭐ NEW
+
+**File**: `.github/workflows/audit-preview-workers.yml`
+
+**Trigger**:
+- **Scheduled**: Every Monday at 9 AM UTC
+- **Manual**: Via `workflow_dispatch` (can be triggered anytime)
+
+**Purpose**:
+Automatically detects and cleans up orphaned preview Workers that failed to delete during PR closure. This prevents accumulation of stale Workers and ensures Cloudflare account stays clean.
+
+**Steps**:
+1. Setup Node.js and install wrangler
+2. Authenticate with Cloudflare using API token
+3. List all Workers in Cloudflare account (via API)
+4. Identify preview Workers (`streaming-patterns-pr-*` pattern)
+5. For each preview Worker, check if corresponding PR is open
+6. Mark Workers with closed PRs as "orphaned"
+7. Delete all orphaned Workers automatically
+8. Create GitHub issue if orphans found (for audit trail)
+9. Generate detailed workflow summary
+
+**Expected Duration**: 1-3 minutes (depends on number of Workers)
+
+**Success Criteria**:
+- All Workers successfully listed
+- PR status checked for each preview Worker
+- Orphaned Workers deleted successfully
+- GitHub issue created if orphans found
+- Workflow summary shows audit results
+
+**Output**:
+- **Workflow Summary**: Shows active vs. orphaned Workers count
+- **GitHub Issue**: Created with detailed audit results (if orphans found)
+  - Lists all deleted Workers
+  - Lists any failed deletions
+  - Provides action items
+- **Logs**: Full deletion logs for debugging
+
+**Safety Features**:
+- ✅ **Production Protection**: Skips `streaming-patterns-production` Worker
+- ✅ **Deletion Safety**: Deletes from `/tmp` directory to prevent accidental production deletion
+- ✅ **Audit Trail**: Creates GitHub issue for every audit that finds orphans
+- ✅ **Failure Handling**: Workflow fails if any deletion fails (alerts needed)
+- ✅ **Verification**: Checks PR status via GitHub API before deletion
+
+**Manual Triggering**:
+```bash
+# Trigger audit workflow manually
+gh workflow run audit-preview-workers.yml
+
+# View audit workflow runs
+gh run list --workflow=audit-preview-workers.yml --limit 10
+
+# View specific audit run
+gh run view RUN_ID --log
+```
+
+**When to Trigger Manually**:
+- After discovering orphaned Workers
+- After fixing cleanup workflow issues
+- Before major Cloudflare account changes
+- During incident investigation
+- To verify cleanup is working correctly
+
+**Expected Findings**:
+- **Normal state**: 0 orphaned Workers (all clean)
+- **After silent failures**: Multiple orphaned Workers (creates issue)
+- **After manual cleanup**: 0 orphaned Workers (verification)
+
+**GitHub Issue Labels**:
+- `operations` - Operational task
+- `automation` - Automated workflow output
+- `P2` - Medium priority (should be reviewed but not urgent)
+
+**Incident Response**:
+If audit finds orphaned Workers:
+1. ✅ **Automatic**: Workers are deleted automatically
+2. 📋 **Issue Created**: Review GitHub issue for audit details
+3. 🔍 **Investigate**: Check why cleanup workflow failed for those PRs
+4. 🔧 **Fix**: Address any workflow configuration issues
+5. ✅ **Verify**: Confirm next week's audit finds no orphans
 
 ---
 
@@ -570,32 +666,67 @@ After completing all test scenarios, verify:
 
 ---
 
-#### Issue 3: Cleanup Workflow Fails
+#### Issue 3: Cleanup Workflow Fails ⭐ UPDATED
 
-**Symptom**: Cleanup workflow fails with error "Worker not found"
+**Symptom 1**: Cleanup workflow succeeds with "Worker not found" message
 
-**Cause**: Worker may have been manually deleted or never existed
+**Cause**: Worker was already deleted or never existed
 
 **Solution**:
-This is expected behavior! The workflow uses `continue-on-error: true` for the delete step.
+✅ This is **expected behavior** and **not an error**!
+- Workflow treats "not found" as success
+- PR comment shows: 💡 Not found (already deleted)
+- Workflow succeeds
 
 **Verification**:
-1. Check workflow logs - should show "Worker deletion failed" but workflow succeeds
-2. Check PR comment - should indicate cleanup status
+1. Check workflow logs - shows `status=not_found`
+2. Check PR comment - shows "💡 Not found (already deleted)"
 3. Verify Worker is indeed gone from Cloudflare dashboard
 
-**If cleanup truly failed**:
-1. Manually delete Worker:
+---
+
+**Symptom 2**: Cleanup workflow FAILS with real deletion error ⭐ NEW
+
+**Cause**: Actual Cloudflare API error (not "not found")
+
+**Solution**:
+⚠️ This indicates a **real problem** that needs investigation:
+
+1. **Check workflow logs** for error details:
    ```bash
+   gh run view RUN_ID --log | grep -A 10 "Delete preview Worker"
+   ```
+
+2. **Verify Cloudflare credentials** are valid:
+   ```bash
+   # Check token expiry
+   curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+        -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+   ```
+
+3. **Check for rate limiting** or API issues
+
+4. **Manually delete Worker** if needed:
+   ```bash
+   # Safer: delete from /tmp to avoid accidents
+   cd /tmp
    wrangler delete streaming-patterns-pr-{NUMBER} --force
    ```
 
-2. Create cleanup script (docs/scripts/cleanup-orphaned-workers.sh):
+5. **Trigger weekly audit** to clean up orphaned Workers:
    ```bash
-   #!/bin/bash
-   # List all preview Workers
-   wrangler list | grep "streaming-patterns-pr-"
+   gh workflow run audit-preview-workers.yml
    ```
+
+**When to be concerned**:
+- ❌ Multiple cleanup failures in a row
+- ❌ Workflow fails with non-"not found" error
+- ❌ Worker still exists after "successful" deletion
+
+**When NOT to be concerned**:
+- ✅ Workflow succeeds with "not found" status
+- ✅ PR comment shows "💡 Not found (already deleted)"
+- ✅ Worker is indeed gone from Cloudflare
 
 ---
 
@@ -679,6 +810,70 @@ This is expected behavior! The workflow uses `continue-on-error: true` for the d
 
 ---
 
+#### Issue 7: Orphaned Preview Workers Detected ⭐ NEW
+
+**Symptom**: Weekly audit workflow creates GitHub issue reporting orphaned Workers
+
+**Cause**: Cleanup workflow silently failed for some PRs (before fix was implemented)
+
+**Solution**:
+✅ **Automatic cleanup already completed** by the audit workflow!
+
+1. **Review the GitHub issue** created by audit:
+   - Check which Workers were deleted
+   - Note any failed deletions
+   - Review recommended action items
+
+2. **Verify cleanup** in Cloudflare dashboard:
+   ```bash
+   # List all Workers
+   curl -X GET "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts" \
+        -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" | jq -r '.result[].id'
+   ```
+
+3. **Investigate root cause** (if multiple orphans found):
+   - Check cleanup workflow runs for those PRs:
+     ```bash
+     gh run list --workflow=cleanup-preview.yml --limit 20
+     ```
+   - Look for patterns (same time period, same error, etc.)
+   - Verify cleanup workflow configuration is correct
+
+4. **If audit failed to delete some Workers**:
+   - Manual cleanup required:
+     ```bash
+     cd /tmp  # Safety: avoid deleting production worker
+     wrangler delete streaming-patterns-pr-{NUMBER} --force
+     ```
+   - Investigate why automated deletion failed
+   - Check Cloudflare API status
+
+5. **Verify next week's audit**:
+   - Check Monday's audit results
+   - Should find 0 orphaned Workers (if cleanup is working)
+   - If orphans keep appearing, cleanup workflow needs investigation
+
+**When to escalate**:
+- ❌ Weekly audits consistently find orphaned Workers
+- ❌ Automated deletion fails repeatedly
+- ❌ Manual deletion also fails
+- ❌ Pattern of specific PRs failing cleanup
+
+**Expected outcome**:
+- ✅ Audit deletes orphaned Workers automatically
+- ✅ GitHub issue provides audit trail
+- ✅ Future audits find no orphans (cleanup is fixed)
+
+**Manual audit trigger** (if needed immediately):
+```bash
+gh workflow run audit-preview-workers.yml
+
+# Check audit results
+gh run list --workflow=audit-preview-workers.yml --limit 1
+```
+
+---
+
 ## Operational Runbook
 
 ### Daily Operations
@@ -689,11 +884,26 @@ This is expected behavior! The workflow uses `continue-on-error: true` for the d
 - [ ] Check production site accessibility
 - [ ] Review any error notifications
 
-**Weekly Checklist**:
+**Weekly Checklist** ⭐ UPDATED:
 - [ ] Review workflow performance (duration trends)
-- [ ] Check for orphaned preview Workers (cleanup failures)
+- [ ] **NEW**: Review Monday's audit workflow results (runs every Monday at 9 AM UTC)
+  - Check for GitHub issues labeled `operations` + `automation`
+  - Verify 0 orphaned Workers found (ideal state)
+  - If orphans found, review audit issue and verify auto-cleanup succeeded
+- [ ] Verify cleanup workflow success rate (should be >95%)
+  ```bash
+  gh run list --workflow=cleanup-preview.yml --limit 20 --json conclusion
+  ```
 - [ ] Review GitHub Actions usage (ensure within free tier)
-- [ ] Update Cloudflare API token if expiring soon
+- [ ] Update Cloudflare API token if expiring soon (check expiry date)
+- [ ] Spot-check Cloudflare Workers count matches active PRs
+  ```bash
+  # Count preview Workers
+  wrangler list 2>/dev/null | grep -c "streaming-patterns-pr-" || echo "0"
+
+  # Count open PRs
+  gh pr list --limit 100 --json number --jq 'length'
+  ```
 
 ---
 

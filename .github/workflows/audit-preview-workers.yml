@@ -1,0 +1,284 @@
+name: Audit Preview Workers
+
+on:
+  # Run weekly on Mondays at 9 AM UTC
+  schedule:
+    - cron: '0 9 * * 1'
+
+  # Allow manual triggering
+  workflow_dispatch:
+
+# Prevent concurrent audit runs
+concurrency:
+  group: audit-preview-workers
+  cancel-in-progress: false
+
+jobs:
+  audit-workers:
+    name: Audit Orphaned Preview Workers
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      # 1. Checkout repository (needed for scripts)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js (required for wrangler)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      # 3. Install dependencies
+      - name: Install wrangler and GitHub CLI
+        run: |
+          npm install -g wrangler
+          # GitHub CLI should already be available in ubuntu-latest
+
+      # 4. Authenticate with Cloudflare
+      - name: Authenticate with Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "✅ Cloudflare credentials configured"
+          echo "📋 Account ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+
+      # 5. List all Workers and identify preview Workers
+      - name: List all Cloudflare Workers
+        id: list-workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "📋 Fetching list of all Workers..."
+
+          # Use Cloudflare API to list Workers
+          WORKERS=$(curl -s -X GET \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/workers/scripts" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" | jq -r '.result[].id')
+
+          echo "workers<<EOF" >> $GITHUB_OUTPUT
+          echo "${WORKERS}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "📊 Found Workers:"
+          echo "${WORKERS}"
+
+      # 6. Identify orphaned preview Workers
+      - name: Identify orphaned preview Workers
+        id: find-orphans
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "🔍 Checking for orphaned preview Workers..."
+
+          WORKERS="${{ steps.list-workers.outputs.workers }}"
+          ORPHANED=""
+          ORPHANED_COUNT=0
+          ACTIVE_PREVIEWS=""
+          ACTIVE_COUNT=0
+
+          # Process each Worker
+          while IFS= read -r worker; do
+            # Skip empty lines
+            [ -z "$worker" ] && continue
+
+            # Check if it's a preview Worker (matches pattern: streaming-patterns-pr-*)
+            if [[ "$worker" =~ ^streaming-patterns-pr-([0-9]+)$ ]]; then
+              PR_NUMBER="${BASH_REMATCH[1]}"
+              echo "📝 Checking preview Worker: $worker (PR #$PR_NUMBER)"
+
+              # Check if PR is still open
+              PR_STATE=$(gh pr view "$PR_NUMBER" --json state --jq '.state' 2>/dev/null || echo "NOT_FOUND")
+
+              if [ "$PR_STATE" = "OPEN" ]; then
+                echo "  ✅ PR #$PR_NUMBER is still open - Worker is valid"
+                ACTIVE_PREVIEWS="${ACTIVE_PREVIEWS}${worker}\n"
+                ACTIVE_COUNT=$((ACTIVE_COUNT + 1))
+              else
+                echo "  ⚠️ PR #$PR_NUMBER is $PR_STATE - Worker is orphaned"
+                ORPHANED="${ORPHANED}${worker}:${PR_NUMBER}\n"
+                ORPHANED_COUNT=$((ORPHANED_COUNT + 1))
+              fi
+            elif [[ "$worker" = "streaming-patterns-production" ]]; then
+              echo "✅ Production Worker found - skipping"
+            else
+              echo "❓ Unknown Worker: $worker - skipping"
+            fi
+          done <<< "$WORKERS"
+
+          # Save results
+          echo "orphaned<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$ORPHANED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "orphaned_count=$ORPHANED_COUNT" >> $GITHUB_OUTPUT
+          echo "active_count=$ACTIVE_COUNT" >> $GITHUB_OUTPUT
+
+          echo ""
+          echo "📊 Audit Results:"
+          echo "  - Active preview Workers: $ACTIVE_COUNT"
+          echo "  - Orphaned preview Workers: $ORPHANED_COUNT"
+
+          if [ $ORPHANED_COUNT -gt 0 ]; then
+            echo ""
+            echo "⚠️ Orphaned Workers found:"
+            echo -e "$ORPHANED" | grep -v '^$'
+          fi
+
+      # 7. Delete orphaned Workers
+      - name: Delete orphaned Workers
+        id: cleanup
+        if: steps.find-orphans.outputs.orphaned_count > 0
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "🗑️ Deleting orphaned Workers..."
+
+          ORPHANED="${{ steps.find-orphans.outputs.orphaned }}"
+          DELETED=""
+          DELETED_COUNT=0
+          FAILED=""
+          FAILED_COUNT=0
+
+          # Process each orphaned Worker
+          while IFS=: read -r worker pr_number; do
+            # Skip empty lines
+            [ -z "$worker" ] && continue
+
+            echo "🗑️ Deleting Worker: $worker (PR #$pr_number)"
+
+            # Use temporary directory to avoid deleting production worker
+            cd /tmp
+
+            if wrangler delete "$worker" --force 2>&1; then
+              echo "  ✅ Deleted successfully"
+              DELETED="${DELETED}${worker} (PR #${pr_number})\n"
+              DELETED_COUNT=$((DELETED_COUNT + 1))
+            else
+              echo "  ❌ Deletion failed"
+              FAILED="${FAILED}${worker} (PR #${pr_number})\n"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          done <<< "$ORPHANED"
+
+          # Save results
+          echo "deleted<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$DELETED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "deleted_count=$DELETED_COUNT" >> $GITHUB_OUTPUT
+
+          echo "failed<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$FAILED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "failed_count=$FAILED_COUNT" >> $GITHUB_OUTPUT
+
+          echo ""
+          echo "🗑️ Cleanup Results:"
+          echo "  - Successfully deleted: $DELETED_COUNT"
+          echo "  - Failed to delete: $FAILED_COUNT"
+
+          # Fail workflow if any deletions failed
+          if [ $FAILED_COUNT -gt 0 ]; then
+            echo "::error::Failed to delete $FAILED_COUNT Workers"
+            exit 1
+          fi
+
+      # 8. Create GitHub issue if orphans found
+      - name: Create issue for orphaned Workers
+        if: steps.find-orphans.outputs.orphaned_count > 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ORPHANED_COUNT="${{ steps.find-orphans.outputs.orphaned_count }}"
+          DELETED_COUNT="${{ steps.cleanup.outputs.deleted_count }}"
+          FAILED_COUNT="${{ steps.cleanup.outputs.failed_count }}"
+          DELETED="${{ steps.cleanup.outputs.deleted }}"
+          FAILED="${{ steps.cleanup.outputs.failed }}"
+
+          # Create issue body
+          ISSUE_BODY="## 🔍 Weekly Preview Worker Audit Results
+
+**Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+### Summary
+
+- **Orphaned Workers Found**: $ORPHANED_COUNT
+- **Successfully Deleted**: $DELETED_COUNT
+- **Failed to Delete**: $FAILED_COUNT
+
+### Deleted Workers
+
+\`\`\`
+$(echo -e "$DELETED" | grep -v '^$')
+\`\`\`
+"
+
+          if [ $FAILED_COUNT -gt 0 ]; then
+            ISSUE_BODY="$ISSUE_BODY
+
+### ⚠️ Failed Deletions (Requires Investigation)
+
+\`\`\`
+$(echo -e "$FAILED" | grep -v '^$')
+\`\`\`
+
+**Action Required**: Investigate why these Workers could not be deleted.
+"
+          fi
+
+          ISSUE_BODY="$ISSUE_BODY
+
+### Next Steps
+
+- [x] Orphaned Workers identified
+- [x] Automated cleanup attempted
+$(if [ $FAILED_COUNT -gt 0 ]; then echo "- [ ] Manual cleanup required for failed deletions"; fi)
+- [ ] Investigate why cleanup workflow failed for these PRs
+- [ ] Verify cleanup workflow is working correctly
+
+---
+
+🤖 Generated by [Weekly Preview Worker Audit](https://github.com/${{ github.repository }}/actions/workflows/audit-preview-workers.yml)
+"
+
+          # Create issue with automation label
+          gh issue create \
+            --title "🔍 Weekly Audit: $ORPHANED_COUNT Orphaned Preview Workers Found" \
+            --body "$ISSUE_BODY" \
+            --label "operations,automation,P2"
+
+          echo "✅ Issue created for audit results"
+
+      # 9. Workflow summary
+      - name: Generate workflow summary
+        if: always()
+        run: |
+          echo "## 🔍 Preview Worker Audit Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Active Preview Workers**: ${{ steps.find-orphans.outputs.active_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Orphaned Workers Found**: ${{ steps.find-orphans.outputs.orphaned_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Successfully Deleted**: ${{ steps.cleanup.outputs.deleted_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Failed to Delete**: ${{ steps.cleanup.outputs.failed_count }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.find-orphans.outputs.orphaned_count }}" -eq 0 ]; then
+            echo "✅ **Status**: No orphaned Workers found - all clean!" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.cleanup.outputs.failed_count }}" -eq 0 ]; then
+            echo "✅ **Status**: All orphaned Workers successfully cleaned up" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Status**: Some Workers failed to delete - manual intervention required" >> $GITHUB_STEP_SUMMARY
+          fi

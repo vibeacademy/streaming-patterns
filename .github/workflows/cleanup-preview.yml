@@ -45,7 +45,6 @@ jobs:
       # 4. Delete Cloudflare Worker
       - name: Delete preview Worker
         id: delete
-        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -55,16 +54,31 @@ jobs:
           echo "🗑️ Attempting to delete Worker: ${WORKER_NAME}"
 
           # Use wrangler delete with --force flag to skip confirmation
-          if wrangler delete "${WORKER_NAME}" --force; then
+          # Capture output and exit code
+          if OUTPUT=$(wrangler delete "${WORKER_NAME}" --force 2>&1); then
             echo "status=success" >> $GITHUB_OUTPUT
             echo "message=Worker deleted successfully" >> $GITHUB_OUTPUT
             echo "✅ Worker deleted successfully"
+            echo "${OUTPUT}"
           else
             EXIT_CODE=$?
-            echo "status=failed" >> $GITHUB_OUTPUT
-            echo "message=Worker deletion failed (exit code: ${EXIT_CODE})" >> $GITHUB_OUTPUT
-            echo "⚠️ Worker deletion failed (exit code: ${EXIT_CODE})"
-            echo "💡 This may be expected if the Worker was already deleted or never existed"
+            echo "${OUTPUT}"
+
+            # Check if error is because Worker doesn't exist (expected case)
+            if echo "${OUTPUT}" | grep -qi "not found\|does not exist\|couldn't find"; then
+              echo "status=not_found" >> $GITHUB_OUTPUT
+              echo "message=Worker not found (likely already deleted)" >> $GITHUB_OUTPUT
+              echo "💡 Worker not found - likely already deleted or never existed"
+              echo "✅ This is expected and not an error"
+            else
+              # Actual failure - fail the workflow
+              echo "status=failed" >> $GITHUB_OUTPUT
+              echo "message=Worker deletion failed (exit code: ${EXIT_CODE})" >> $GITHUB_OUTPUT
+              echo "::error::❌ Worker deletion failed with exit code ${EXIT_CODE}"
+              echo "::error::Worker: ${WORKER_NAME}"
+              echo "::error::This indicates a real failure that needs investigation"
+              exit ${EXIT_CODE}
+            fi
           fi
 
       # 5. Find existing preview comment
@@ -92,8 +106,9 @@ jobs:
             Preview environment has been cleaned up.
 
             - **Worker**: `${{ steps.vars.outputs.worker_name }}`
-            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || '⚠️ Already deleted or not found' }}
+            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || (steps.delete.outputs.status == 'not_found' && '💡 Not found (already deleted)' || '❌ Failed') }}
             - **Preview URL**: No longer accessible
+            - **Details**: ${{ steps.delete.outputs.message }}
 
             🤖 Cleaned up at $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 
@@ -109,8 +124,8 @@ jobs:
             Preview environment cleanup attempted.
 
             - **Worker**: `${{ steps.vars.outputs.worker_name }}`
-            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || '⚠️ Already deleted or not found' }}
-            - **Note**: ${{ steps.delete.outputs.message }}
+            - **Status**: ${{ steps.delete.outputs.status == 'success' && '✅ Deleted' || (steps.delete.outputs.status == 'not_found' && '💡 Not found (already deleted)' || '❌ Failed') }}
+            - **Details**: ${{ steps.delete.outputs.message }}
 
             ---
 
@@ -124,11 +139,31 @@ jobs:
           echo "🗑️ Worker deleted: ${{ steps.vars.outputs.worker_name }}"
           echo "💬 PR comment updated with cleanup status"
 
-      # 9. Post cleanup skipped notification
-      - name: Post cleanup skipped notification
-        if: steps.delete.outputs.status != 'success'
+      # 9. Post cleanup not-found notification
+      - name: Post cleanup not-found notification
+        if: steps.delete.outputs.status == 'not_found'
         run: |
-          echo "⚠️ Preview cleanup completed with warnings"
+          echo "💡 Preview Worker not found"
           echo "🗑️ Worker: ${{ steps.vars.outputs.worker_name }}"
-          echo "💡 This may be expected if the Worker was already deleted or never existed"
+          echo "✅ This is expected if the Worker was already deleted or never existed"
           echo "💬 PR comment updated with cleanup status"
+
+      # 10. Workflow summary
+      - name: Workflow summary
+        if: always()
+        run: |
+          echo "## 🗑️ Preview Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Worker**: \`${{ steps.vars.outputs.worker_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ steps.delete.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Message**: ${{ steps.delete.outputs.message }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.delete.outputs.status }}" = "success" ]; then
+            echo "✅ **Result**: Worker successfully deleted" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.delete.outputs.status }}" = "not_found" ]; then
+            echo "💡 **Result**: Worker not found (expected)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Result**: Cleanup failed - requires investigation" >> $GITHUB_STEP_SUMMARY
+          fi
