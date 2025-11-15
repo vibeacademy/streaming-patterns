@@ -14,6 +14,15 @@ export default defineConfig({
     // Enable globals like describe, it, expect without imports
     globals: true,
 
+    // Use forks pool with single worker to prevent memory accumulation
+    // This prevents OOM errors when running large test suites
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
+
     // Coverage configuration
     coverage: {
       provider: 'v8',
