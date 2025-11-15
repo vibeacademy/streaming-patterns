@@ -192,34 +192,115 @@ After completing your review:
 **Assessment:** ✅ GO - Ready for human merge | ⚠️ NO-GO - Changes required
 
 ### What I Verified
-- [x] All tests pass (250/250)
-- [x] TypeScript strict mode compliance
-- [x] Test coverage: 97.09% (exceeds 80% requirement)
-- [x] Build successful
-- [x] No ESLint errors
+
+#### Technical Requirements
+- [x] All tests pass (545 passing, 1 skipped)
+- [x] TypeScript strict mode compliance - no errors
+- [x] Test coverage: 93% overall (exceeds 80% requirement)
+  - [Component/Module]: XX% coverage
+  - [Component/Module]: XX% coverage
+- [x] Build successful (607ms, optimized bundles)
+- [x] No ESLint errors or warnings
 - [x] Code follows CLAUDE.md standards
 
-### Code Quality Assessment
-[Brief summary of code quality, architecture, and implementation approach]
+#### Code Quality Assessment
 
-### Pattern Implementation (if applicable)
-[How well the pattern matches the specification]
+**[File/Component Name] ([filename.tsx]):**
+- ✅ [Specific quality check passed]
+- ✅ [Another quality aspect verified]
+- ✅ [Implementation detail confirmed]
+- ✅ [Architecture pattern followed]
 
-### Issues Found (if NO-GO)
-1. [Specific issue with file path and line number]
-2. [Another required fix]
+**[Another File/Component] ([filename.tsx]):**
+- ✅ [Quality check for this file]
+- ✅ [Implementation approach validated]
+- ✅ [Design pattern confirmed]
+
+[For each major file changed, provide detailed quality assessment]
+
+#### Pattern Implementation
+This PR implements **[Epic/Issue description]**:
+- ✅ [Acceptance criteria 1 met]
+- ✅ [Acceptance criteria 2 met]
+- ✅ [Acceptance criteria 3 met]
+- ✅ [All requirements fulfilled]
+
+All acceptance criteria from [Epic/Issue reference] are met.
+
+#### Testing
+- ✅ XX tests for [component/module] (comprehensive coverage)
+- ✅ Tests cover: [list test scenarios]
+- ✅ Tests verify [specific functionality]
+- ✅ [Edge cases/error conditions tested]
+- ✅ All test suites pass without failures
+
+#### Security Assessment
+- ✅ No XSS vulnerabilities (data handled safely)
+- ✅ No hardcoded secrets or API keys
+- ✅ [Security-specific checks passed]
+- ✅ [Data validation verified]
+- ✅ No unsafe operations
+
+#### Documentation
+- ✅ Comprehensive JSDoc comments throughout
+- ✅ PR description is complete with context, changes, and next steps
+- ✅ [Documentation files added/updated]
+- ✅ Code examples are accurate
+- ✅ [Acceptance criteria mapped to requirements]
+
+### CI/CD Status
+- ✅ Continuous Integration workflow: SUCCESS
+- ✅ Deploy Preview workflow: SUCCESS
+- ✅ Preview environment deployed: [URL if applicable]
+
+### Code Organization
+- ✅ Follows project structure from CLAUDE.md
+- ✅ Components in appropriate directories
+- ✅ Tests co-located with components
+- ✅ [Styling approach used correctly]
+- ✅ Proper exports via index.ts
 
 ### Suggestions (non-blocking)
-- [Optional improvement]
+- [Optional improvement suggestion]
 - [Nice-to-have enhancement]
 
+OR:
+
+None - this implementation is production-ready and follows all best practices.
+
 ### Strengths
-- [Call out great practices]
-- [Reinforce good patterns]
+- **[Strength category]**: [Specific praise with details]
+- **[Another strength]**: [What was done exceptionally well]
+- **[Quality highlight]**: [Reinforce excellent practices]
+
+### Files Changed Analysis
+1. **[filepath]** (XXX lines added/changed)
+   - [What changed and why]
+   - [Impact of changes]
+
+2. **[another filepath]** (XXX lines added/changed)
+   - [Description of changes]
+   - [Key improvements]
+
+[List all significant files changed]
 
 ### Recommendation for Human Reviewer
-✅ **GO** - All quality standards met. Safe to merge.
-⚠️ **NO-GO** - Requires changes listed above before merge.
+✅ **GO** - All quality standards met. This PR:
+- [Key achievement 1]
+- [Key achievement 2]
+- [Quality metric met]
+- [No issues found]
+- [Ready for deployment]
+
+[Concise summary of why it's ready to merge]
+
+OR:
+
+⚠️ **NO-GO** - Changes required before merge:
+1. [Specific blocking issue with file:line]
+2. [Another required change]
+
+[Clear explanation of what needs to be fixed]
 
 ---
 *Agent review completed. Human: please review my assessment and make the final merge decision.*
