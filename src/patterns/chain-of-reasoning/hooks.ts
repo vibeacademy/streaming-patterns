@@ -120,6 +120,7 @@ function calculateRetryDelay(
  * @param signal - Optional abort signal to cancel the delay
  * @returns Promise that resolves after the delay or rejects if aborted
  */
+// eslint-disable-next-line no-undef
 function delay(ms: number, signal?: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
     // If already aborted, reject immediately
@@ -385,7 +386,7 @@ export function useReasoningStream(
             setRetryDelayMs(delayMs);
 
             // Log retry attempt for debugging
-            console.log(
+            console.warn(
               `Stream failed (attempt ${currentRetry}/${retryConfig.maxRetries}). ` +
               `Retrying in ${delayMs}ms...`,
               err
