@@ -14,15 +14,6 @@ export default defineConfig({
     // Enable globals like describe, it, expect without imports
     globals: true,
 
-    // Use threads pool with limited concurrency to prevent memory issues
-    // Forks consume more memory per worker than threads
-    poolOptions: {
-      threads: {
-        maxThreads: 1,
-        minThreads: 1,
-      },
-    },
-
     // Coverage configuration
     coverage: {
       provider: 'v8',
