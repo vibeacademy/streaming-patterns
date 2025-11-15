@@ -153,6 +153,35 @@ export interface AnswerStreamEvent {
 export type StreamEvent = ReasoningStreamEvent | AnswerStreamEvent;
 
 /**
+ * Types of errors that can occur during streaming.
+ *
+ * Used to provide specific error handling and user feedback
+ * for different failure modes.
+ */
+export type StreamErrorType = 'timeout' | 'network' | 'stream' | 'unknown';
+
+/**
+ * Error class for stream-related failures.
+ *
+ * Extends Error with a type field to enable different handling
+ * strategies for different error types.
+ *
+ * @example
+ * ```typescript
+ * throw new StreamError('Stream timeout after 10000ms', 'timeout');
+ * ```
+ */
+export class StreamError extends Error {
+  constructor(
+    message: string,
+    public readonly type: StreamErrorType
+  ) {
+    super(message);
+    this.name = 'StreamError';
+  }
+}
+
+/**
  * Configuration options for streaming reasoning events.
  *
  * Used to control the behavior of the reasoning stream generator
@@ -179,6 +208,75 @@ export interface ReasoningStreamConfig {
    * Useful for network capture, logging, and debugging.
    */
   onEvent?: (event: StreamEvent) => void;
+
+  /**
+   * Maximum time (in milliseconds) to wait for the stream to complete.
+   * If the stream takes longer, a timeout error will be thrown.
+   * @default 10000 (10 seconds)
+   */
+  timeoutMs?: number;
+
+  /**
+   * Error simulation mode for testing error handling.
+   * - 'none': No errors (default)
+   * - 'timeout': Simulate a timeout error
+   * - 'network': Simulate a network failure
+   * - 'mid-stream': Simulate an error halfway through the stream
+   * @default 'none'
+   */
+  simulateError?: 'none' | 'timeout' | 'network' | 'mid-stream';
+}
+
+/**
+ * Retry configuration for handling transient failures.
+ *
+ * Controls how the stream hook retries failed stream attempts.
+ */
+export interface RetryConfig {
+  /**
+   * Maximum number of retry attempts.
+   * @default 3
+   */
+  maxRetries?: number;
+
+  /**
+   * Initial delay between retries in milliseconds.
+   * Subsequent delays use exponential backoff.
+   * @default 1000 (1 second)
+   */
+  initialDelayMs?: number;
+
+  /**
+   * Maximum delay between retries in milliseconds.
+   * Prevents exponential backoff from growing too large.
+   * @default 10000 (10 seconds)
+   */
+  maxDelayMs?: number;
+
+  /**
+   * Multiplier for exponential backoff.
+   * Each retry delay = previous delay * backoffMultiplier
+   * @default 2
+   */
+  backoffMultiplier?: number;
+
+  /**
+   * Whether to retry on timeout errors.
+   * @default true
+   */
+  retryOnTimeout?: boolean;
+
+  /**
+   * Whether to retry on network errors.
+   * @default true
+   */
+  retryOnNetwork?: boolean;
+
+  /**
+   * Whether to retry on stream errors.
+   * @default false (stream errors usually indicate data issues, not transient failures)
+   */
+  retryOnStream?: boolean;
 }
 
 /**
@@ -209,4 +307,22 @@ export interface ReasoningStreamState {
    * Undefined if no error has occurred.
    */
   error?: Error;
+
+  /**
+   * Number of retry attempts made for the current stream.
+   * 0 if no retries have been attempted.
+   */
+  retryCount?: number;
+
+  /**
+   * True if the stream is currently in a retry delay period.
+   * Useful for showing "Retrying in X seconds..." messages.
+   */
+  isRetrying?: boolean;
+
+  /**
+   * Time in milliseconds until next retry attempt.
+   * Undefined if not currently retrying.
+   */
+  retryDelayMs?: number;
 }

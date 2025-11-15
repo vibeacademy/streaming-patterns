@@ -416,6 +416,160 @@ describe('ChainOfReasoningDemo', () => {
         expect(screen.getByText(/Streaming.../i)).toBeInTheDocument();
       });
     });
+
+    it('should render error simulation controls', () => {
+      render(<ChainOfReasoningDemo />);
+
+      expect(screen.getByText('Error Simulation')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /None/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Timeout/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Network/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Mid-Stream/i })).toBeInTheDocument();
+    });
+
+    it('should display user-friendly timeout error message', async () => {
+      const user = userEvent.setup();
+      render(<ChainOfReasoningDemo />);
+
+      // Wait for initial stream to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i);
+          expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 10000 }
+      );
+
+      // Select timeout error simulation
+      const timeoutButton = screen.getByRole('button', { name: /Timeout/i });
+      await user.click(timeoutButton);
+
+      // Wait for error to be displayed with user-friendly message
+      await waitFor(
+        () => {
+          expect(screen.getByText(/took too long to complete/i)).toBeInTheDocument();
+        },
+        { timeout: 10000 }
+      );
+    }, 25000);
+
+    it('should display user-friendly network error message', async () => {
+      const user = userEvent.setup();
+      render(<ChainOfReasoningDemo />);
+
+      // Wait for initial stream to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i);
+          expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 10000 }
+      );
+
+      // Select network error simulation
+      const networkButton = screen.getByRole('button', { name: /Network/i });
+      await user.click(networkButton);
+
+      // Wait for error to be displayed with user-friendly message
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Unable to connect to the server/i)).toBeInTheDocument();
+        },
+        { timeout: 10000 }
+      );
+    }, 25000);
+
+    it('should display user-friendly mid-stream error message', async () => {
+      const user = userEvent.setup();
+      render(<ChainOfReasoningDemo />);
+
+      // Wait for initial stream to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i);
+          expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 10000 }
+      );
+
+      // Select mid-stream error simulation
+      const midStreamButton = screen.getByRole('button', { name: /Mid-Stream/i });
+      await user.click(midStreamButton);
+
+      // Wait for error to be displayed with user-friendly message
+      await waitFor(
+        () => {
+          expect(screen.getByText(/data stream was interrupted/i)).toBeInTheDocument();
+        },
+        { timeout: 10000 }
+      );
+    }, 25000);
+
+    it('should show retry status during automatic retries', async () => {
+      const user = userEvent.setup();
+      render(<ChainOfReasoningDemo />);
+
+      // Wait for initial stream to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i);
+          expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 10000 }
+      );
+
+      // Select timeout error to trigger retries
+      const timeoutButton = screen.getByRole('button', { name: /Timeout/i });
+      await user.click(timeoutButton);
+
+      // Wait for retry status to appear
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Retry attempt/i)).toBeInTheDocument();
+        },
+        { timeout: 15000 }
+      );
+    }, 30000);
+
+    it('should show collapsible technical details in error display', async () => {
+      const user = userEvent.setup();
+      render(<ChainOfReasoningDemo />);
+
+      // Wait for initial stream to complete
+      await waitFor(
+        () => {
+          const completeElements = screen.getAllByText(/Complete/i);
+          expect(completeElements.length).toBeGreaterThan(0);
+        },
+        { timeout: 10000 }
+      );
+
+      // Select timeout error
+      const timeoutButton = screen.getByRole('button', { name: /Timeout/i });
+      await user.click(timeoutButton);
+
+      // Wait for error to be displayed
+      await waitFor(
+        () => {
+          expect(screen.getByText(/Technical Details/i)).toBeInTheDocument();
+        },
+        { timeout: 15000 }
+      );
+
+      // Technical details should be present
+      const detailsElement = screen.getByText(/Technical Details/i);
+      expect(detailsElement.tagName).toBe('SUMMARY');
+    }, 30000);
+
+    it('should update educational notes with error handling information', () => {
+      render(<ChainOfReasoningDemo />);
+
+      expect(screen.getByText(/Error Handling:/i)).toBeInTheDocument();
+      expect(screen.getByText(/Error Simulation:/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/automatic retries with exponential backoff/i)
+      ).toBeInTheDocument();
+    });
   });
 
   describe('Accessibility', () => {

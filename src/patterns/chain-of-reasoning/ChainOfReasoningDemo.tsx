@@ -28,6 +28,7 @@ import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
 import { ReasoningBeadline } from './ReasoningBeadline';
+import { StreamErrorDisplay } from './StreamErrorDisplay';
 import { useReasoningStreamWithReset } from './hooks';
 import type { ReasoningStreamConfig, StreamEvent as PatternStreamEvent } from './types';
 import styles from './ChainOfReasoningDemo.module.css';
@@ -66,6 +67,37 @@ const SPEED_OPTIONS: Array<{
 ];
 
 /**
+ * Error simulation options for testing error handling.
+ * These allow users to see how the pattern handles different failure modes.
+ */
+const ERROR_SIMULATION_OPTIONS: Array<{
+  value: ReasoningStreamConfig['simulateError'];
+  label: string;
+  description: string;
+}> = [
+  {
+    value: 'none',
+    label: 'None',
+    description: 'No errors - normal operation',
+  },
+  {
+    value: 'timeout',
+    label: 'Timeout',
+    description: 'Simulate request timeout',
+  },
+  {
+    value: 'network',
+    label: 'Network',
+    description: 'Simulate network failure',
+  },
+  {
+    value: 'mid-stream',
+    label: 'Mid-Stream',
+    description: 'Simulate error during streaming',
+  },
+];
+
+/**
  * ChainOfReasoningDemo - Main pattern demonstration component
  *
  * This component provides a complete, self-contained demo of the Chain-of-Reasoning
@@ -91,6 +123,10 @@ export function ChainOfReasoningDemo(): JSX.Element {
   // State: Current streaming speed
   const [speed, setSpeed] =
     useState<ReasoningStreamConfig['speed']>('normal');
+
+  // State: Error simulation mode
+  const [errorSimulation, setErrorSimulation] =
+    useState<ReasoningStreamConfig['simulateError']>('none');
 
   // State: Whether Network Inspector is visible
   const [showInspector, setShowInspector] = useState(true);
@@ -129,12 +165,31 @@ export function ChainOfReasoningDemo(): JSX.Element {
     [captureEvent]
   );
 
-  // Reasoning stream with reset capability
-  const { reasoning, answer, isStreaming, error, reset } =
-    useReasoningStreamWithReset(DEMO_PROMPT, {
-      speed,
-      onEvent: handleEventCapture,
-    });
+  // Reasoning stream with reset capability and error handling
+  const {
+    reasoning,
+    answer,
+    isStreaming,
+    error,
+    retryCount,
+    isRetrying,
+    retryDelayMs,
+    reset,
+  } = useReasoningStreamWithReset(DEMO_PROMPT, {
+    speed,
+    onEvent: handleEventCapture,
+    simulateError: errorSimulation,
+    timeoutMs: 5000, // 5 second timeout for demo purposes
+    retryConfig: {
+      maxRetries: 3,
+      initialDelayMs: 1000,
+      maxDelayMs: 10000,
+      backoffMultiplier: 2,
+      retryOnTimeout: true,
+      retryOnNetwork: true,
+      retryOnStream: false,
+    },
+  });
 
   /**
    * Handle speed change from controls.
@@ -143,6 +198,17 @@ export function ChainOfReasoningDemo(): JSX.Element {
   const handleSpeedChange = useCallback(
     (newSpeed: ReasoningStreamConfig['speed']): void => {
       setSpeed(newSpeed);
+    },
+    []
+  );
+
+  /**
+   * Handle error simulation mode change.
+   * Note: This will restart the stream due to useReasoningStream's dependency array.
+   */
+  const handleErrorSimulationChange = useCallback(
+    (mode: ReasoningStreamConfig['simulateError']): void => {
+      setErrorSimulation(mode);
     },
     []
   );
@@ -165,27 +231,24 @@ export function ChainOfReasoningDemo(): JSX.Element {
 
   /**
    * Render error state.
-   * Shows user-friendly error message with retry option.
+   * Shows user-friendly error message with retry information and manual retry option.
    */
-  if (error) {
+  if (error && !isRetrying && retryCount && retryCount >= 3) {
+    // Only show full-page error after all retries exhausted
     return (
       <DemoContainer
         title="Chain-of-Reasoning Pattern"
         description="An error occurred while streaming the reasoning"
         maxWidth="2xl"
       >
-        <Card className={styles.errorCard}>
-          <div className={styles.errorContent}>
-            <div className={styles.errorIcon} aria-hidden="true">
-              ⚠️
-            </div>
-            <h3 className={styles.errorTitle}>Stream Error</h3>
-            <p className={styles.errorMessage}>{error.message}</p>
-            <Button onClick={handleReset} variant="primary">
-              Try Again
-            </Button>
-          </div>
-        </Card>
+        <StreamErrorDisplay
+          error={error}
+          retryCount={retryCount}
+          isRetrying={isRetrying}
+          retryDelayMs={retryDelayMs}
+          maxRetries={3}
+          onRetry={handleReset}
+        />
       </DemoContainer>
     );
   }
@@ -230,6 +293,27 @@ export function ChainOfReasoningDemo(): JSX.Element {
                 size="sm"
                 disabled={isStreaming}
                 aria-pressed={speed === option.value ? 'true' : 'false'}
+                title={option.description}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.controlGroup}>
+          <label className={styles.controlLabel} htmlFor="error-simulator">
+            Error Simulation
+          </label>
+          <div className={styles.speedButtons} role="group" aria-labelledby="error-simulator">
+            {ERROR_SIMULATION_OPTIONS.map((option) => (
+              <Button
+                key={option.value}
+                onClick={() => handleErrorSimulationChange(option.value)}
+                variant={errorSimulation === option.value ? 'primary' : 'secondary'}
+                size="sm"
+                disabled={isStreaming}
+                aria-pressed={errorSimulation === option.value ? 'true' : 'false'}
                 title={option.description}
               >
                 {option.label}
@@ -284,6 +368,20 @@ export function ChainOfReasoningDemo(): JSX.Element {
 
       {/* Main Content Area */}
       <div className={styles.mainContent}>
+        {/* Inline Error Display (during retries or recoverable errors) */}
+        {error && (retryCount === undefined || retryCount < 3 || isRetrying) && (
+          <section className={styles.errorSection} aria-label="Error information">
+            <StreamErrorDisplay
+              error={error}
+              retryCount={retryCount}
+              isRetrying={isRetrying}
+              retryDelayMs={retryDelayMs}
+              maxRetries={3}
+              onRetry={handleReset}
+            />
+          </section>
+        )}
+
         {/* Reasoning Timeline */}
         <section
           className={styles.reasoningSection}
@@ -378,6 +476,14 @@ export function ChainOfReasoningDemo(): JSX.Element {
             <li>
               <strong>Interactivity:</strong> Users can expand reasoning details and
               promote steps to their plan
+            </li>
+            <li>
+              <strong>Error Handling:</strong> Network errors trigger automatic retries
+              with exponential backoff, keeping the user informed of retry status
+            </li>
+            <li>
+              <strong>Error Simulation:</strong> Test different failure modes (timeout,
+              network, mid-stream) to see how the pattern handles errors gracefully
             </li>
           </ul>
         </Card>

@@ -14,6 +14,7 @@
  */
 
 import type { StreamEvent, ReasoningStreamConfig } from './types';
+import { StreamError } from './types';
 import { getFixtureForPrompt } from './fixtures';
 
 /**
@@ -101,7 +102,13 @@ const SPEED_DELAYS = {
 export async function* createMockReasoningStream(
   config: ReasoningStreamConfig
 ): AsyncGenerator<StreamEvent, void, undefined> {
-  const { prompt, speed = 'normal', onEvent } = config;
+  const {
+    prompt,
+    speed = 'normal',
+    onEvent,
+    timeoutMs = 10000,
+    simulateError = 'none',
+  } = config;
 
   // Get the appropriate fixture data for this prompt
   const fixture = getFixtureForPrompt(prompt);
@@ -112,12 +119,53 @@ export async function* createMockReasoningStream(
   // Track if stream was cancelled for cleanup
   let cancelled = false;
 
+  // Track stream start time for timeout detection
+  const startTime = Date.now();
+
   try {
+    // Simulate timeout error if configured
+    if (simulateError === 'timeout') {
+      await delay(delayMs);
+      throw new StreamError(
+        `Stream timeout after ${timeoutMs}ms (simulated)`,
+        'timeout'
+      );
+    }
+
+    // Simulate network error if configured
+    if (simulateError === 'network') {
+      await delay(delayMs);
+      throw new StreamError(
+        'Network connection failed (simulated)',
+        'network'
+      );
+    }
+
     // Stream each event from the fixture with delays
+    let eventIndex = 0;
+    const midpoint = Math.floor(fixture.length / 2);
+
     for (const event of fixture) {
       // Check for cancellation before each event
       if (cancelled) {
         break;
+      }
+
+      // Check for timeout
+      const elapsed = Date.now() - startTime;
+      if (elapsed > timeoutMs) {
+        throw new StreamError(
+          `Stream timeout after ${elapsed}ms (exceeded ${timeoutMs}ms limit)`,
+          'timeout'
+        );
+      }
+
+      // Simulate mid-stream error if configured
+      if (simulateError === 'mid-stream' && eventIndex === midpoint) {
+        throw new StreamError(
+          'Stream interrupted mid-processing (simulated)',
+          'stream'
+        );
       }
 
       // Simulate network latency with configurable delay
@@ -135,6 +183,8 @@ export async function* createMockReasoningStream(
 
       // Yield the event to the consumer
       yield event;
+
+      eventIndex++;
     }
   } finally {
     // Cleanup code runs when generator is closed (via return() or completion)

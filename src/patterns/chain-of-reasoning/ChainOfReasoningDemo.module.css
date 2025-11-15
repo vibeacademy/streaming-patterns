@@ -295,6 +295,10 @@
 
 /* ===== ERROR STATE ===== */
 
+.errorSection {
+  margin-bottom: var(--space-6);
+}
+
 .errorCard {
   background-color: var(--color-error-50);
   border: 1px solid var(--color-error-200);
