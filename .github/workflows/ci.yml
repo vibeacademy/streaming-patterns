@@ -10,7 +10,7 @@ on:
 
 jobs:
   ci:
-    name: Continuous Integration
+    name: CI (Node ${{ matrix.node-version }}, Shard ${{ matrix.shard }}/4)
     runs-on: ubuntu-latest
 
     strategy:
