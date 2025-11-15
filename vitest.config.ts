@@ -14,12 +14,12 @@ export default defineConfig({
     // Enable globals like describe, it, expect without imports
     globals: true,
 
-    // Use forks pool with single worker to prevent memory accumulation
-    // This prevents OOM errors when running large test suites
-    pool: 'forks',
+    // Use threads pool with limited concurrency to prevent memory issues
+    // Forks consume more memory per worker than threads
     poolOptions: {
-      forks: {
-        singleFork: true,
+      threads: {
+        maxThreads: 1,
+        minThreads: 1,
       },
     },
 
