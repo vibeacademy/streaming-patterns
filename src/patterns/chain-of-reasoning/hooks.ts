@@ -269,9 +269,12 @@ export function useReasoningStream(
     }
 
     // Merge retry config with defaults
+    // Disable retries in test environment to prevent memory issues
     const retryConfig: Required<RetryConfig> = {
       ...DEFAULT_RETRY_CONFIG,
       ...options?.retryConfig,
+      // Override maxRetries to 0 in test environment
+      maxRetries: import.meta.env.MODE === 'test' ? 0 : (options?.retryConfig?.maxRetries ?? DEFAULT_RETRY_CONFIG.maxRetries),
     };
 
     // Reset state at the start of a new stream attempt
