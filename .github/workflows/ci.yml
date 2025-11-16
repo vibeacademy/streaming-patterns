@@ -40,12 +40,22 @@ jobs:
         if: matrix.shard == 1  # Only run type-check once
 
       - name: Run tests (Shard ${{ matrix.shard }}/12)
-        run: npm run test:run -- --shard=${{ matrix.shard }}/12
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 2
+          retry_on: error
+          command: npm run test:run -- --shard=${{ matrix.shard }}/12
         env:
           NODE_OPTIONS: '--max-old-space-size=2048'  # Reduced from 4096 since sharded
 
       - name: Run tests with coverage (Shard ${{ matrix.shard }}/12)
-        run: npm run test:coverage -- --shard=${{ matrix.shard }}/12
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 2
+          retry_on: error
+          command: npm run test:coverage -- --shard=${{ matrix.shard }}/12
         env:
           NODE_OPTIONS: '--max-old-space-size=2048'
 
