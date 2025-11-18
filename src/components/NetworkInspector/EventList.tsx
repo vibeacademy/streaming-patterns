@@ -181,7 +181,6 @@ export function EventList({
                     width: '100%',
                     textAlign: 'left',
                     border: 'none',
-                    background: 'transparent',
                     padding: '8px 12px',
                     borderBottom: '1px solid #d0d7de',
                     cursor: onEventSelect ? 'pointer' : 'default',

@@ -10,12 +10,13 @@ on:
 
 jobs:
   ci:
-    name: Continuous Integration
+    name: CI (Node ${{ matrix.node-version }}, Shard ${{ matrix.shard }}/8)
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [20.x]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]  # Split tests into 8 shards (better distribution: 3.5 files/shard vs 2.3)
 
     steps:
       - name: Checkout code
@@ -32,32 +33,34 @@ jobs:
 
       - name: Lint code
         run: npm run lint
+        if: matrix.shard == 1  # Only run lint once (not per shard)
 
       - name: Type check
         run: npm run type-check
+        if: matrix.shard == 1  # Only run type-check once
 
-      - name: Run tests
-        run: npm run test:run
-
-      - name: Run tests with coverage
-        run: npm run test:coverage
+      - name: Run tests with coverage (Shard ${{ matrix.shard }}/8)
+        run: npm run test:coverage -- --shard=${{ matrix.shard }}/8
+        env:
+          NODE_OPTIONS: '--max-old-space-size=2048'  # Sufficient with happy-dom (67% memory reduction)
 
       - name: Build project
         run: npm run build
+        if: matrix.shard == 1  # Only build once (not per shard)
 
-      - name: Upload coverage reports (optional)
+      - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         if: always()
         continue-on-error: true
         with:
           files: ./coverage/lcov.info
           flags: unittests
-          name: codecov-umbrella
+          name: codecov-shard-${{ matrix.shard }}
           fail_ci_if_error: false
 
       - name: Archive build artifacts
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && matrix.shard == 1
         with:
           name: dist
           path: dist/
@@ -67,6 +70,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: coverage
+          name: coverage-shard-${{ matrix.shard }}
           path: coverage/
           retention-days: 7

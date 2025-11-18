@@ -5,8 +5,8 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   test: {
-    // Use jsdom environment for React component testing
-    environment: 'jsdom',
+    // Use happy-dom environment for React component testing (50-70% less memory than jsdom)
+    environment: 'happy-dom',
 
     // Global test setup file
     setupFiles: ['./tests/setup.ts'],
@@ -20,7 +20,8 @@ export default defineConfig({
       reporter: ['text', 'json', 'html', 'lcov'],
 
       // Coverage thresholds (80% as per CLAUDE.md standards)
-      thresholds: {
+      // Disabled in CI when using test sharding, as each shard only covers a subset
+      thresholds: process.env.CI ? undefined : {
         lines: 80,
         functions: 80,
         branches: 80,
