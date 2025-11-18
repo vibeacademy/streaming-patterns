@@ -127,7 +127,8 @@ describe('EventList', () => {
       expect(eventElements.length).toBeGreaterThan(0);
       const firstEventStyle = eventElements[0]?.getAttribute('style');
 
-      expect(firstEventStyle).toContain('rgb(221, 244, 255)'); // #ddf4ff in RGB
+      // happy-dom uses hex colors (#ddf4ff), jsdom uses rgb(221, 244, 255)
+      expect(firstEventStyle).toMatch(/(#ddf4ff|rgb\(221, 244, 255\))/);
     });
 
     it('should support keyboard navigation', async () => {

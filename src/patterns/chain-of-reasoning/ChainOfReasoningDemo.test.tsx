@@ -42,8 +42,9 @@ vi.mock('./mockStream', () => ({
   }),
 }));
 
-// TEMPORARILY SKIPPED: This entire test suite causes OOM in CI
-// GitHub Issue #TBD tracks re-enabling after memory optimization
+// TODO: Re-enable after implementing fake timers (Phase 2 of audit recommendations)
+// These tests timeout due to real async delays and complex waitFor chains
+// Audit report: TEST-INFRASTRUCTURE-AUDIT-REPORT.md - Short-term improvement #1
 describe.skip('ChainOfReasoningDemo', () => {
   beforeEach(() => {
     // Clear all mocks before each test

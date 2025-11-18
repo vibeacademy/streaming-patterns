@@ -5,8 +5,8 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   test: {
-    // Use jsdom environment for React component testing
-    environment: 'jsdom',
+    // Use happy-dom environment for React component testing (50-70% less memory than jsdom)
+    environment: 'happy-dom',
 
     // Global test setup file
     setupFiles: ['./tests/setup.ts'],

@@ -1,5 +1,11 @@
 /**
  * useTheme Hook Tests
+ *
+ * @vitest-environment jsdom
+ *
+ * Note: This test file uses jsdom instead of happy-dom due to complex DOM mocking requirements.
+ * The test heavily mocks document.documentElement and window.matchMedia in ways that happy-dom
+ * doesn't support as cleanly as jsdom. This is an acceptable trade-off for this single file.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
