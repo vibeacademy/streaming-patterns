@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/size-limit.json",
+  "name": "Streaming Patterns Library - Performance Budget",
+  "description": "Performance budgets for production builds to ensure optimal loading times",
+  "budgets": [
+    {
+      "name": "Initial Bundle (Vendor + Router + Index)",
+      "maxSize": "250kb",
+      "gzipMaxSize": "80kb",
+      "description": "Critical path JavaScript for initial page load"
+    },
+    {
+      "name": "Vendor Chunk (React + React DOM)",
+      "maxSize": "150kb",
+      "gzipMaxSize": "50kb",
+      "description": "Core React libraries"
+    },
+    {
+      "name": "Pattern Demo Chunks",
+      "maxSize": "50kb",
+      "gzipMaxSize": "15kb",
+      "description": "Individual pattern demo lazy-loaded chunks"
+    },
+    {
+      "name": "CSS Bundle",
+      "maxSize": "50kb",
+      "gzipMaxSize": "10kb",
+      "description": "Total CSS across all routes"
+    },
+    {
+      "name": "Total Bundle Size",
+      "maxSize": "400kb",
+      "gzipMaxSize": "120kb",
+      "description": "All JavaScript and CSS combined"
+    }
+  ],
+  "lighthouse": {
+    "performance": 90,
+    "accessibility": 95,
+    "bestPractices": 95,
+    "seo": 100,
+    "pwa": 0,
+    "description": "Minimum Lighthouse scores for production deployment"
+  },
+  "metrics": {
+    "firstContentfulPaint": "1.5s",
+    "largestContentfulPaint": "2.5s",
+    "timeToInteractive": "3.5s",
+    "cumulativeLayoutShift": 0.1,
+    "totalBlockingTime": "300ms",
+    "description": "Core Web Vitals and performance targets"
+  },
+  "notes": [
+    "Budgets are based on current MVP with Chain-of-Reasoning pattern",
+    "Gzip sizes assume Cloudflare Workers compression",
+    "Pattern demos are lazy-loaded, so initial bundle size is critical",
+    "Budget enforcement happens in CI/CD via size-limit or bundlesize",
+    "Review and adjust budgets as new patterns are added"
+  ]
+}

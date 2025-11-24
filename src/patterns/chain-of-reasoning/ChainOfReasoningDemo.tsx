@@ -346,6 +346,9 @@ export function ChainOfReasoningDemo(): JSX.Element {
             <div className={styles.statusStreaming}>
               <Spinner size="sm" variant="primary" />
               <span>Streaming...</span>
+              <span className="sr-only" aria-live="polite">
+                Generating reasoning steps, please wait
+              </span>
             </div>
           ) : reasoning.length > 0 ? (
             <div className={styles.statusComplete}>
@@ -353,6 +356,9 @@ export function ChainOfReasoningDemo(): JSX.Element {
                 ✓
               </span>
               <span>Complete</span>
+              <span className="sr-only" aria-live="polite">
+                Stream complete, {reasoning.length} reasoning steps generated
+              </span>
             </div>
           ) : (
             <div className={styles.statusReady}>

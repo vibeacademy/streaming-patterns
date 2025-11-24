@@ -138,6 +138,30 @@ export default [
     },
   },
 
+  // Configuration for Node.js scripts
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        // Node.js globals
+        console: 'readonly',
+        process: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+        Buffer: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        exports: 'readonly',
+        global: 'readonly',
+      },
+    },
+    rules: {
+      'no-console': 'off', // Allow console in Node.js scripts
+    },
+  },
+
   // Ignore patterns
   {
     ignores: [

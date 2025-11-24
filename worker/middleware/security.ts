@@ -44,13 +44,15 @@ export function securityHeaders(options: SecurityHeadersOptions = {}): Record<st
 function getContentSecurityPolicy(environment: string): string {
   const baseDirectives = [
     "default-src 'self'",
-    "img-src 'self' data: https:",
+    "img-src 'self' data:",  // Removed https: - only allow self-hosted and data URIs
     "font-src 'self' data:",
     "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
+    "upgrade-insecure-requests",  // Automatically upgrade HTTP to HTTPS
+    "block-all-mixed-content",     // Block mixed content (HTTP on HTTPS page)
   ];
 
   if (environment === 'production') {

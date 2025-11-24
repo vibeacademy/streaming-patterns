@@ -21,6 +21,8 @@ export default defineConfig({
     assetsInlineLimit: 4096, // Inline assets < 4kb as base64
     cssCodeSplit: true, // Split CSS by route
     minify: 'esbuild', // Fast minification with esbuild
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -41,6 +43,9 @@ export default defineConfig({
           }
           return `assets/[name]-[hash][extname]`;
         },
+        // Optimize chunk naming for better compression
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
       },
     },
     // Optimize chunk size warnings
