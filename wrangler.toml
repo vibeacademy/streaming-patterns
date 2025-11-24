@@ -10,7 +10,7 @@ compatibility_date = "2024-11-11"
 # For local development, set via: wrangler login
 
 # Workers configuration
-workers_dev = false  # Don't deploy to workers.dev subdomain
+workers_dev = true  # Enable workers.dev subdomain for testing
 
 # Routes - bind to custom domain
 # Note: These routes will be configured after DNS setup

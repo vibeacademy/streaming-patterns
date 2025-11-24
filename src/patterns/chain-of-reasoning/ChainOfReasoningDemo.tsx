@@ -19,7 +19,7 @@
  * @module patterns/chain-of-reasoning/ChainOfReasoningDemo
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -165,6 +165,26 @@ export function ChainOfReasoningDemo(): JSX.Element {
     [captureEvent]
   );
 
+  // Memoize options to prevent unnecessary re-renders and stream aborts
+  const streamOptions = useMemo(
+    () => ({
+      speed,
+      onEvent: handleEventCapture,
+      simulateError: errorSimulation,
+      timeoutMs: 5000, // 5 second timeout for demo purposes
+      retryConfig: {
+        maxRetries: 3,
+        initialDelayMs: 1000,
+        maxDelayMs: 10000,
+        backoffMultiplier: 2,
+        retryOnTimeout: true,
+        retryOnNetwork: true,
+        retryOnStream: false,
+      },
+    }),
+    [speed, handleEventCapture, errorSimulation]
+  );
+
   // Reasoning stream with reset capability and error handling
   const {
     reasoning,
@@ -175,21 +195,7 @@ export function ChainOfReasoningDemo(): JSX.Element {
     isRetrying,
     retryDelayMs,
     reset,
-  } = useReasoningStreamWithReset(DEMO_PROMPT, {
-    speed,
-    onEvent: handleEventCapture,
-    simulateError: errorSimulation,
-    timeoutMs: 5000, // 5 second timeout for demo purposes
-    retryConfig: {
-      maxRetries: 3,
-      initialDelayMs: 1000,
-      maxDelayMs: 10000,
-      backoffMultiplier: 2,
-      retryOnTimeout: true,
-      retryOnNetwork: true,
-      retryOnStream: false,
-    },
-  });
+  } = useReasoningStreamWithReset(DEMO_PROMPT, streamOptions);
 
   /**
    * Handle speed change from controls.
