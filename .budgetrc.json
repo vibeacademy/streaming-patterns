@@ -1,0 +1,40 @@
+{
+  "budget": [
+    {
+      "path": "dist/**/*.js",
+      "name": "JavaScript Bundle",
+      "limit": "250 KB",
+      "gzip": true
+    },
+    {
+      "path": "dist/**/*.css",
+      "name": "CSS Bundle",
+      "limit": "50 KB",
+      "gzip": true
+    },
+    {
+      "path": "dist/index.html",
+      "name": "HTML",
+      "limit": "5 KB",
+      "gzip": false
+    },
+    {
+      "path": "dist/assets/vendor-*.js",
+      "name": "Vendor Chunk",
+      "limit": "150 KB",
+      "gzip": true
+    },
+    {
+      "path": "dist/assets/router-*.js",
+      "name": "Router Chunk",
+      "limit": "40 KB",
+      "gzip": true
+    },
+    {
+      "path": "dist/assets/index-*.js",
+      "name": "Main Chunk",
+      "limit": "30 KB",
+      "gzip": true
+    }
+  ]
+}
