@@ -6,16 +6,16 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
   describe('routing', () => {
-    it('renders the home page by default', () => {
+    it('renders the home page by default', async () => {
       render(<App />);
 
-      // Check for home page content
-      const heading = screen.getByRole('heading', { name: /streaming patterns/i, level: 1 });
+      // Wait for lazy loaded Home component
+      const heading = await screen.findByRole('heading', { name: /streaming patterns/i, level: 1 });
       expect(heading).toBeInTheDocument();
 
       const subtitle = screen.getByText(/Educational Pattern Library for Streaming AI\/LLM UX/i);
@@ -57,27 +57,30 @@ describe('App', () => {
   });
 
   describe('home page content', () => {
-    it('displays available patterns section', () => {
+    it('displays available patterns section', async () => {
       render(<App />);
 
-      const heading = screen.getByRole('heading', { name: /available patterns/i });
+      // Wait for lazy loaded Home component
+      const heading = await screen.findByRole('heading', { name: /available patterns/i });
       expect(heading).toBeInTheDocument();
     });
 
-    it('displays Chain-of-Reasoning pattern card', () => {
+    it('displays Chain-of-Reasoning pattern card', async () => {
       render(<App />);
 
-      const patternTitle = screen.getByText(/chain-of-reasoning guide/i);
+      // Wait for lazy loaded Home component
+      const patternTitle = await screen.findByText(/chain-of-reasoning guide/i);
       expect(patternTitle).toBeInTheDocument();
 
       const patternDescription = screen.getByText(/expose intermediate reasoning tokens/i);
       expect(patternDescription).toBeInTheDocument();
     });
 
-    it('displays about section', () => {
+    it('displays about section', async () => {
       render(<App />);
 
-      const aboutHeading = screen.getByRole('heading', { name: /about this library/i });
+      // Wait for lazy loaded Home component
+      const aboutHeading = await screen.findByRole('heading', { name: /about this library/i });
       expect(aboutHeading).toBeInTheDocument();
 
       const educationalTitle = screen.getByRole('heading', { name: /educational focus/i });
@@ -90,10 +93,11 @@ describe('App', () => {
       expect(productionTitle).toBeInTheDocument();
     });
 
-    it('has a link to the chain-of-reasoning pattern', () => {
+    it('has a link to the chain-of-reasoning pattern', async () => {
       render(<App />);
 
-      const patternLink = screen.getByRole('link', { name: /chain-of-reasoning guide/i });
+      // Wait for lazy loaded Home component
+      const patternLink = await screen.findByRole('link', { name: /chain-of-reasoning guide/i });
       expect(patternLink).toBeInTheDocument();
       expect(patternLink).toHaveAttribute('href', '/patterns/chain-of-reasoning');
     });

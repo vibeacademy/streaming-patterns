@@ -20,9 +20,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
+          // Core React libraries
           vendor: ['react', 'react-dom'],
+          // React Router (separate chunk for routing)
+          router: ['react-router-dom'],
         },
       },
     },
+    // Optimize chunk size warnings
+    chunkSizeWarningLimit: 600,
   },
 });

@@ -13,8 +13,24 @@ import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { PatternErrorBoundary } from './components/ErrorBoundary/PatternErrorBoundary';
-import { Home } from './pages/Home';
-import { Patterns } from './pages/Patterns';
+
+/**
+ * Lazy-loaded page components
+ * This improves initial load time and code splitting by route
+ */
+const Home = lazy(
+  () =>
+    import('./pages/Home').then((module) => ({
+      default: module.Home
+    }))
+);
+
+const Patterns = lazy(
+  () =>
+    import('./pages/Patterns').then((module) => ({
+      default: module.Patterns
+    }))
+);
 
 /**
  * Lazy-loaded pattern demo components
