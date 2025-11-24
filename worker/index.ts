@@ -36,7 +36,7 @@ export default {
       response = new Response(response.body, response);
 
       // Add security headers
-      addSecurityHeaders(response);
+      addSecurityHeaders(response, env);
 
       // Set cache control headers
       const cacheControl = getCacheControl(pathname);
@@ -76,8 +76,10 @@ function isAssetRequest(pathname: string): boolean {
 /**
  * Add security headers to response
  */
-function addSecurityHeaders(response: Response): void {
-  const headers = securityHeaders();
+function addSecurityHeaders(response: Response, env: Env): void {
+  const headers = securityHeaders({
+    environment: env.ENVIRONMENT as 'production' | 'preview' | 'development',
+  });
 
   for (const [key, value] of Object.entries(headers)) {
     response.headers.set(key, value);

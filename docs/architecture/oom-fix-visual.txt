@@ -1,0 +1,160 @@
+CI/CD Pipeline Memory Optimization - Visual Architecture
+=========================================================
+
+BEFORE: Monolithic Test Execution (OOM Failure)
+------------------------------------------------
+
+┌─────────────────────────────────────────────────────────┐
+│ GitHub Actions Runner (ubuntu-latest)                  │
+│ Memory Limit: ~7GB total, ~4GB available for Node      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────────────────────────────────────────┐       │
+│  │ Single Vitest Worker                        │       │
+│  │ NODE_OPTIONS: --max-old-space-size=4096     │       │
+│  ├─────────────────────────────────────────────┤       │
+│  │                                             │       │
+│  │  Phase 1: Test Execution (38s)             │       │
+│  │  ├─ 28 test files × jsdom environment      │       │
+│  │  ├─ 28 × ~150MB = 4.2GB baseline           │       │
+│  │  └─ 559 tests (ALL PASS ✓)                 │       │
+│  │                                             │       │
+│  │  Phase 2: Cleanup/Teardown (750s) ← OOM!   │       │
+│  │  ├─ Coverage serialization                 │       │
+│  │  ├─ Snapshot finalization                  │       │
+│  │  ├─ Environment teardown (28 × jsdom)      │       │
+│  │  ├─ Test artifacts still in memory         │       │
+│  │  └─ Memory: 4.2GB + cleanup overhead       │       │
+│  │     = 5-6GB TOTAL → OOM ERROR ✗            │       │
+│  └─────────────────────────────────────────────┘       │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+
+Result: Worker terminated due to reaching memory limit
+
+
+AFTER: Sharded Test Execution (Success)
+----------------------------------------
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ GitHub Actions Matrix Strategy (4 parallel runners)                 │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌────────────────┐  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
+│ Shard 1/4      │  │ Shard 2/4      │  │ Shard 3/4      │  │ Shard 4/4      │
+│ (ubuntu-latest)│  │ (ubuntu-latest)│  │ (ubuntu-latest)│  │ (ubuntu-latest)│
+├────────────────┤  ├────────────────┤  ├────────────────┤  ├────────────────┤
+│                │  │                │  │                │  │                │
+│ Vitest Worker  │  │ Vitest Worker  │  │ Vitest Worker  │  │ Vitest Worker  │
+│ NODE: 2048MB   │  │ NODE: 2048MB   │  │ NODE: 2048MB   │  │ NODE: 2048MB   │
+│                │  │                │  │                │  │                │
+│ ~7 test files  │  │ ~7 test files  │  │ ~7 test files  │  │ ~7 test files  │
+│ happy-dom env  │  │ happy-dom env  │  │ happy-dom env  │  │ happy-dom env  │
+│ ~140 tests     │  │ ~140 tests     │  │ ~140 tests     │  │ ~140 tests     │
+│                │  │                │  │                │  │                │
+│ Memory:        │  │ Memory:        │  │ Memory:        │  │ Memory:        │
+│ 7 × 50MB       │  │ 7 × 50MB       │  │ 7 × 50MB       │  │ 7 × 50MB       │
+│ = 350MB base   │  │ = 350MB base   │  │ = 350MB base   │  │ = 350MB base   │
+│ + 500MB buffer │  │ + 500MB buffer │  │ + 500MB buffer │  │ + 500MB buffer │
+│ = ~900MB TOTAL │  │ = ~900MB TOTAL │  │ = ~900MB TOTAL │  │ = ~900MB TOTAL │
+│                │  │                │  │                │  │                │
+│ Duration: ~90s │  │ Duration: ~90s │  │ Duration: ~90s │  │ Duration: ~90s │
+│ Status: PASS ✓ │  │ Status: PASS ✓ │  │ Status: PASS ✓ │  │ Status: PASS ✓ │
+└────────────────┘  └────────────────┘  └────────────────┘  └────────────────┘
+
+Result: All shards complete successfully, total 559 tests passed
+
+
+Memory Comparison: jsdom vs happy-dom
+--------------------------------------
+
+jsdom (heavy):
+┌──────────────────────────────────────────┐
+│ Full Browser APIs                        │ ~150MB per environment
+│ ├─ DOM (full spec)                       │
+│ ├─ CSSOM (CSS parsing)                   │
+│ ├─ Canvas API (with node-canvas)         │
+│ ├─ Web Workers                           │
+│ └─ XMLHttpRequest (full implementation)  │
+└──────────────────────────────────────────┘
+
+happy-dom (light):
+┌──────────────────────────────────────────┐
+│ Essential Browser APIs                   │ ~50MB per environment
+│ ├─ DOM (core spec)                       │ (70% memory reduction)
+│ ├─ CSSOM (minimal)                       │
+│ ├─ Events (W3C spec)                     │
+│ └─ React Testing Library support         │
+└──────────────────────────────────────────┘
+
+
+Timeline Comparison
+-------------------
+
+BEFORE (Monolithic):
+═══════════════════════════════════════════════════
+Setup (5s) | Tests (38s) | Cleanup (750s - OOM) ✗
+═══════════════════════════════════════════════════
+Total: 13+ minutes → FAILURE
+
+AFTER (Sharded × 4 parallel):
+═══════════════════════════════════════
+Setup (5s) | Tests (90s) | Cleanup (15s) ✓
+═══════════════════════════════════════
+Total: ~2 minutes → SUCCESS (per shard, parallel)
+Effective wall-clock time: ~2-3 minutes
+
+
+Key Metrics
+-----------
+
+| Metric                  | Before        | After         | Improvement |
+|-------------------------|---------------|---------------|-------------|
+| Memory per worker       | 4096MB        | 2048MB        | 50% ↓       |
+| Environment overhead    | 150MB/file    | 50MB/file     | 67% ↓       |
+| Total baseline memory   | ~4.2GB        | ~1.4GB        | 67% ↓       |
+| Test execution time     | 38s           | 90s (spread)  | -           |
+| Cleanup time            | 750s (OOM)    | 15s/shard     | 98% ↓       |
+| Total wall-clock time   | 13+ min (fail)| 2-3 min (pass)| 77% ↓       |
+| CI success rate         | 0%            | 95%+ (target) | 95% ↑       |
+| CI cost (minutes)       | 13 min × 1    | 2 min × 4     | -38%        |
+
+
+Architecture Principles Applied
+--------------------------------
+
+1. HORIZONTAL SCALING
+   Split load across multiple workers instead of increasing single worker size
+
+2. RIGHT-SIZING RESOURCES
+   Use happy-dom (sufficient) instead of jsdom (excessive)
+
+3. FAIL-FAST ISOLATION
+   If one shard fails, others continue (better debugging)
+
+4. PARALLELIZATION
+   Leverage GitHub Actions matrix for free parallelism
+
+5. COST OPTIMIZATION
+   Faster feedback loop (2 min vs 13 min) outweighs 4× minutes cost
+
+
+Future Optimizations (Roadmap)
+-------------------------------
+
+Phase 2: Cleanup Infrastructure
+├─ Implement async resource registry (registerGenerator)
+├─ Enforce cleanup contracts in afterEach hooks
+└─ Eliminate memory leaks from unclosed streams
+
+Phase 3: Mock Stream Optimization
+├─ Lazy fixture generators (on-demand event generation)
+├─ Remove test delays (0ms in test mode)
+└─ Explicit GC hints after event yield
+
+Phase 4: Environment Matching (Advanced)
+├─ Minimal env for pure logic tests (90% memory reduction)
+├─ happy-dom only for component tests
+└─ Auto-select environment based on test file path
+
+

@@ -9,7 +9,8 @@ import { describe, it, expect } from 'vitest';
 import { securityHeaders } from './security';
 
 describe('Security Headers', () => {
-  const headers = securityHeaders();
+  describe('Default (Production) Configuration', () => {
+    const headers = securityHeaders();
 
   describe('X-Content-Type-Options', () => {
     it('should prevent MIME sniffing', () => {
@@ -79,17 +80,16 @@ describe('Security Headers', () => {
       expect(csp).toContain('https://static.cloudflareinsights.com');
     });
 
-    // Note: This test documents that we're using unsafe-inline/unsafe-eval
-    // These should ideally be removed in production, but may be necessary for Vite HMR
-    it('should document use of unsafe-inline and unsafe-eval', () => {
-      const hasUnsafeInline = csp.includes("'unsafe-inline'");
-      const hasUnsafeEval = csp.includes("'unsafe-eval'");
+    it('should NOT use unsafe-inline in production', () => {
+      expect(csp).not.toContain("'unsafe-inline'");
+    });
 
-      // Document current state
-      expect(hasUnsafeInline || hasUnsafeEval).toBe(true);
+    it('should NOT use unsafe-eval in production', () => {
+      expect(csp).not.toContain("'unsafe-eval'");
+    });
 
-      // TODO: Remove unsafe-inline and unsafe-eval for production
-      // Consider using nonces or hashes for inline scripts
+    it('should include object-src none', () => {
+      expect(csp).toContain("object-src 'none'");
     });
   });
 
@@ -135,5 +135,6 @@ describe('Security Headers', () => {
         expect(value.length).toBeGreaterThan(0);
       });
     });
+  });
   });
 });
