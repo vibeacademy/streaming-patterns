@@ -91,6 +91,19 @@ describe('Security Headers', () => {
     it('should include object-src none', () => {
       expect(csp).toContain("object-src 'none'");
     });
+
+    it('should upgrade insecure requests', () => {
+      expect(csp).toContain('upgrade-insecure-requests');
+    });
+
+    it('should block all mixed content', () => {
+      expect(csp).toContain('block-all-mixed-content');
+    });
+
+    it('should restrict img-src to self and data URIs only', () => {
+      expect(csp).toContain("img-src 'self' data:");
+      expect(csp).not.toContain('img-src \'self\' data: https:');
+    });
   });
 
   describe('Strict-Transport-Security (HSTS)', () => {
