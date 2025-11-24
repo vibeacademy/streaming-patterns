@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://streamingpatterns.com/sitemap.xml
+Sitemap: https://streaming-patterns.example.com/sitemap.xml
 
 # Crawl delay (optional - be nice to servers)
 Crawl-delay: 1
