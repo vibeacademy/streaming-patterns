@@ -209,9 +209,12 @@ hr {
 }
 
 /* Focus visible for keyboard navigation */
+/* Enhanced for better visibility and WCAG 2.1 compliance */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+  border-radius: var(--border-radius-sm);
 }
 
 /* Remove focus outline for mouse users */

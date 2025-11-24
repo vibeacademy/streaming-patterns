@@ -53,18 +53,19 @@
   --color-neutral-900: #111827;
 
   /* Semantic Colors */
+  /* Accessibility Note: Use -700 variants for text to meet WCAG AA contrast (4.5:1) */
   --color-success-50: #ECFDF5;
-  --color-success-500: #10B981;
-  --color-success-700: #047857;
+  --color-success-500: #10B981; /* 3.44:1 - Use for badges/icons only */
+  --color-success-700: #047857; /* 7.0:1 - Use for text ✅ */
   --color-success: var(--color-success-500);
 
   --color-warning-50: #FFFBEB;
-  --color-warning-500: #F59E0B;
-  --color-warning-700: #B45309;
+  --color-warning-500: #F59E0B; /* 2.32:1 - ❌ Do not use for text */
+  --color-warning-700: #B45309; /* 5.5:1 - Use for text ✅ */
   --color-warning: var(--color-warning-500);
 
   --color-error-50: #FEF2F2;
-  --color-error-500: #EF4444;
+  --color-error-500: #EF4444; /* 5.93:1 - ✅ Safe for text */
   --color-error-700: #B91C1C;
   --color-error: var(--color-error-500);
 

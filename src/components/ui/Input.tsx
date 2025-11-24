@@ -127,6 +127,7 @@ export function Input({
           className={styles.input}
           disabled={disabled}
           required={required}
+          aria-required={required ? 'true' : undefined}
           aria-invalid={error ? 'true' : 'false'}
           aria-describedby={
             error ? errorId : helperText ? helperTextId : undefined
