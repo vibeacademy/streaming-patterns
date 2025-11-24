@@ -276,7 +276,7 @@ export function ChainOfReasoningDemo(): JSX.Element {
             size="sm"
             aria-pressed={showInspector ? 'true' : 'false'}
             aria-label={
-              showInspector ? 'Hide Network Inspector' : 'Show Network Inspector'
+              showInspector ? 'Hide Inspector' : 'Show Inspector'
             }
           >
             {showInspector ? 'Hide Inspector' : 'Show Inspector'}

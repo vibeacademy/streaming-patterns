@@ -13,6 +13,7 @@ import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { PatternErrorBoundary } from './components/ErrorBoundary/PatternErrorBoundary';
+import { useCanonicalUrl } from './lib/hooks/useCanonicalUrl';
 
 /**
  * Lazy-loaded page components
@@ -100,18 +101,16 @@ function NotFound(): JSX.Element {
 }
 
 /**
- * Main App component with routing
- *
- * Wrapped with ErrorBoundary to catch and handle any React errors
- * that occur during rendering, preventing white screen of death.
+ * AppRoutes component - handles routing and canonical URL updates
  */
-function App(): JSX.Element {
+function AppRoutes(): JSX.Element {
+  // Update canonical URL on route changes
+  useCanonicalUrl();
+
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <AppShell>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
+    <AppShell>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
               {/* Home page */}
               <Route path="/" element={<Home />} />
 
@@ -133,9 +132,23 @@ function App(): JSX.Element {
 
               {/* 404 Not Found */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </AppShell>
+        </Routes>
+      </Suspense>
+    </AppShell>
+  );
+}
+
+/**
+ * Main App component with routing
+ *
+ * Wrapped with ErrorBoundary to catch and handle any React errors
+ * that occur during rendering, preventing white screen of death.
+ */
+function App(): JSX.Element {
+  return (
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppRoutes />
       </BrowserRouter>
     </ErrorBoundary>
   );

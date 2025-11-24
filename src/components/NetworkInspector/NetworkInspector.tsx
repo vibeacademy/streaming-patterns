@@ -274,7 +274,7 @@ export function NetworkInspector({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>
+          <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: '#24292f' }}>
             {title}
           </h3>
           <span

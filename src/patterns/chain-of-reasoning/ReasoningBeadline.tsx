@@ -102,7 +102,7 @@ export function ReasoningBeadline({
   return (
     <div
       className={`${styles.beadline} ${className}`}
-      role="log"
+      role="list"
       aria-live="polite"
       aria-atomic="false"
       aria-label="AI reasoning steps"
