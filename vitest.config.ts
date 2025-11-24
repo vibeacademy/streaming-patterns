@@ -47,6 +47,7 @@ export default defineConfig({
     include: [
       'src/**/*.{test,spec}.{ts,tsx}',
       'tests/**/*.{test,spec}.{ts,tsx}',
+      'worker/**/*.{test,spec}.{ts,tsx}',
     ],
 
     // Watch mode settings
