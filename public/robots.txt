@@ -1,0 +1,11 @@
+# robots.txt for Streaming Patterns Library
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://streaming-patterns.example.com/sitemap.xml
+
+# Crawl delay (optional - be nice to servers)
+Crawl-delay: 1
