@@ -4,18 +4,13 @@
  * @module patterns/agent-await-prompt/hooks.test
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useAwaitPromptStream } from './hooks';
 
 describe('useAwaitPromptStream', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.useRealTimers();
   });
 
   it('should initialize with idle state', () => {
@@ -153,12 +148,13 @@ describe('useAwaitPromptStream', () => {
       })
     );
 
-    // Wait for some events
+    // Wait for await_input event specifically
     await waitFor(
       () => {
-        expect(onEvent).toHaveBeenCalled();
+        const eventTypes = onEvent.mock.calls.map((call) => call[0].type);
+        expect(eventTypes).toContain('await_input');
       },
-      { timeout: 5000 }
+      { timeout: 10000 }
     );
 
     // Should have captured text and await_input events
@@ -179,23 +175,19 @@ describe('useAwaitPromptStream', () => {
       () => {
         expect(result.current.streamState).toBe('awaiting_input');
       },
-      { timeout: 5000 }
+      { timeout: 10000 }
     );
 
     // Don't submit input - let it timeout
-    // The timeout in the fixture is 5000ms, advance timers
-    act(() => {
-      vi.advanceTimersByTime(6000);
-    });
-
+    // The timeout in the fixture is 5000ms, so wait for it to timeout naturally
     // Should continue streaming after timeout
     await waitFor(
       () => {
         expect(result.current.streamState).not.toBe('awaiting_input');
       },
-      { timeout: 5000 }
+      { timeout: 15000 } // Give enough time for the 5000ms timeout + stream processing
     );
-  });
+  }, 20000); // Set test timeout to 20 seconds
 
   it('should track timeout countdown', async () => {
     const { result } = renderHook(() =>

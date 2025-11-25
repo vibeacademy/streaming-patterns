@@ -379,7 +379,6 @@ export function useAwaitPromptStream(
     options?.resumeOnTimeout,
     options?.simulateError,
     handleEvent,
-    streamState,
   ]);
 
   /**

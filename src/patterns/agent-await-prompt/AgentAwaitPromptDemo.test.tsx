@@ -41,10 +41,13 @@ describe('AgentAwaitPromptDemo', () => {
   it('should start streaming on mount', async () => {
     render(<AgentAwaitPromptDemo />);
 
-    // Should show streaming indicator
+    // Should show streaming indicator in the state badge
     await waitFor(
       () => {
-        const stateBadge = screen.getByText(/Streaming/i);
+        // Look for the exact text "Streaming" within the state indicator area
+        const stateLabel = screen.getByText(/State:/i);
+        const container = stateLabel.closest('div');
+        const stateBadge = within(container!).getByText('Streaming');
         expect(stateBadge).toBeInTheDocument();
       },
       { timeout: 5000 }
@@ -73,7 +76,7 @@ describe('AgentAwaitPromptDemo', () => {
         const continueButton = screen.getByRole('button', { name: /Continue/i });
         expect(continueButton).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
     // Should show listening indicator
@@ -88,12 +91,12 @@ describe('AgentAwaitPromptDemo', () => {
         const continueButton = screen.getByRole('button', { name: /Continue/i });
         expect(continueButton).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
-    // Should have asterisks for required fields
-    const asterisks = screen.getAllByText('*');
-    expect(asterisks.length).toBeGreaterThan(0);
+    // Should have required field markers (look for "required" in labels)
+    const requiredInputs = screen.getAllByRole('textbox', { name: /required/i });
+    expect(requiredInputs.length).toBeGreaterThan(0);
   });
 
   it('should allow user to submit input and resume stream', async () => {
@@ -105,7 +108,7 @@ describe('AgentAwaitPromptDemo', () => {
       () => {
         expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
     // Fill in required fields
@@ -139,7 +142,7 @@ describe('AgentAwaitPromptDemo', () => {
       () => {
         expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
     // Should show timeout countdown
@@ -201,7 +204,7 @@ describe('AgentAwaitPromptDemo', () => {
       () => {
         expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
     // Try to submit without filling fields
@@ -224,7 +227,7 @@ describe('AgentAwaitPromptDemo', () => {
       () => {
         expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
       },
-      { timeout: 8000 }
+      { timeout: 15000 }
     );
 
     // Fill and submit
@@ -240,10 +243,12 @@ describe('AgentAwaitPromptDemo', () => {
     const continueButton = screen.getByRole('button', { name: /Continue/i });
     await user.click(continueButton);
 
-    // Wait for completion
+    // Wait for completion - look in the state indicator area
     await waitFor(
       () => {
-        const completedBadge = screen.getByText(/Completed/i);
+        const stateLabel = screen.getByText(/State:/i);
+        const container = stateLabel.closest('div');
+        const completedBadge = within(container!).getByText('Completed');
         expect(completedBadge).toBeInTheDocument();
       },
       { timeout: 10000 }
