@@ -1,0 +1,28 @@
+
+[0;34m========================================[0m
+[0;34mFresh Clone Verification Started[0m
+[0;34m========================================[0m
+
+[1;33mℹ Log file: fresh-clone-verification-20251125-065124.log[0m
+[1;33mℹ Testing repository: https://github.com/vibeacademy/streaming-patterns.git[0m
+
+[0;34m========================================[0m
+[0;34mStep 0: Prerequisites Check[0m
+[0;34m========================================[0m
+
+[1;33mℹ Checking Node.js version...[0m
+[0;32m✓ Node.js version: v23.7.0[0m
+[0;32m✓ Node.js version meets requirement (>=18.0.0)[0m
+[1;33mℹ Checking npm...[0m
+[0;32m✓ npm version: 10.9.2[0m
+[1;33mℹ Checking git...[0m
+[0;32m✓ git version: git version 2.50.1 (Apple Git-155)[0m
+
+[0;34m========================================[0m
+[0;34mStep 1: Clone Repository[0m
+[0;34m========================================[0m
+
+[1;33mℹ Creating temporary directory: /var/folders/_k/_vv1nxns413b6tv_kcq_sz100000gn/T/tmp.ANPCHP004g[0m
+[1;33mℹ Cloning repository...[0m
+Cloning into '/var/folders/_k/_vv1nxns413b6tv_kcq_sz100000gn/T/tmp.ANPCHP004g/streaming-patterns'...
+[0;32m✓ Repository cloned successfully (1s)[0m
