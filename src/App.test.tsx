@@ -57,12 +57,20 @@ describe('App', () => {
   });
 
   describe('home page content', () => {
-    it('displays available patterns section', async () => {
+    it('displays explore streaming patterns section', async () => {
       render(<App />);
 
       // Wait for lazy loaded Home component
-      const heading = await screen.findByRole('heading', { name: /available patterns/i });
+      const heading = await screen.findByRole('heading', { name: /explore streaming patterns/i });
       expect(heading).toBeInTheDocument();
+    });
+
+    it('displays progress indicator', async () => {
+      render(<App />);
+
+      // Wait for lazy loaded Home component
+      const progressIndicator = await screen.findByText(/2 of 7 patterns implemented/i);
+      expect(progressIndicator).toBeInTheDocument();
     });
 
     it('displays Chain-of-Reasoning pattern card', async () => {
@@ -73,6 +81,17 @@ describe('App', () => {
       expect(patternTitle).toBeInTheDocument();
 
       const patternDescription = screen.getByText(/expose intermediate reasoning tokens/i);
+      expect(patternDescription).toBeInTheDocument();
+    });
+
+    it('displays Agent-Await-Prompt pattern card', async () => {
+      render(<App />);
+
+      // Wait for lazy loaded Home component
+      const patternTitle = await screen.findByText(/agent-await-prompt/i);
+      expect(patternTitle).toBeInTheDocument();
+
+      const patternDescription = screen.getByText(/pause agent execution to request clarification/i);
       expect(patternDescription).toBeInTheDocument();
     });
 
