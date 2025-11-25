@@ -54,6 +54,7 @@
 .speedButtons {
   display: flex;
   gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 /* ===== STATUS INDICATOR ===== */
@@ -339,19 +340,27 @@
   .controls {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-3);
   }
 
   .controlGroup {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .controlLabel {
+    text-align: left;
   }
 
   .speedButtons {
     width: 100%;
+    justify-content: stretch;
   }
 
   .speedButtons button {
     flex: 1;
+    min-width: 0; /* Allow buttons to shrink below content width */
   }
 
   .statusIndicator {
@@ -381,6 +390,14 @@
     padding: var(--space-3);
   }
 
+  .speedButtons button {
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-xs);
+    white-space: normal; /* Allow button text to wrap if needed */
+    line-height: var(--line-height-tight);
+    min-height: 44px; /* Maintain accessibility touch target */
+  }
+
   .sectionTitle {
     font-size: var(--font-size-lg);
   }
@@ -407,6 +424,41 @@
 
   .errorMessage {
     font-size: var(--font-size-sm);
+  }
+}
+
+/* Extra small mobile (iPhone SE, 320px width) */
+@media (max-width: 374px) {
+  .controls {
+    padding: var(--space-2);
+    gap: var(--space-2);
+  }
+
+  .controlGroup {
+    gap: var(--space-1);
+  }
+
+  .speedButtons {
+    gap: var(--space-1);
+  }
+
+  .speedButtons button {
+    padding: 0 var(--space-1);
+    font-size: 0.7rem; /* ~11px - slightly smaller for very small screens */
+    min-height: 44px; /* Maintain accessibility */
+  }
+
+  .headerActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .headerActions button {
+    width: 100%;
+  }
+
+  .demoContainer {
+    padding: var(--space-3);
   }
 }
 

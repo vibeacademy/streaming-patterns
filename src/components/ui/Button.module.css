@@ -19,6 +19,7 @@
   border: var(--border-width-thin) solid transparent;
   border-radius: var(--border-radius-lg);
   transition: all var(--transition-fast);
+  min-width: 0; /* Allow button to shrink below content width if needed */
 
   /* Remove default button styles */
   appearance: none;
@@ -176,5 +177,21 @@
   .button--lg {
     height: var(--button-height-md);
     font-size: var(--font-size-base);
+  }
+}
+
+/* Small mobile devices (320px - 414px) */
+@media (max-width: 414px) {
+  .button--sm,
+  .button--md {
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-sm);
+    min-height: 44px; /* Maintain WCAG 2.1 touch target size (44x44px) */
+  }
+
+  .button--lg {
+    padding: 0 var(--space-3);
+    font-size: var(--font-size-sm);
+    min-height: 44px;
   }
 }
