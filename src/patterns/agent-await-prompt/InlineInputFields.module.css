@@ -1,0 +1,260 @@
+/**
+ * Styles for the InlineInputFields component.
+ *
+ * Design principles:
+ * - Inline appearance (feels embedded in conversation)
+ * - Clear visual hierarchy (required vs. optional)
+ * - Accessible form controls
+ * - Animated listening indicator
+ * - Timeout countdown visibility
+ */
+
+.container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px dashed #6c757d;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 16px 0;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Listening indicator animation */
+.listeningIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #495057;
+  font-size: 14px;
+}
+
+.listeningDot {
+  width: 8px;
+  height: 8px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.listeningDot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.listeningDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.listeningDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.listeningText {
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* Message */
+.message {
+  margin: 0 0 20px 0;
+  padding: 12px 16px;
+  background-color: #fff;
+  border-left: 4px solid #0d6efd;
+  border-radius: 4px;
+  color: #212529;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Timeout countdown */
+.timeout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  color: #856404;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.timeoutIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Field */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.required {
+  color: #dc3545;
+  font-weight: 700;
+}
+
+.optional {
+  font-size: 12px;
+  font-weight: 400;
+  color: #6c757d;
+  margin-left: 4px;
+}
+
+/* Input */
+.input {
+  padding: 10px 12px;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #212529;
+  background-color: #fff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.input:hover {
+  border-color: #adb5bd;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.input::placeholder {
+  color: #adb5bd;
+}
+
+.inputError {
+  border-color: #dc3545;
+}
+
+.inputError:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+/* Help text */
+.helpText {
+  margin: 0;
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+/* Error message */
+.error {
+  margin: 0;
+  font-size: 12px;
+  color: #dc3545;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error::before {
+  content: '⚠';
+  font-size: 14px;
+}
+
+/* Submit button */
+.submitButton {
+  align-self: flex-start;
+  padding: 10px 24px;
+  background-color: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.submitButton:hover {
+  background-color: #0b5ed7;
+}
+
+.submitButton:active {
+  transform: translateY(1px);
+}
+
+.submitButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
+}
+
+.submitButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .container {
+    padding: 16px;
+  }
+
+  .message {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .timeout {
+    font-size: 12px;
+  }
+
+  .input {
+    font-size: 16px; /* Prevent zoom on mobile */
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}

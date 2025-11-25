@@ -1,0 +1,358 @@
+/**
+ * Agent-Await-Prompt Pattern Demo
+ *
+ * This component demonstrates the pause/resume streaming pattern where the AI
+ * can pause mid-stream to request missing information from the user, then
+ * resume once the input is provided.
+ *
+ * Educational Focus:
+ * - Pause/resume stream mechanics
+ * - Inline input field integration
+ * - Timeout countdown and fallback behavior
+ * - Stream state management (idle → streaming → awaiting → resuming)
+ *
+ * Demo Scenario:
+ * StreamFlow PM project setup - AI discovers missing project metadata
+ * and pauses to request it from the user inline.
+ *
+ * @module patterns/agent-await-prompt/AgentAwaitPromptDemo
+ */
+
+import { useState } from 'react';
+import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
+import { NetworkInspector } from '@/components/NetworkInspector';
+import { useAwaitPromptStream } from './hooks';
+import { InlineInputFields } from './InlineInputFields';
+import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
+import type { StreamEvent as PatternStreamEvent } from './types';
+import styles from './AgentAwaitPromptDemo.module.css';
+
+/**
+ * Map pattern-specific stream events to global event types for Network Inspector.
+ *
+ * This adapter function bridges between the pattern's internal event structure
+ * and the global StreamEvent type used by the Network Inspector.
+ */
+function adaptEventForNetworkInspector(
+  event: PatternStreamEvent
+): GlobalStreamEvent | null {
+  const timestamp = Date.now();
+  const id = `event-${timestamp}-${Math.random().toString(36).substr(2, 9)}`;
+
+  switch (event.type) {
+    case 'await_input':
+      // Map to global AwaitInputEvent format
+      return {
+        id,
+        type: 'await_input',
+        timestamp,
+        data: {
+          requestId: id,
+          prompt: event.data.message,
+          inputType: 'text', // Simplified for network inspector
+          validation: {
+            required: event.data.fields.some((f) => f.required),
+          },
+        },
+      };
+
+    case 'input_submission':
+      // Map to global InputSubmissionEvent format
+      return {
+        id,
+        type: 'input_submission',
+        timestamp,
+        data: {
+          requestId: id,
+          value: JSON.stringify(event.data),
+          submittedAt: timestamp,
+        },
+      };
+
+    // For text, resume, and timeout events, we don't have direct global equivalents
+    // so we can skip them in the network inspector or create custom representations
+    default:
+      return null;
+  }
+}
+
+/**
+ * Demo scenario type.
+ */
+type DemoScenario = {
+  id: string;
+  name: string;
+  prompt: string;
+  description: string;
+};
+
+/**
+ * Demo scenarios available in the dropdown.
+ */
+const DEMO_SCENARIOS: DemoScenario[] = [
+  {
+    id: 'project-setup',
+    name: 'Project Setup',
+    prompt: 'Set up a new project in StreamFlow PM',
+    description: 'AI pauses to request missing project details',
+  },
+  {
+    id: 'sprint-planning',
+    name: 'Sprint Planning',
+    prompt: 'Plan the next 2-week sprint',
+    description: 'AI requests sprint parameters mid-planning',
+  },
+  {
+    id: 'timeout-fallback',
+    name: 'Timeout Fallback',
+    prompt: 'Set up project with timeout fallback',
+    description: 'AI continues with defaults if user doesn\'t respond',
+  },
+  {
+    id: 'multiple-inputs',
+    name: 'Multiple Inputs',
+    prompt: 'Create a complete project roadmap',
+    description: 'Multiple pause/resume cycles',
+  },
+];
+
+/**
+ * Main demo component for the Agent-Await-Prompt pattern.
+ *
+ * This component showcases:
+ * - Streaming text that pauses mid-flow
+ * - Inline input fields appearing in the stream
+ * - Timeout countdown UI
+ * - Stream resumption after input submission
+ * - Network inspector integration
+ */
+export default function AgentAwaitPromptDemo(): JSX.Element {
+  // Network capture for inspector
+  const { captureEvent, filteredEvents, clearEvents } = useNetworkCapture();
+
+  // Selected scenario
+  const [selectedScenario, setSelectedScenario] = useState(DEMO_SCENARIOS[0]);
+
+  // Stream state from custom hook
+  const {
+    text,
+    streamState,
+    inputFields,
+    inputMessage,
+    submitInput,
+    timeoutRemaining,
+    error,
+    isActive,
+  } = useAwaitPromptStream(selectedScenario.prompt, {
+    speed: 'normal',
+    onEvent: (event) => {
+      // Adapt and capture events for network inspector
+      const globalEvent = adaptEventForNetworkInspector(event);
+      if (globalEvent) {
+        captureEvent(globalEvent);
+      }
+    },
+  });
+
+  /**
+   * Handle scenario change - clear state and restart stream.
+   */
+  const handleScenarioChange = (scenarioId: string) => {
+    const scenario = DEMO_SCENARIOS.find((s) => s.id === scenarioId);
+    if (scenario) {
+      clearEvents();
+      setSelectedScenario(scenario);
+    }
+  };
+
+  /**
+   * Format stream state for display.
+   */
+  const getStateIndicator = () => {
+    switch (streamState) {
+      case 'idle':
+        return { text: 'Idle', className: styles.stateIdle };
+      case 'streaming':
+        return { text: 'Streaming', className: styles.stateStreaming };
+      case 'awaiting_input':
+        return { text: 'Awaiting Input', className: styles.stateAwaiting };
+      case 'resuming':
+        return { text: 'Resuming', className: styles.stateResuming };
+      case 'completed':
+        return { text: 'Completed', className: styles.stateCompleted };
+      case 'error':
+        return { text: 'Error', className: styles.stateError };
+      default:
+        return { text: 'Unknown', className: styles.stateIdle };
+    }
+  };
+
+  const stateIndicator = getStateIndicator();
+
+  return (
+    <div className={styles.container}>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Agent-Await-Prompt Pattern</h1>
+        <p className={styles.subtitle}>
+          Interactive streaming with pause/resume mechanics. The AI can pause
+          mid-stream to request missing information from the user.
+        </p>
+      </div>
+
+      {/* Scenario selector */}
+      <div className={styles.controls}>
+        <label htmlFor="scenario-select" className={styles.controlLabel}>
+          Demo Scenario:
+        </label>
+        <select
+          id="scenario-select"
+          value={selectedScenario.id}
+          onChange={(e) => handleScenarioChange(e.target.value)}
+          className={styles.select}
+          disabled={isActive}
+        >
+          {DEMO_SCENARIOS.map((scenario) => (
+            <option key={scenario.id} value={scenario.id}>
+              {scenario.name} - {scenario.description}
+            </option>
+          ))}
+        </select>
+
+        {/* Stream state indicator */}
+        <div className={styles.stateIndicatorContainer}>
+          <span className={styles.stateLabel}>State:</span>
+          <span className={`${styles.stateBadge} ${stateIndicator.className}`}>
+            {stateIndicator.text}
+          </span>
+        </div>
+      </div>
+
+      {/* Main content area */}
+      <div className={styles.content}>
+        {/* Message bubble with streaming text */}
+        <div className={styles.messageBubble}>
+          {/* Streaming indicator */}
+          {streamState === 'streaming' && (
+            <div className={styles.streamingIndicator}>
+              <div className={styles.streamingDot} />
+              <div className={styles.streamingDot} />
+              <div className={styles.streamingDot} />
+            </div>
+          )}
+
+          {/* Text content */}
+          <div className={styles.messageText}>
+            {text || <span className={styles.placeholder}>Waiting for stream...</span>}
+          </div>
+
+          {/* Inline input fields (shown when awaiting input) */}
+          {streamState === 'awaiting_input' && inputFields && (
+            <InlineInputFields
+              fields={inputFields}
+              message={inputMessage}
+              onSubmit={submitInput}
+              timeoutRemaining={timeoutRemaining}
+              className={styles.inlineInputs}
+            />
+          )}
+
+          {/* Error display */}
+          {error && (
+            <div className={styles.errorDisplay}>
+              <h3 className={styles.errorTitle}>Stream Error</h3>
+              <p className={styles.errorMessage}>{error.message}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Pattern explanation */}
+        <div className={styles.explanation}>
+          <h2 className={styles.explanationTitle}>Pattern Mechanics</h2>
+          <div className={styles.explanationContent}>
+            <div className={styles.mechanicItem}>
+              <h3 className={styles.mechanicTitle}>1. Stream Pause</h3>
+              <p className={styles.mechanicDescription}>
+                The AI detects missing information and emits an{' '}
+                <code>await_input</code> event, pausing the stream.
+              </p>
+            </div>
+
+            <div className={styles.mechanicItem}>
+              <h3 className={styles.mechanicTitle}>2. Inline Input</h3>
+              <p className={styles.mechanicDescription}>
+                Input fields appear embedded in the conversation, requesting
+                specific data from the user.
+              </p>
+            </div>
+
+            <div className={styles.mechanicItem}>
+              <h3 className={styles.mechanicTitle}>3. User Responds</h3>
+              <p className={styles.mechanicDescription}>
+                User fills out required (and optional) fields and submits. An{' '}
+                <code>input_submission</code> event is emitted.
+              </p>
+            </div>
+
+            <div className={styles.mechanicItem}>
+              <h3 className={styles.mechanicTitle}>4. Stream Resumes</h3>
+              <p className={styles.mechanicDescription}>
+                The AI receives the input and continues streaming from where it
+                paused. A <code>resume</code> event acknowledges the input.
+              </p>
+            </div>
+
+            <div className={styles.mechanicItem}>
+              <h3 className={styles.mechanicTitle}>5. Timeout Fallback</h3>
+              <p className={styles.mechanicDescription}>
+                If the user doesn't respond within the timeout, the AI continues
+                with default behavior (if configured).
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Network Inspector */}
+        <div className={styles.networkInspector}>
+          <h2 className={styles.inspectorTitle}>Network Inspector</h2>
+          <p className={styles.inspectorDescription}>
+            View all streaming events including pause (<code>await_input</code>)
+            and resume (<code>input_submission</code>) events.
+          </p>
+          <NetworkInspector events={filteredEvents} />
+        </div>
+      </div>
+
+      {/* Educational notes */}
+      <div className={styles.educationalNotes}>
+        <h2 className={styles.notesTitle}>Educational Notes</h2>
+        <ul className={styles.notesList}>
+          <li>
+            <strong>State Machine:</strong> The stream transitions through
+            states: <code>idle</code> → <code>streaming</code> →{' '}
+            <code>awaiting_input</code> → <code>resuming</code> →{' '}
+            <code>completed</code>
+          </li>
+          <li>
+            <strong>Stream Controller:</strong> The pause/resume mechanism uses
+            a controller that manages a Promise. The stream awaits this Promise,
+            and external code resolves it when input is submitted.
+          </li>
+          <li>
+            <strong>Inline UX:</strong> Input fields appear embedded in the
+            message flow, maintaining conversation context rather than using
+            modals or separate forms.
+          </li>
+          <li>
+            <strong>Timeout Handling:</strong> Visual countdown shows urgency.
+            Configurable fallback behavior when timeout expires.
+          </li>
+          <li>
+            <strong>Validation:</strong> Required fields are enforced before
+            submission. Type-specific validation (number, date, email, etc.).
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
