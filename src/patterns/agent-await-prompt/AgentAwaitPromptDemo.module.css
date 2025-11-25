@@ -1,0 +1,410 @@
+/**
+ * Styles for the Agent-Await-Prompt Demo component.
+ *
+ * Design principles:
+ * - Clean, educational layout
+ * - Clear visual hierarchy for pattern mechanics
+ * - Responsive design for mobile and desktop
+ * - Accessible color contrasts and focus states
+ */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #212529;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 32px;
+}
+
+.controlLabel {
+  font-weight: 600;
+  color: #495057;
+  font-size: 15px;
+}
+
+.select {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 12px;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #212529;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.select:hover:not(:disabled) {
+  border-color: #adb5bd;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.stateIndicatorContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.stateLabel {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.stateBadge {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stateIdle {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.stateStreaming {
+  background-color: #cfe2ff;
+  color: #084298;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.stateAwaiting {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.stateResuming {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.stateCompleted {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.stateError {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Content */
+.content {
+  display: grid;
+  gap: 32px;
+}
+
+/* Message bubble */
+.messageBubble {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  min-height: 200px;
+}
+
+.streamingIndicator {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.streamingDot {
+  width: 10px;
+  height: 10px;
+  background-color: #0d6efd;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.streamingDot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.streamingDot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.streamingDot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.messageText {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #212529;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.placeholder {
+  color: #adb5bd;
+  font-style: italic;
+}
+
+.inlineInputs {
+  margin-top: 20px;
+}
+
+/* Error display */
+.errorDisplay {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  border-radius: 6px;
+}
+
+.errorTitle {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #842029;
+}
+
+.errorMessage {
+  margin: 0;
+  font-size: 14px;
+  color: #58151c;
+}
+
+/* Pattern explanation */
+.explanation {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.explanationTitle {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.explanationContent {
+  display: grid;
+  gap: 20px;
+}
+
+.mechanicItem {
+  padding: 16px;
+  background-color: #fff;
+  border-left: 4px solid #0d6efd;
+  border-radius: 4px;
+}
+
+.mechanicTitle {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.mechanicDescription {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #495057;
+}
+
+.mechanicDescription code {
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #d63384;
+}
+
+/* Network Inspector */
+.networkInspector {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.inspectorTitle {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.inspectorDescription {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+.inspectorDescription code {
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #d63384;
+}
+
+/* Educational notes */
+.educationalNotes {
+  background-color: #fff;
+  border: 2px solid #0d6efd;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.notesTitle {
+  margin: 0 0 16px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.notesList {
+  margin: 0;
+  padding-left: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.notesList li {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #495057;
+}
+
+.notesList strong {
+  color: #212529;
+  font-weight: 600;
+}
+
+.notesList code {
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #d63384;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stateIndicatorContainer {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .messageBubble {
+    padding: 20px;
+  }
+
+  .explanation,
+  .networkInspector,
+  .educationalNotes {
+    padding: 20px;
+  }
+
+  .explanationTitle,
+  .inspectorTitle,
+  .notesTitle {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .messageText {
+    font-size: 15px;
+  }
+}

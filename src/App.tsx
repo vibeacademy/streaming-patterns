@@ -46,6 +46,15 @@ const ChainOfReasoningDemo = lazy(
     )
 );
 
+const AgentAwaitPromptDemo = lazy(
+  () =>
+    import('./patterns/agent-await-prompt/AgentAwaitPromptDemo').then(
+      (module) => ({
+        default: module.default
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -123,6 +132,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Chain-of-Reasoning">
                     <ChainOfReasoningDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Agent-Await-Prompt Pattern Demo */}
+              <Route
+                path="/patterns/agent-await-prompt"
+                element={
+                  <PatternErrorBoundary patternName="Agent-Await-Prompt">
+                    <AgentAwaitPromptDemo />
                   </PatternErrorBoundary>
                 }
               />
