@@ -39,8 +39,16 @@
 .sectionTitle {
   font-size: 1.5rem;
   font-weight: 700;
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.5rem;
   color: #111827;
+}
+
+.sectionDescription {
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+  max-width: 48rem;
 }
 
 /* Pattern Grid */
@@ -140,6 +148,21 @@
 
 .metaItem strong {
   color: #111827;
+}
+
+.difficultyBadge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  background-color: #eff6ff;
+  color: #1e40af;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.conceptsList {
+  color: #4b5563;
+  font-style: italic;
 }
 
 .patternCta {
