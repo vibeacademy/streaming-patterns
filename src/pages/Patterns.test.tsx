@@ -70,13 +70,23 @@ describe('Patterns Page', () => {
       }
     });
 
-    it('should display unavailable foundational patterns as coming soon', () => {
+    it('should display Agent-Await-Prompt as available', () => {
       renderWithRouter(<Patterns />);
 
       const agentCard = screen.getByText('Agent-Await-Prompt').closest('div');
       expect(agentCard).toBeInTheDocument();
       if (agentCard) {
-        expect(within(agentCard).getByText(/coming soon/i)).toBeInTheDocument();
+        expect(within(agentCard).getByText(/✓ available/i)).toBeInTheDocument();
+      }
+    });
+
+    it('should display unavailable foundational patterns as coming soon', () => {
+      renderWithRouter(<Patterns />);
+
+      const tabularCard = screen.getByText('Tabular Stream View').closest('div');
+      expect(tabularCard).toBeInTheDocument();
+      if (tabularCard) {
+        expect(within(tabularCard).getByText(/coming soon/i)).toBeInTheDocument();
       }
     });
   });
@@ -149,10 +159,16 @@ describe('Patterns Page', () => {
       expect(chainCard).toHaveTextContent(/view demo/i);
     });
 
+    it('should show "View Demo" CTA for Agent-Await-Prompt', () => {
+      renderWithRouter(<Patterns />);
+      const agentCard = screen.getByText('Agent-Await-Prompt').closest('a');
+      expect(agentCard).toHaveTextContent(/view demo/i);
+    });
+
     it('should not show "View Demo" CTA for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const agentCard = screen.getByText('Agent-Await-Prompt').closest('div');
-      expect(agentCard).not.toHaveTextContent(/view demo/i);
+      const tabularCard = screen.getByText('Tabular Stream View').closest('div');
+      expect(tabularCard).not.toHaveTextContent(/view demo/i);
     });
   });
 
@@ -163,11 +179,17 @@ describe('Patterns Page', () => {
       expect(link).toHaveAttribute('href', '/patterns/chain-of-reasoning');
     });
 
+    it('should have a clickable link for Agent-Await-Prompt', () => {
+      renderWithRouter(<Patterns />);
+      const link = screen.getByRole('link', { name: /view agent-await-prompt demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/agent-await-prompt');
+    });
+
     it('should not have links for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const agentTitle = screen.getByText('Agent-Await-Prompt');
-      const agentCard = agentTitle.closest('a');
-      expect(agentCard).not.toBeInTheDocument();
+      const tabularTitle = screen.getByText('Tabular Stream View');
+      const tabularCard = tabularTitle.closest('a');
+      expect(tabularCard).not.toBeInTheDocument();
     });
   });
 
@@ -210,11 +232,11 @@ describe('Patterns Page', () => {
     it('should have aria-label on status badges', () => {
       renderWithRouter(<Patterns />);
 
-      const availableBadge = screen.getByLabelText(/available now/i);
-      expect(availableBadge).toBeInTheDocument();
+      const availableBadges = screen.getAllByLabelText(/available now/i);
+      expect(availableBadges.length).toBe(2); // Chain-of-Reasoning and Agent-Await-Prompt
 
       const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBeGreaterThan(0);
+      expect(comingSoonBadges.length).toBe(5); // 1 foundational + 4 advanced
     });
 
     it('should have aria-label on pattern links', () => {
@@ -230,9 +252,9 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       // Coming soon patterns are wrapped in divs with aria-disabled
-      const agentTitle = screen.getByText('Agent-Await-Prompt');
-      const agentContainer = agentTitle.closest('[aria-disabled="true"]');
-      expect(agentContainer).toBeInTheDocument();
+      const tabularTitle = screen.getByText('Tabular Stream View');
+      const tabularContainer = tabularTitle.closest('[aria-disabled="true"]');
+      expect(tabularContainer).toBeInTheDocument();
     });
 
     it('should use semantic list markup for pattern grids', () => {
