@@ -18,7 +18,7 @@
  * @module patterns/agent-await-prompt/AgentAwaitPromptDemo
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { useAwaitPromptStream } from './hooks';
@@ -133,6 +133,18 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
   // Selected scenario
   const [selectedScenario, setSelectedScenario] = useState(DEMO_SCENARIOS[0]);
 
+  // Memoize event handler to prevent stream from restarting on every render
+  const handleEvent = useCallback(
+    (event: PatternStreamEvent) => {
+      // Adapt and capture events for network inspector
+      const globalEvent = adaptEventForNetworkInspector(event);
+      if (globalEvent) {
+        captureEvent(globalEvent);
+      }
+    },
+    [captureEvent]
+  );
+
   // Stream state from custom hook
   const {
     text,
@@ -145,13 +157,7 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
     isActive,
   } = useAwaitPromptStream(selectedScenario.prompt, {
     speed: 'normal',
-    onEvent: (event) => {
-      // Adapt and capture events for network inspector
-      const globalEvent = adaptEventForNetworkInspector(event);
-      if (globalEvent) {
-        captureEvent(globalEvent);
-      }
-    },
+    onEvent: handleEvent,
   });
 
   /**

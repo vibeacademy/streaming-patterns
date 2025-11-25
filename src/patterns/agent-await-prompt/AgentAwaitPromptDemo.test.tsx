@@ -154,9 +154,9 @@ describe('AgentAwaitPromptDemo', () => {
       { timeout: 15000 }
     );
 
-    // Should show timeout countdown
-    const timeoutElement = screen.getByText(/Respond within/i);
-    expect(timeoutElement).toBeInTheDocument();
+    // Should show timeout countdown (there might be multiple instances)
+    const timeoutElements = screen.queryAllByText(/Respond within/i);
+    expect(timeoutElements.length).toBeGreaterThan(0);
   });
 
   it('should display pattern mechanics explanation', () => {
