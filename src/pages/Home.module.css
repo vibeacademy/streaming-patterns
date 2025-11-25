@@ -48,11 +48,22 @@
   margin-bottom: 4rem;
 }
 
+.sectionHeader {
+  margin-bottom: 2rem;
+}
+
 .sectionTitle {
   font-size: 2rem;
   font-weight: 700;
-  margin: 0 0 2rem;
+  margin: 0 0 0.5rem;
   color: #111827;
+}
+
+.progressIndicator {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 500;
 }
 
 .patternsGrid {
@@ -112,6 +123,32 @@
   border-radius: 9999px;
   background-color: #d1fae5;
   color: #065f46;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.comingSoonCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease;
+  opacity: 0.85;
+  background: linear-gradient(to bottom right, #ffffff, #f9fafb);
+  border: 1px dashed #d1d5db;
+}
+
+.comingSoonCard:hover {
+  opacity: 1;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.comingSoonStatus {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #fef3c7;
+  color: #92400e;
   font-weight: 500;
   white-space: nowrap;
 }

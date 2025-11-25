@@ -26,8 +26,39 @@ export function Home(): JSX.Element {
         'Progressive disclosure',
         'Promote to plan CTA'
       ]
+    },
+    {
+      id: 'agent-await-prompt',
+      title: 'Agent-Await-Prompt',
+      description:
+        'Pause agent execution to request clarification or additional input from the user mid-workflow.',
+      status: 'available',
+      route: '/patterns/agent-await-prompt',
+      demoScenario: 'Dependency Resolution',
+      techniques: [
+        'Pause indicators',
+        'Inline input forms',
+        'Resume streaming'
+      ]
+    },
+    {
+      id: 'coming-soon',
+      title: '5 More Patterns',
+      description:
+        'Tabular Stream View, Multi-Turn Memory Timeline, Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
+      status: 'coming-soon',
+      route: '/patterns',
+      demoScenario: 'Advanced streaming techniques',
+      techniques: [
+        'View full catalog',
+        'Track progress',
+        'Stay updated'
+      ]
     }
   ];
+
+  const implementedCount = patterns.filter((p) => p.status === 'available').length;
+  const totalCount = 7;
 
   return (
     <div className={styles.home}>
@@ -47,20 +78,22 @@ export function Home(): JSX.Element {
 
       {/* Patterns Grid */}
       <section className={styles.patternsSection}>
-        <h2 className={styles.sectionTitle}>Available Patterns</h2>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>Explore Streaming Patterns</h2>
+          <p className={styles.progressIndicator}>
+            {implementedCount} of {totalCount} patterns implemented
+          </p>
+        </div>
 
         <div className={styles.patternsGrid}>
-          {patterns.map((pattern) => (
-            <Link
-              key={pattern.id}
-              to={pattern.route}
-              className={styles.patternLink}
-            >
-              <Card className={styles.patternCard}>
+          {patterns.map((pattern) => {
+            const isAvailable = pattern.status === 'available';
+            const cardContent = (
+              <Card className={isAvailable ? styles.patternCard : styles.comingSoonCard}>
                 <div className={styles.patternHeader}>
                   <h3 className={styles.patternTitle}>{pattern.title}</h3>
-                  <span className={styles.patternStatus}>
-                    {pattern.status === 'available' ? '✓ Available' : 'Coming Soon'}
+                  <span className={isAvailable ? styles.patternStatus : styles.comingSoonStatus}>
+                    {isAvailable ? '✓ Available' : 'Coming Soon'}
                   </span>
                 </div>
 
@@ -70,11 +103,11 @@ export function Home(): JSX.Element {
 
                 <div className={styles.patternMeta}>
                   <div className={styles.patternScenario}>
-                    <strong>Demo:</strong> {pattern.demoScenario}
+                    <strong>{isAvailable ? 'Demo:' : 'Includes:'}</strong> {pattern.demoScenario}
                   </div>
 
                   <div className={styles.patternTechniques}>
-                    <strong>Techniques:</strong>
+                    <strong>{isAvailable ? 'Techniques:' : 'Actions:'}</strong>
                     <ul className={styles.techniquesList}>
                       {pattern.techniques.map((technique) => (
                         <li key={technique}>{technique}</li>
@@ -84,11 +117,21 @@ export function Home(): JSX.Element {
                 </div>
 
                 <div className={styles.patternCta}>
-                  View Pattern Demo →
+                  {isAvailable ? 'View Pattern Demo →' : 'View All Patterns →'}
                 </div>
               </Card>
-            </Link>
-          ))}
+            );
+
+            return (
+              <Link
+                key={pattern.id}
+                to={pattern.route}
+                className={styles.patternLink}
+              >
+                {cardContent}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
