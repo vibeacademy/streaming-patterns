@@ -57,6 +57,7 @@
 .select {
   flex: 1;
   min-width: 200px;
+  max-width: 100%;
   padding: 10px 12px;
   border: 2px solid #ced4da;
   border-radius: 6px;
@@ -406,5 +407,80 @@
 
   .messageText {
     font-size: 15px;
+  }
+
+  .select {
+    min-width: 0;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .controls {
+    padding: 16px;
+    gap: 12px;
+  }
+}
+
+/* Extra small mobile devices (iPhone SE, etc.) */
+@media (max-width: 414px) {
+  .container {
+    padding: 16px 12px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .select {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .controlLabel {
+    font-size: 14px;
+  }
+
+  .controls {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .stateBadge {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+/* Very small mobile devices */
+@media (max-width: 374px) {
+  .container {
+    padding: 12px 8px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .select {
+    font-size: 12px;
+    padding: 7px 8px;
+  }
+
+  .controlLabel {
+    font-size: 13px;
+  }
+
+  .controls {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .stateBadge {
+    font-size: 11px;
+    padding: 4px 8px;
   }
 }
