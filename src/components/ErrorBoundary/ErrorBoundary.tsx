@@ -24,6 +24,7 @@
 
 import { Component, type ReactNode, type ErrorInfo } from 'react';
 import { ErrorFallback } from './ErrorFallback';
+import { reportReactError } from '../../lib/monitoring/errorTracking';
 
 /**
  * Props for ErrorBoundary component
@@ -108,15 +109,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       errorInfo
     });
 
+    // Report error to monitoring service
+    reportReactError(error, errorInfo, {
+      component: 'ErrorBoundary'
+    });
+
     // Call optional error callback
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
-
-    // Future: Send error to monitoring service (e.g., Sentry)
-    // if (process.env.NODE_ENV === 'production') {
-    //   logErrorToService(error, errorInfo);
-    // }
   }
 
   /**
