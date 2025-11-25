@@ -69,13 +69,13 @@ describe('ReasoningBeadline', () => {
       expect(beadNumbers[2]).toHaveTextContent('3');
     });
 
-    it('should render as a live region (log) with ARIA labels', () => {
+    it('should render as a list with live region ARIA labels', () => {
       render(<ReasoningBeadline reasoning={mockReasoningSteps} />);
 
-      const log = screen.getByRole('log', { name: /ai reasoning steps/i });
-      expect(log).toBeInTheDocument();
-      expect(log).toHaveAttribute('aria-live', 'polite');
-      expect(log).toHaveAttribute('aria-atomic', 'false');
+      const list = screen.getByRole('list', { name: /ai reasoning steps/i });
+      expect(list).toBeInTheDocument();
+      expect(list).toHaveAttribute('aria-live', 'polite');
+      expect(list).toHaveAttribute('aria-atomic', 'false');
 
       const items = screen.getAllByRole('listitem');
       expect(items).toHaveLength(3);
@@ -270,9 +270,9 @@ describe('ReasoningBeadline', () => {
     it('should have semantic HTML structure', () => {
       render(<ReasoningBeadline reasoning={mockReasoningSteps} />);
 
-      // Check for log structure with live region support
-      const log = screen.getByRole('log');
-      expect(log).toBeInTheDocument();
+      // Check for list structure with live region support
+      const list = screen.getByRole('list');
+      expect(list).toBeInTheDocument();
 
       // Check for article elements (semantic step containers)
       const articles = screen.getAllByRole('listitem');
@@ -282,8 +282,8 @@ describe('ReasoningBeadline', () => {
     it('should have proper ARIA labels for screen readers', () => {
       render(<ReasoningBeadline reasoning={mockReasoningSteps} />);
 
-      // Log should have descriptive label
-      expect(screen.getByRole('log', { name: /ai reasoning steps/i })).toBeInTheDocument();
+      // List should have descriptive label
+      expect(screen.getByRole('list', { name: /ai reasoning steps/i })).toBeInTheDocument();
 
       // Each step number should have confidence info
       expect(screen.getByLabelText(/step 1.*high confidence/i)).toBeInTheDocument();

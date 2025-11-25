@@ -116,7 +116,7 @@
   display: inline-flex;
   align-items: center;
   padding: var(--space-1) var(--space-3);
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary-700); /* Darker for better contrast (was 500) */
   color: white;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
