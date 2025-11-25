@@ -17,6 +17,8 @@ interface Pattern {
   phase: string;
   demoScenario: string;
   techniques: string[];
+  difficulty: 'foundational' | 'advanced';
+  concepts: string[];
 }
 
 const patterns: Pattern[] = [
@@ -29,6 +31,8 @@ const patterns: Pattern[] = [
     route: '/patterns/chain-of-reasoning',
     phase: 'Phase 2 - Foundational Patterns',
     demoScenario: 'AI Sprint Planning Assistant',
+    difficulty: 'foundational',
+    concepts: ['streaming reasoning', 'transparency', 'trust building'],
     techniques: [
       'Reasoning beads timeline',
       'Progressive disclosure',
@@ -44,6 +48,8 @@ const patterns: Pattern[] = [
     route: '/patterns/agent-await-prompt',
     phase: 'Phase 2 - Foundational Patterns',
     demoScenario: 'Dependency Resolution',
+    difficulty: 'foundational',
+    concepts: ['pause/resume', 'interactive streaming', 'user input collection'],
     techniques: [
       'Pause indicators',
       'Inline input forms',
@@ -59,6 +65,8 @@ const patterns: Pattern[] = [
     route: '/patterns/tabular-stream-view',
     phase: 'Phase 2 - Foundational Patterns',
     demoScenario: 'Sprint Backlog Generation',
+    difficulty: 'foundational',
+    concepts: ['structured data streaming', 'progressive rendering', 'tabular UX'],
     techniques: [
       'Progressive table rendering',
       'Skeleton loaders',
@@ -74,6 +82,8 @@ const patterns: Pattern[] = [
     route: '/patterns/multi-turn-memory-timeline',
     phase: 'Phase 3 - Advanced Patterns',
     demoScenario: 'Multi-Sprint Planning',
+    difficulty: 'advanced',
+    concepts: ['memory management', 'conversation context', 'state persistence'],
     techniques: [
       'Memory timeline',
       'Recall indicators',
@@ -89,6 +99,8 @@ const patterns: Pattern[] = [
     route: '/patterns/turn-taking-co-creation',
     phase: 'Phase 3 - Advanced Patterns',
     demoScenario: 'Story Map Building',
+    difficulty: 'advanced',
+    concepts: ['collaborative editing', 'turn-based interaction', 'draft approval'],
     techniques: [
       'Turn indicators',
       'Draft approval',
@@ -104,6 +116,8 @@ const patterns: Pattern[] = [
     route: '/patterns/streaming-validation-loop',
     phase: 'Phase 3 - Advanced Patterns',
     demoScenario: 'Task Schema Validation',
+    difficulty: 'advanced',
+    concepts: ['schema validation', 'error handling', 'progressive feedback'],
     techniques: [
       'Live validation',
       'Error annotations',
@@ -119,6 +133,8 @@ const patterns: Pattern[] = [
     route: '/patterns/schema-governed-exchange',
     phase: 'Phase 3 - Advanced Patterns',
     demoScenario: 'Structured Task Creation',
+    difficulty: 'advanced',
+    concepts: ['type safety', 'schema enforcement', 'structured communication'],
     techniques: [
       'Schema enforcement',
       'Type validation',
@@ -128,99 +144,140 @@ const patterns: Pattern[] = [
 ];
 
 /**
- * Patterns page component
+ * Pattern Card Component
+ * Displays a single pattern with all metadata
  */
-export function Patterns(): JSX.Element {
-  const availablePatterns = patterns.filter((p) => p.status === 'available');
-  const comingSoonPatterns = patterns.filter((p) => p.status === 'coming-soon');
+interface PatternCardProps {
+  pattern: Pattern;
+}
+
+function PatternCard({ pattern }: PatternCardProps): JSX.Element {
+  const isAvailable = pattern.status === 'available';
+  const cardContent = (
+    <Card className={isAvailable ? styles.patternCard : styles.comingSoonCard}>
+      <div className={styles.patternHeader}>
+        <h3 className={styles.patternTitle}>{pattern.title}</h3>
+        <span
+          className={
+            isAvailable ? styles.statusBadge : styles.comingSoonBadge
+          }
+          aria-label={isAvailable ? 'Available now' : 'Coming soon'}
+        >
+          {isAvailable ? '✓ Available' : 'Coming Soon'}
+        </span>
+      </div>
+
+      <p className={styles.patternDescription}>{pattern.description}</p>
+
+      <div className={styles.patternMeta}>
+        <div className={styles.metaItem}>
+          <strong>Demo:</strong> {pattern.demoScenario}
+        </div>
+        <div className={styles.metaItem}>
+          <strong>Difficulty:</strong>{' '}
+          <span className={styles.difficultyBadge}>
+            {pattern.difficulty === 'foundational' ? 'Foundational' : 'Advanced'}
+          </span>
+        </div>
+        <div className={styles.metaItem}>
+          <strong>Key Concepts:</strong>{' '}
+          <span className={styles.conceptsList}>
+            {pattern.concepts.join(', ')}
+          </span>
+        </div>
+      </div>
+
+      {isAvailable && (
+        <div className={styles.patternCta} aria-hidden="true">
+          View Demo →
+        </div>
+      )}
+    </Card>
+  );
+
+  if (isAvailable) {
+    return (
+      <Link
+        to={pattern.route}
+        className={styles.patternLink}
+        aria-label={`View ${pattern.title} demo`}
+      >
+        {cardContent}
+      </Link>
+    );
+  }
 
   return (
-    <div className={styles.patterns}>
+    <div className={styles.patternCard} aria-disabled="true">
+      {cardContent}
+    </div>
+  );
+}
+
+/**
+ * Patterns page component
+ * Displays catalog of all streaming patterns grouped by difficulty level
+ */
+export function Patterns(): JSX.Element {
+  const foundationalPatterns = patterns.filter(
+    (p) => p.difficulty === 'foundational'
+  );
+  const advancedPatterns = patterns.filter((p) => p.difficulty === 'advanced');
+
+  return (
+    <main className={styles.patterns} role="main">
       {/* Header */}
       <header className={styles.header}>
-        <h1 className={styles.title}>Streaming Patterns</h1>
+        <h1 className={styles.title}>Streaming Patterns Catalog</h1>
         <p className={styles.description}>
-          A comprehensive catalog of UX patterns for streaming AI interfaces.
-          Each pattern includes a working demo, annotated source code, and
-          network inspection tools.
+          Educational patterns for building modern streaming AI interfaces.
+          Each pattern demonstrates key UX techniques for handling real-time
+          LLM responses in the StreamFlow PM product.
         </p>
       </header>
 
-      {/* Available Patterns */}
-      {availablePatterns.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            Available Patterns ({availablePatterns.length})
-          </h2>
+      {/* Foundational Patterns Section */}
+      <section
+        className={styles.section}
+        aria-labelledby="foundational-heading"
+      >
+        <h2 id="foundational-heading" className={styles.sectionTitle}>
+          Foundational Patterns
+        </h2>
+        <p className={styles.sectionDescription}>
+          Core patterns that establish the basics of streaming UX. Start here
+          to learn essential techniques for progressive rendering, user
+          interaction, and transparency.
+        </p>
 
-          <div className={styles.patternGrid}>
-            {availablePatterns.map((pattern) => (
-              <Link
-                key={pattern.id}
-                to={pattern.route}
-                className={styles.patternLink}
-              >
-                <Card className={styles.patternCard}>
-                  <div className={styles.patternHeader}>
-                    <h3 className={styles.patternTitle}>{pattern.title}</h3>
-                    <span className={styles.statusBadge}>✓ Available</span>
-                  </div>
+        <div className={styles.patternGrid} role="list">
+          {foundationalPatterns.map((pattern) => (
+            <div key={pattern.id} role="listitem">
+              <PatternCard pattern={pattern} />
+            </div>
+          ))}
+        </div>
+      </section>
 
-                  <p className={styles.patternDescription}>
-                    {pattern.description}
-                  </p>
+      {/* Advanced Patterns Section */}
+      <section className={styles.section} aria-labelledby="advanced-heading">
+        <h2 id="advanced-heading" className={styles.sectionTitle}>
+          Advanced Patterns
+        </h2>
+        <p className={styles.sectionDescription}>
+          Complex patterns for stateful interactions, validation, and
+          collaborative workflows. Build on foundational knowledge to handle
+          sophisticated use cases.
+        </p>
 
-                  <div className={styles.patternMeta}>
-                    <div className={styles.metaItem}>
-                      <strong>Demo:</strong> {pattern.demoScenario}
-                    </div>
-                    <div className={styles.metaItem}>
-                      <strong>Phase:</strong> {pattern.phase}
-                    </div>
-                  </div>
-
-                  <div className={styles.patternCta}>View Demo →</div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Coming Soon Patterns */}
-      {comingSoonPatterns.length > 0 && (
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>
-            Coming Soon ({comingSoonPatterns.length})
-          </h2>
-
-          <div className={styles.patternGrid}>
-            {comingSoonPatterns.map((pattern) => (
-              <div key={pattern.id} className={styles.patternCard}>
-                <Card className={styles.comingSoonCard}>
-                  <div className={styles.patternHeader}>
-                    <h3 className={styles.patternTitle}>{pattern.title}</h3>
-                    <span className={styles.comingSoonBadge}>Coming Soon</span>
-                  </div>
-
-                  <p className={styles.patternDescription}>
-                    {pattern.description}
-                  </p>
-
-                  <div className={styles.patternMeta}>
-                    <div className={styles.metaItem}>
-                      <strong>Demo:</strong> {pattern.demoScenario}
-                    </div>
-                    <div className={styles.metaItem}>
-                      <strong>Phase:</strong> {pattern.phase}
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-    </div>
+        <div className={styles.patternGrid} role="list">
+          {advancedPatterns.map((pattern) => (
+            <div key={pattern.id} role="listitem">
+              <PatternCard pattern={pattern} />
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
