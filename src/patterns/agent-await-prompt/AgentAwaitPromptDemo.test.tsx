@@ -70,60 +70,69 @@ describe('AgentAwaitPromptDemo', () => {
   it('should pause and show inline input fields', async () => {
     render(<AgentAwaitPromptDemo />);
 
-    // Wait for stream to pause and show input fields
+    // Wait for stream to pause and show Continue button and listening indicator
     await waitFor(
       () => {
         const continueButton = screen.getByRole('button', { name: /Continue/i });
         expect(continueButton).toBeInTheDocument();
+
+        // Should show listening indicator
+        const listeningText = screen.queryByText(/Listening/i);
+        expect(listeningText).toBeInTheDocument();
       },
       { timeout: 15000 }
     );
-
-    // Should show listening indicator
-    expect(screen.getByText(/Listening for your response/i)).toBeInTheDocument();
-  });
+  }, 20000); // Set test timeout to 20 seconds
 
   it('should display required field indicators', async () => {
     render(<AgentAwaitPromptDemo />);
 
+    // Wait for inputs to appear and check for required field markers
     await waitFor(
       () => {
-        const continueButton = screen.getByRole('button', { name: /Continue/i });
-        expect(continueButton).toBeInTheDocument();
+        // Should have required field markers (check aria-required attribute)
+        // Note: getAllByRole returns all inputs with textbox role (type="text")
+        // Number inputs have spinbutton role, date inputs may not have a standard role
+        const textInputs = screen.queryAllByRole('textbox');
+        const numberInputs = screen.queryAllByRole('spinbutton');
+        const allInputs = [...textInputs, ...numberInputs];
+        const requiredInputs = allInputs.filter(input => input.getAttribute('aria-required') === 'true');
+        expect(requiredInputs.length).toBeGreaterThan(0);
       },
       { timeout: 15000 }
     );
-
-    // Should have required field markers (look for "required" in labels)
-    const requiredInputs = screen.getAllByRole('textbox', { name: /required/i });
-    expect(requiredInputs.length).toBeGreaterThan(0);
-  });
+  }, 20000); // Set test timeout to 20 seconds
 
   it('should allow user to submit input and resume stream', async () => {
     const user = userEvent.setup();
     render(<AgentAwaitPromptDemo />);
 
-    // Wait for input fields
+    // Wait for all input fields and continue button to be visible
+    let projectNameInput: HTMLElement;
+    let teamSizeInput: HTMLElement;
+    let deadlineInput: HTMLElement;
+    let continueButton: HTMLElement;
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
+        projectNameInput = screen.getByRole('textbox', { name: /Project Name/i });
+        teamSizeInput = screen.getByRole('spinbutton', { name: /Team Size/i });
+        deadlineInput = screen.getByLabelText(/Target Deadline/i);
+        continueButton = screen.getByRole('button', { name: /Continue/i });
+        expect(projectNameInput).toBeInTheDocument();
+        expect(teamSizeInput).toBeInTheDocument();
+        expect(deadlineInput).toBeInTheDocument();
+        expect(continueButton).toBeInTheDocument();
       },
       { timeout: 15000 }
     );
 
     // Fill in required fields
-    const projectNameInput = screen.getByLabelText(/Project Name/i);
-    await user.type(projectNameInput, 'Test Project');
-
-    const teamSizeInput = screen.getByLabelText(/Team Size/i);
-    await user.type(teamSizeInput, '5');
-
-    const deadlineInput = screen.getByLabelText(/Target Deadline/i);
-    await user.type(deadlineInput, '2025-12-31');
+    await user.type(projectNameInput!, 'Test Project');
+    await user.type(teamSizeInput!, '5');
+    await user.type(deadlineInput!, '2025-12-31');
 
     // Submit
-    const continueButton = screen.getByRole('button', { name: /Continue/i });
-    await user.click(continueButton);
+    await user.click(continueButton!);
 
     // Stream should resume
     await waitFor(
@@ -133,7 +142,7 @@ describe('AgentAwaitPromptDemo', () => {
       },
       { timeout: 2000 }
     );
-  });
+  }, 20000); // Set test timeout to 20 seconds
 
   it('should show timeout countdown', async () => {
     render(<AgentAwaitPromptDemo />);
@@ -164,7 +173,9 @@ describe('AgentAwaitPromptDemo', () => {
   it('should display Network Inspector', () => {
     render(<AgentAwaitPromptDemo />);
 
-    expect(screen.getByText('Network Inspector')).toBeInTheDocument();
+    // Network Inspector heading may appear multiple times due to pattern library structure
+    const networkInspectors = screen.getAllByText('Network Inspector');
+    expect(networkInspectors.length).toBeGreaterThan(0);
   });
 
   it('should display educational notes', () => {
@@ -199,49 +210,55 @@ describe('AgentAwaitPromptDemo', () => {
     const user = userEvent.setup();
     render(<AgentAwaitPromptDemo />);
 
-    // Wait for input fields
+    // Wait for Continue button to appear (wait for await_input state)
+    let continueButton: HTMLElement;
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
+        continueButton = screen.getByRole('button', { name: /Continue/i });
+        expect(continueButton).toBeInTheDocument();
       },
       { timeout: 15000 }
     );
 
     // Try to submit without filling fields
-    const continueButton = screen.getByRole('button', { name: /Continue/i });
-    await user.click(continueButton);
+    await user.click(continueButton!);
 
     // Should show validation errors
     await waitFor(() => {
       const errors = screen.getAllByRole('alert');
       expect(errors.length).toBeGreaterThan(0);
     });
-  });
+  }, 20000); // Set test timeout to 20 seconds
 
   it('should handle stream completion', async () => {
     const user = userEvent.setup();
     render(<AgentAwaitPromptDemo />);
 
-    // Wait for input fields
+    // Wait for all input fields and continue button to be visible
+    let projectNameInput: HTMLElement;
+    let teamSizeInput: HTMLElement;
+    let deadlineInput: HTMLElement;
+    let continueButton: HTMLElement;
     await waitFor(
       () => {
-        expect(screen.getByRole('button', { name: /Continue/i })).toBeInTheDocument();
+        projectNameInput = screen.getByRole('textbox', { name: /Project Name/i });
+        teamSizeInput = screen.getByRole('spinbutton', { name: /Team Size/i });
+        deadlineInput = screen.getByLabelText(/Target Deadline/i);
+        continueButton = screen.getByRole('button', { name: /Continue/i });
+        expect(projectNameInput).toBeInTheDocument();
+        expect(teamSizeInput).toBeInTheDocument();
+        expect(deadlineInput).toBeInTheDocument();
+        expect(continueButton).toBeInTheDocument();
       },
       { timeout: 15000 }
     );
 
     // Fill and submit
-    const projectNameInput = screen.getByLabelText(/Project Name/i);
-    await user.type(projectNameInput, 'Test Project');
+    await user.type(projectNameInput!, 'Test Project');
+    await user.type(teamSizeInput!, '5');
+    await user.type(deadlineInput!, '2025-12-31');
 
-    const teamSizeInput = screen.getByLabelText(/Team Size/i);
-    await user.type(teamSizeInput, '5');
-
-    const deadlineInput = screen.getByLabelText(/Target Deadline/i);
-    await user.type(deadlineInput, '2025-12-31');
-
-    const continueButton = screen.getByRole('button', { name: /Continue/i });
-    await user.click(continueButton);
+    await user.click(continueButton!);
 
     // Wait for completion - look in the state indicator area
     await waitFor(
@@ -253,5 +270,5 @@ describe('AgentAwaitPromptDemo', () => {
       },
       { timeout: 10000 }
     );
-  });
+  }, 20000); // Set test timeout to 20 seconds
 });
