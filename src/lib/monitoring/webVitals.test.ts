@@ -2,7 +2,7 @@
  * Tests for Web Vitals Tracking
  */
 
-/* eslint-disable no-undef, @typescript-eslint/no-explicit-any */
+/* eslint-disable no-undef */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { initWebVitals, getWebVitalsSnapshot, type Metric } from './webVitals';

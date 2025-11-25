@@ -2,7 +2,7 @@
  * Tests for Error Tracking Service
  */
 
-/* eslint-disable no-undef, @typescript-eslint/no-explicit-any */
+/* eslint-disable no-undef */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {

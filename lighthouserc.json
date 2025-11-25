@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "staticDistDir": "./dist",
+      "startServerCommand": "npx serve dist -l 8080 --single",
       "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
@@ -12,8 +12,8 @@
         }
       },
       "url": [
-        "http://localhost/",
-        "http://localhost/patterns/chain-of-reasoning"
+        "http://localhost:8080/",
+        "http://localhost:8080/patterns/chain-of-reasoning"
       ]
     },
     "assert": {
