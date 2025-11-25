@@ -44,7 +44,7 @@ const patterns: Pattern[] = [
     title: 'Agent-Await-Prompt',
     description:
       'Pause agent execution to request clarification or additional input from the user mid-workflow.',
-    status: 'coming-soon',
+    status: 'available',
     route: '/patterns/agent-await-prompt',
     phase: 'Phase 2 - Foundational Patterns',
     demoScenario: 'Dependency Resolution',
@@ -223,6 +223,8 @@ export function Patterns(): JSX.Element {
     (p) => p.difficulty === 'foundational'
   );
   const advancedPatterns = patterns.filter((p) => p.difficulty === 'advanced');
+  const implementedCount = patterns.filter((p) => p.status === 'available').length;
+  const totalCount = patterns.length;
 
   return (
     <main className={styles.patterns} role="main">
@@ -233,6 +235,9 @@ export function Patterns(): JSX.Element {
           Educational patterns for building modern streaming AI interfaces.
           Each pattern demonstrates key UX techniques for handling real-time
           LLM responses in the StreamFlow PM product.
+        </p>
+        <p className={styles.progressIndicator}>
+          <strong>{implementedCount} of {totalCount} patterns implemented</strong>
         </p>
       </header>
 
