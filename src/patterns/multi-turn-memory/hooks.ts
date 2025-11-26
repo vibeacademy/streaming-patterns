@@ -183,7 +183,8 @@ export function useMemoryTimeline(
     return () => {
       cancelled = true;
     };
-  }, [autoStart, onEvent, streamConfig]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart]); // Only depend on autoStart to prevent infinite loops from object recreation
 
   // ========== Conversation Turns ==========
   /**

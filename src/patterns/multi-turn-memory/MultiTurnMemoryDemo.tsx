@@ -8,7 +8,7 @@
  * @educational Full pattern implementation with network inspector integration
  */
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useMemoryTimeline } from './hooks';
 import { MemoryTimeline } from './MemoryTimeline';
 import { MemoryFilters } from './MemoryFilters';
@@ -31,6 +31,12 @@ export function MultiTurnMemoryDemo(): JSX.Element {
   const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
   const [showFilters, setShowFilters] = useState(true);
 
+  // Memoize the event callback to prevent infinite loops
+  const handleEvent = useCallback((event: { type: string; data: unknown }) => {
+    // Events can be captured for network inspector
+    console.log('Memory event:', event.type, event.data);
+  }, []);
+
   // Use the memory timeline hook with network inspector callback
   const {
     filteredMemories,
@@ -42,10 +48,7 @@ export function MultiTurnMemoryDemo(): JSX.Element {
   } = useMemoryTimeline({
     speed,
     autoStart: true,
-    onEvent: (event) => {
-      // Events can be captured for network inspector
-      console.log('Memory event:', event.type, event.data);
-    },
+    onEvent: handleEvent,
   });
 
   return (
