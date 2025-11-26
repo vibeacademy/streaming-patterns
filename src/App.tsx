@@ -55,6 +55,15 @@ const AgentAwaitPromptDemo = lazy(
     )
 );
 
+const TabularStreamViewDemo = lazy(
+  () =>
+    import('./patterns/tabular-stream-view/TabularStreamViewDemo').then(
+      (module) => ({
+        default: module.default
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -142,6 +151,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Agent-Await-Prompt">
                     <AgentAwaitPromptDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Tabular Stream View Pattern Demo */}
+              <Route
+                path="/patterns/tabular-stream-view"
+                element={
+                  <PatternErrorBoundary patternName="Tabular-Stream-View">
+                    <TabularStreamViewDemo />
                   </PatternErrorBoundary>
                 }
               />
