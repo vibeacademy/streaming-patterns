@@ -42,10 +42,24 @@ export function Home(): JSX.Element {
       ]
     },
     {
-      id: 'coming-soon',
-      title: '5 More Patterns',
+      id: 'tabular-stream-view',
+      title: 'Tabular Stream View',
       description:
-        'Tabular Stream View, Multi-Turn Memory Timeline, Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
+        'Display streaming data in structured tables that populate row-by-row with progressive rendering.',
+      status: 'available',
+      route: '/patterns/tabular-stream-view',
+      demoScenario: 'Team Capacity Planning',
+      techniques: [
+        'Progressive table rendering',
+        'Client-side sorting/filtering',
+        'CSV export functionality'
+      ]
+    },
+    {
+      id: 'coming-soon',
+      title: '4 More Patterns',
+      description:
+        'Multi-Turn Memory Timeline, Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
       status: 'coming-soon',
       route: '/patterns',
       demoScenario: 'Advanced streaming techniques',
