@@ -126,11 +126,11 @@ describe('TabularStreamViewDemo', () => {
     render(<TabularStreamViewDemo />);
 
     // Initially speed select should be present
-    const speedSelect = screen.getByLabelText(/demo speed/i) as HTMLSelectElement;
+    const speedSelect = screen.getByLabelText(/demo speed/i);
     expect(speedSelect).toBeInTheDocument();
 
     // Initial value should be 'normal'
-    expect(speedSelect.value).toBe('normal');
+    expect(speedSelect).toHaveValue('normal');
 
     // Options should be available
     expect(screen.getByRole('option', { name: /fast/i })).toBeInTheDocument();
