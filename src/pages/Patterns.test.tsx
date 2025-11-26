@@ -80,13 +80,13 @@ describe('Patterns Page', () => {
       }
     });
 
-    it('should display unavailable foundational patterns as coming soon', () => {
+    it('should display Tabular Stream View as available', () => {
       renderWithRouter(<Patterns />);
 
       const tabularCard = screen.getByText('Tabular Stream View').closest('div');
       expect(tabularCard).toBeInTheDocument();
       if (tabularCard) {
-        expect(within(tabularCard).getByText(/coming soon/i)).toBeInTheDocument();
+        expect(within(tabularCard).getByText(/✓ available/i)).toBeInTheDocument();
       }
     });
   });
@@ -165,10 +165,16 @@ describe('Patterns Page', () => {
       expect(agentCard).toHaveTextContent(/view demo/i);
     });
 
+    it('should show "View Demo" CTA for Tabular Stream View', () => {
+      renderWithRouter(<Patterns />);
+      const tabularCard = screen.getByText('Tabular Stream View').closest('a');
+      expect(tabularCard).toHaveTextContent(/view demo/i);
+    });
+
     it('should not show "View Demo" CTA for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const tabularCard = screen.getByText('Tabular Stream View').closest('div');
-      expect(tabularCard).not.toHaveTextContent(/view demo/i);
+      const memoryCard = screen.getByText('Multi-Turn Memory Timeline').closest('div');
+      expect(memoryCard).not.toHaveTextContent(/view demo/i);
     });
   });
 
@@ -185,11 +191,17 @@ describe('Patterns Page', () => {
       expect(link).toHaveAttribute('href', '/patterns/agent-await-prompt');
     });
 
+    it('should have a clickable link for Tabular Stream View', () => {
+      renderWithRouter(<Patterns />);
+      const link = screen.getByRole('link', { name: /view tabular stream view demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/tabular-stream-view');
+    });
+
     it('should not have links for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const tabularTitle = screen.getByText('Tabular Stream View');
-      const tabularCard = tabularTitle.closest('a');
-      expect(tabularCard).not.toBeInTheDocument();
+      const memoryTitle = screen.getByText('Multi-Turn Memory Timeline');
+      const memoryCard = memoryTitle.closest('a');
+      expect(memoryCard).not.toBeInTheDocument();
     });
   });
 
@@ -233,10 +245,10 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       const availableBadges = screen.getAllByLabelText(/available now/i);
-      expect(availableBadges.length).toBe(2); // Chain-of-Reasoning and Agent-Await-Prompt
+      expect(availableBadges.length).toBe(3); // Chain-of-Reasoning, Agent-Await-Prompt, and Tabular Stream View
 
       const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBe(5); // 1 foundational + 4 advanced
+      expect(comingSoonBadges.length).toBe(4); // 4 advanced patterns
     });
 
     it('should have aria-label on pattern links', () => {
@@ -252,9 +264,9 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       // Coming soon patterns are wrapped in divs with aria-disabled
-      const tabularTitle = screen.getByText('Tabular Stream View');
-      const tabularContainer = tabularTitle.closest('[aria-disabled="true"]');
-      expect(tabularContainer).toBeInTheDocument();
+      const memoryTitle = screen.getByText('Multi-Turn Memory Timeline');
+      const memoryContainer = memoryTitle.closest('[aria-disabled="true"]');
+      expect(memoryContainer).toBeInTheDocument();
     });
 
     it('should use semantic list markup for pattern grids', () => {

@@ -61,10 +61,10 @@ const patterns: Pattern[] = [
     title: 'Tabular Stream View',
     description:
       'Display streaming data in structured tables with progressive loading of rows and columns.',
-    status: 'coming-soon',
+    status: 'available',
     route: '/patterns/tabular-stream-view',
     phase: 'Phase 2 - Foundational Patterns',
-    demoScenario: 'Sprint Backlog Generation',
+    demoScenario: 'Team Capacity Planning',
     difficulty: 'foundational',
     concepts: ['structured data streaming', 'progressive rendering', 'tabular UX'],
     techniques: [
