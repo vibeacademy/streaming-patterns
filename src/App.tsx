@@ -64,6 +64,15 @@ const TabularStreamViewDemo = lazy(
     )
 );
 
+const MultiTurnMemoryDemo = lazy(
+  () =>
+    import('./patterns/multi-turn-memory/MultiTurnMemoryDemo').then(
+      (module) => ({
+        default: module.default
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -161,6 +170,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Tabular-Stream-View">
                     <TabularStreamViewDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Multi-Turn Memory Timeline Pattern Demo */}
+              <Route
+                path="/patterns/multi-turn-memory"
+                element={
+                  <PatternErrorBoundary patternName="Multi-Turn-Memory">
+                    <MultiTurnMemoryDemo />
                   </PatternErrorBoundary>
                 }
               />

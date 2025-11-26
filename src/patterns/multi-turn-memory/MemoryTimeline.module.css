@@ -1,0 +1,45 @@
+/**
+ * MemoryTimeline Styles - Horizontal scrollable timeline
+ */
+
+.timeline {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface-1, #0a0a0a);
+  border-bottom: 1px solid var(--border-color, #333);
+  padding: 1rem;
+}
+
+.scrollContainer {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-behavior: smooth;
+}
+
+.scrollContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  background: var(--surface-2, #1a1a1a);
+  border-radius: 4px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  background: var(--surface-4, #333);
+  border-radius: 4px;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-5, #444);
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-tertiary, #666);
+  font-size: 0.875rem;
+}
