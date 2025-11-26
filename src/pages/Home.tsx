@@ -56,10 +56,24 @@ export function Home(): JSX.Element {
       ]
     },
     {
-      id: 'coming-soon',
-      title: '4 More Patterns',
+      id: 'multi-turn-memory',
+      title: 'Multi-Turn Memory Timeline',
       description:
-        'Multi-Turn Memory Timeline, Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
+        'Make agent memory visible and manageable across conversation turns with explicit memory artifacts.',
+      status: 'available',
+      route: '/patterns/multi-turn-memory',
+      demoScenario: 'Q4 Planning Conversation',
+      techniques: [
+        'Memory lifecycle visualization',
+        'Pin/prune user controls',
+        'Provenance tooltips'
+      ]
+    },
+    {
+      id: 'coming-soon',
+      title: '3 More Patterns',
+      description:
+        'Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
       status: 'coming-soon',
       route: '/patterns',
       demoScenario: 'Advanced streaming techniques',
