@@ -1,0 +1,168 @@
+/**
+ * Styles for TableControls component
+ */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+/* Sort Controls */
+.sortControls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.select {
+  flex: 1;
+  min-width: 160px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #1f2937;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.select:hover:not(:disabled) {
+  border-color: #9ca3af;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.select:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Filter Controls */
+.filterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clearButton {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #dc2626;
+  background: transparent;
+  border: 1px solid #dc2626;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearButton:hover:not(:disabled) {
+  background: #dc2626;
+  color: white;
+}
+
+.clearButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.filterInputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.filterInput {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filterLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.input {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #1f2937;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.input:hover:not(:disabled) {
+  border-color: #9ca3af;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+/* Notice */
+.notice {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .controls {
+    padding: 16px;
+  }
+
+  .sortControls {
+    flex-direction: column;
+  }
+
+  .select {
+    min-width: unset;
+  }
+
+  .filterInputs {
+    grid-template-columns: 1fr;
+  }
+}

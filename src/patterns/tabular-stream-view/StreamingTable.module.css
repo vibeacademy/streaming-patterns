@@ -1,0 +1,244 @@
+/**
+ * Styles for StreamingTable component
+ *
+ * Educational note: CSS modules provide scoped styling to avoid
+ * conflicts with other components. Each class is automatically
+ * prefixed at build time.
+ */
+
+/* Container */
+.tableContainer {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: visible;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Table Head */
+.tableHead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Header Cell */
+.headerCell {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  user-select: none;
+  white-space: nowrap;
+  border-right: 1px solid #e5e7eb;
+}
+
+.headerCell:last-child {
+  border-right: none;
+}
+
+/* Sortable Header */
+.headerCell.sortable {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.headerCell.sortable:hover {
+  background-color: #f3f4f6;
+}
+
+.headerCell.sorted {
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+
+/* Header Content */
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.headerLabel {
+  flex: 1;
+}
+
+.sortIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.headerCell.sortable .sortIndicator {
+  opacity: 0.3;
+}
+
+.headerCell.sortable:hover .sortIndicator,
+.headerCell.sorted .sortIndicator {
+  opacity: 1;
+}
+
+/* Table Body */
+.tableBody {
+  background: white;
+}
+
+/* Data Row */
+.dataRow {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.15s ease;
+  animation: fadeInRow 0.3s ease-out;
+}
+
+.dataRow:hover {
+  background-color: #f9fafb;
+}
+
+.dataRow:last-child {
+  border-bottom: none;
+}
+
+@keyframes fadeInRow {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Data Cell */
+.dataCell {
+  padding: 12px 16px;
+  color: #1f2937;
+  border-right: 1px solid #f3f4f6;
+}
+
+.dataCell:last-child {
+  border-right: none;
+}
+
+/* Skeleton Row */
+.skeletonRow {
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.skeletonRow:last-child {
+  border-bottom: none;
+}
+
+.skeletonCell {
+  padding: 12px 16px;
+  border-right: 1px solid #f3f4f6;
+}
+
+.skeletonCell:last-child {
+  border-right: none;
+}
+
+/* Skeleton Loading Animation */
+.skeleton {
+  height: 16px;
+  background: linear-gradient(
+    90deg,
+    #f3f4f6 0%,
+    #e5e7eb 50%,
+    #f3f4f6 100%
+  );
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.emptyCell {
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Streaming Indicator */
+.streamingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #eff6ff;
+  border-top: 1px solid #dbeafe;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #93c5fd;
+  border-top-color: #1e40af;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerCell,
+  .dataCell,
+  .skeletonCell {
+    padding: 8px 12px;
+  }
+
+  .table {
+    font-size: 13px;
+  }
+
+  .headerCell {
+    font-size: 12px;
+  }
+}
