@@ -77,17 +77,17 @@ const patterns: Pattern[] = [
     id: 'multi-turn-memory-timeline',
     title: 'Multi-Turn Memory Timeline',
     description:
-      'Visualize conversation history with explicit memory formation and recall events.',
-    status: 'coming-soon',
-    route: '/patterns/multi-turn-memory-timeline',
+      'Teach developers how to surface and manage an agent\'s evolving memory across conversation turns. Shows memory lifecycle (create, update, prune), user controls (pin/prune), and provenance transparency.',
+    status: 'available',
+    route: '/patterns/multi-turn-memory',
     phase: 'Phase 3 - Advanced Patterns',
-    demoScenario: 'Multi-Sprint Planning',
+    demoScenario: 'Q4 Planning Conversation',
     difficulty: 'advanced',
-    concepts: ['memory management', 'conversation context', 'state persistence'],
+    concepts: ['memory', 'multi-turn', 'state-management', 'user-control', 'provenance'],
     techniques: [
       'Memory timeline',
-      'Recall indicators',
-      'Context management'
+      'Pin/prune controls',
+      'Provenance tooltips'
     ]
   },
   {

@@ -116,13 +116,23 @@ describe('Patterns Page', () => {
       expect(screen.getByText('Schema-Governed Exchange')).toBeInTheDocument();
     });
 
-    it('should display all advanced patterns as coming soon', () => {
+    it('should display Multi-Turn Memory Timeline as available', () => {
       renderWithRouter(<Patterns />);
 
       const memoryCard = screen.getByText('Multi-Turn Memory Timeline').closest('div');
       expect(memoryCard).toBeInTheDocument();
       if (memoryCard) {
-        expect(within(memoryCard).getByText(/coming soon/i)).toBeInTheDocument();
+        expect(within(memoryCard).getByText(/✓ available/i)).toBeInTheDocument();
+      }
+    });
+
+    it('should display other advanced patterns as coming soon', () => {
+      renderWithRouter(<Patterns />);
+
+      const turnTakingCard = screen.getByText('Turn-Taking Co-Creation').closest('div');
+      expect(turnTakingCard).toBeInTheDocument();
+      if (turnTakingCard) {
+        expect(within(turnTakingCard).getByText(/coming soon/i)).toBeInTheDocument();
       }
     });
   });
@@ -171,10 +181,16 @@ describe('Patterns Page', () => {
       expect(tabularCard).toHaveTextContent(/view demo/i);
     });
 
+    it('should show "View Demo" CTA for Multi-Turn Memory Timeline', () => {
+      renderWithRouter(<Patterns />);
+      const memoryCard = screen.getByText('Multi-Turn Memory Timeline').closest('a');
+      expect(memoryCard).toHaveTextContent(/view demo/i);
+    });
+
     it('should not show "View Demo" CTA for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const memoryCard = screen.getByText('Multi-Turn Memory Timeline').closest('div');
-      expect(memoryCard).not.toHaveTextContent(/view demo/i);
+      const turnTakingCard = screen.getByText('Turn-Taking Co-Creation').closest('div');
+      expect(turnTakingCard).not.toHaveTextContent(/view demo/i);
     });
   });
 
@@ -197,11 +213,17 @@ describe('Patterns Page', () => {
       expect(link).toHaveAttribute('href', '/patterns/tabular-stream-view');
     });
 
+    it('should have a clickable link for Multi-Turn Memory Timeline', () => {
+      renderWithRouter(<Patterns />);
+      const link = screen.getByRole('link', { name: /view multi-turn memory timeline demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/multi-turn-memory');
+    });
+
     it('should not have links for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const memoryTitle = screen.getByText('Multi-Turn Memory Timeline');
-      const memoryCard = memoryTitle.closest('a');
-      expect(memoryCard).not.toBeInTheDocument();
+      const turnTakingTitle = screen.getByText('Turn-Taking Co-Creation');
+      const turnTakingCard = turnTakingTitle.closest('a');
+      expect(turnTakingCard).not.toBeInTheDocument();
     });
   });
 
@@ -245,10 +267,10 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       const availableBadges = screen.getAllByLabelText(/available now/i);
-      expect(availableBadges.length).toBe(3); // Chain-of-Reasoning, Agent-Await-Prompt, and Tabular Stream View
+      expect(availableBadges.length).toBe(4); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, and Multi-Turn Memory Timeline
 
       const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBe(4); // 4 advanced patterns
+      expect(comingSoonBadges.length).toBe(3); // 3 remaining advanced patterns
     });
 
     it('should have aria-label on pattern links', () => {
@@ -264,9 +286,9 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       // Coming soon patterns are wrapped in divs with aria-disabled
-      const memoryTitle = screen.getByText('Multi-Turn Memory Timeline');
-      const memoryContainer = memoryTitle.closest('[aria-disabled="true"]');
-      expect(memoryContainer).toBeInTheDocument();
+      const turnTakingTitle = screen.getByText('Turn-Taking Co-Creation');
+      const turnTakingContainer = turnTakingTitle.closest('[aria-disabled="true"]');
+      expect(turnTakingContainer).toBeInTheDocument();
     });
 
     it('should use semantic list markup for pattern grids', () => {
