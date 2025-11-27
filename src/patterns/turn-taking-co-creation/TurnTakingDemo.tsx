@@ -19,7 +19,7 @@
  * @module patterns/turn-taking-co-creation/TurnTakingDemo
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
@@ -58,6 +58,116 @@ const SPEED_OPTIONS: Array<{
     description: '1000ms delay - Detailed observation',
   },
 ];
+
+/**
+ * Props for the inner collaborative content component
+ */
+interface CollaborativeContentProps {
+  speed: 'fast' | 'normal' | 'slow';
+  onEventCapture: (event: PatternStreamEvent) => void;
+}
+
+/**
+ * CollaborativeContent - Inner component that uses the collaborative document hook.
+ *
+ * Educational Note: This component is separated out so that it can be keyed by
+ * demoKey. When demoKey changes, this entire component unmounts and remounts,
+ * which properly resets the useCollaborativeDocument hook's internal state
+ * (including streamActiveRef). Without this separation, changing demoKey would
+ * only re-render the visual components but not reset the hook's refs.
+ */
+const CollaborativeContent = memo(function CollaborativeContent({
+  speed,
+  onEventCapture,
+}: CollaborativeContentProps): JSX.Element {
+  // Collaborative document with agent streaming
+  const {
+    sectionsWithAuthorship,
+    isStreaming,
+    pendingPatches,
+    actions,
+  } = useCollaborativeDocument({
+    speed,
+    fixture: 'full',
+    variableDelay: true,
+    autoStart: true,
+    onEvent: onEventCapture,
+  });
+
+  /**
+   * Calculate authorship statistics for the legend.
+   */
+  const authorshipStats = useMemo(() => {
+    let agentCharCount = 0;
+    let userCharCount = 0;
+    let totalCharCount = 0;
+
+    sectionsWithAuthorship.forEach((section) => {
+      section.authorshipSpans.forEach((span) => {
+        const length = span.end - span.start;
+        totalCharCount += length;
+        if (span.author === 'agent') {
+          agentCharCount += length;
+        } else {
+          userCharCount += length;
+        }
+      });
+    });
+
+    return { agentCharCount, userCharCount, totalCharCount };
+  }, [sectionsWithAuthorship]);
+
+  /**
+   * Determine current turn state based on streaming status.
+   */
+  const turnState: TurnState = useMemo(() => {
+    if (isStreaming) {
+      return 'agent';
+    } else if (sectionsWithAuthorship.length > 0) {
+      return 'user';
+    } else {
+      return 'idle';
+    }
+  }, [isStreaming, sectionsWithAuthorship.length]);
+
+  return (
+    <div className={styles.mainContent}>
+      {/* Left Column: Document Editor */}
+      <div className={styles.editorColumn}>
+        <TurnIndicator
+          turnState={turnState}
+          isStreaming={isStreaming}
+          className={styles.turnIndicator}
+        />
+
+        <CollaborativeEditor
+          sections={sectionsWithAuthorship}
+          isStreaming={isStreaming}
+          onUserEdit={actions.applyUserEdit}
+          className={styles.editor}
+        />
+      </div>
+
+      {/* Right Column: Sidebar */}
+      <div className={styles.sidebar}>
+        <AuthorshipLegend
+          stats={authorshipStats}
+          showStats={authorshipStats.totalCharCount > 0}
+          className={styles.legend}
+        />
+
+        <PatchToolbar
+          pendingPatches={pendingPatches}
+          onAcceptPatch={actions.acceptAgentPatch}
+          onRejectPatch={(patchId) => actions.rejectAgentPatch(patchId, 'User rejected')}
+          onAskWhy={actions.askWhy}
+          isStreaming={isStreaming}
+          className={styles.toolbar}
+        />
+      </div>
+    </div>
+  );
+});
 
 /**
  * TurnTakingDemo - Main pattern demonstration component
@@ -159,61 +269,6 @@ export function TurnTakingDemo(): JSX.Element {
     [captureEvent]
   );
 
-  // Collaborative document with agent streaming
-  const {
-    sectionsWithAuthorship,
-    isStreaming,
-    pendingPatches,
-    actions,
-  } = useCollaborativeDocument({
-    speed,
-    fixture: 'full',
-    variableDelay: true,
-    autoStart: true,
-    onEvent: handleEventCapture,
-  });
-
-  /**
-   * Calculate authorship statistics for the legend.
-   */
-  const authorshipStats = useMemo(() => {
-    let agentCharCount = 0;
-    let userCharCount = 0;
-    let totalCharCount = 0;
-
-    sectionsWithAuthorship.forEach((section) => {
-      section.authorshipSpans.forEach((span) => {
-        const length = span.end - span.start;
-        totalCharCount += length;
-        if (span.author === 'agent') {
-          agentCharCount += length;
-        } else {
-          userCharCount += length;
-        }
-      });
-    });
-
-    return { agentCharCount, userCharCount, totalCharCount };
-  }, [sectionsWithAuthorship]);
-
-  /**
-   * Determine current turn state based on streaming status.
-   *
-   * Educational Note: Turn state helps users understand who has control.
-   * - agent: AI is actively drafting
-   * - user: All sections complete, user can edit freely
-   * - collaborative: Both can work simultaneously (advanced mode)
-   */
-  const turnState: TurnState = useMemo(() => {
-    if (isStreaming) {
-      return 'agent';
-    } else if (sectionsWithAuthorship.length > 0) {
-      return 'user';
-    } else {
-      return 'idle';
-    }
-  }, [isStreaming, sectionsWithAuthorship.length]);
-
   /**
    * Handle speed change from controls.
    * Note: Changing speed will restart the stream.
@@ -281,7 +336,6 @@ export function TurnTakingDemo(): JSX.Element {
                 onClick={() => handleSpeedChange(option.value)}
                 variant={speed === option.value ? 'primary' : 'secondary'}
                 size="sm"
-                disabled={isStreaming}
                 aria-pressed={speed === option.value ? 'true' : 'false'}
                 title={option.description}
               >
@@ -296,7 +350,6 @@ export function TurnTakingDemo(): JSX.Element {
             onClick={handleReset}
             variant="secondary"
             size="sm"
-            disabled={isStreaming}
             aria-label="Reset demo to beginning"
           >
             Reset Demo
@@ -304,42 +357,12 @@ export function TurnTakingDemo(): JSX.Element {
         </div>
       </section>
 
-      {/* Main Content - Two-Column Layout */}
-      <div className={styles.mainContent} key={demoKey}>
-        {/* Left Column: Document Editor */}
-        <div className={styles.editorColumn}>
-          <TurnIndicator
-            turnState={turnState}
-            isStreaming={isStreaming}
-            className={styles.turnIndicator}
-          />
-
-          <CollaborativeEditor
-            sections={sectionsWithAuthorship}
-            isStreaming={isStreaming}
-            onUserEdit={actions.applyUserEdit}
-            className={styles.editor}
-          />
-        </div>
-
-        {/* Right Column: Sidebar */}
-        <div className={styles.sidebar}>
-          <AuthorshipLegend
-            stats={authorshipStats}
-            showStats={authorshipStats.totalCharCount > 0}
-            className={styles.legend}
-          />
-
-          <PatchToolbar
-            pendingPatches={pendingPatches}
-            onAcceptPatch={actions.acceptAgentPatch}
-            onRejectPatch={(patchId) => actions.rejectAgentPatch(patchId, 'User rejected')}
-            onAskWhy={actions.askWhy}
-            isStreaming={isStreaming}
-            className={styles.toolbar}
-          />
-        </div>
-      </div>
+      {/* Main Content - Keyed for proper reset */}
+      <CollaborativeContent
+        key={demoKey}
+        speed={speed}
+        onEventCapture={handleEventCapture}
+      />
 
       {/* Network Inspector */}
       {showInspector && (
