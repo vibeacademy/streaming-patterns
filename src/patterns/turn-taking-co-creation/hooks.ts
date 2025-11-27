@@ -8,7 +8,7 @@
  * @educational Teaches bidirectional streaming, patch management, conflict resolution
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import type {
   CollaborativeDocument,
   DocumentSection,
@@ -103,6 +103,10 @@ export function useCollaborativeDocument(
   const [isStreaming, setIsStreaming] = useState(false);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
 
+  // Ref to track if stream has already started - prevents infinite loop from re-renders
+  // CRITICAL: This prevents the stream from restarting when state changes trigger re-renders
+  const hasStreamStartedRef = useRef(false);
+
   // ========== Initialize Document ==========
   /**
    * Initialize document structure from fixture.
@@ -129,12 +133,14 @@ export function useCollaborativeDocument(
    * Educational Note: This is the core of collaborative editing. Each event type
    * (agent_patch, user_patch, acknowledgment) triggers different state updates.
    *
-   * CRITICAL: We only depend on autoStart to prevent infinite loops. Adding
-   * document, fixture, speed, etc. to dependencies causes the stream to restart
-   * every time state updates, creating an infinite loop.
+   * CRITICAL FIX for Issue #129: We use a ref to prevent the stream from restarting
+   * when state changes trigger re-renders. The stream should only start ONCE.
+   * This is the same pattern used to fix Issue #123 (Multi-Turn Memory Timeline).
    */
   useEffect(() => {
-    if (!autoStart || !document) return;
+    // CRITICAL: Prevent stream from restarting on re-renders
+    if (!autoStart || !document || hasStreamStartedRef.current) return;
+    hasStreamStartedRef.current = true;
 
     let cancelled = false;
     setIsStreaming(true);
@@ -227,8 +233,9 @@ export function useCollaborativeDocument(
       cancelled = true;
       setIsStreaming(false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoStart]); // Only depend on autoStart to prevent infinite loops from object recreation
+    // We include document in dependencies to trigger when it's initialized,
+    // but hasStreamStartedRef prevents the stream from restarting on subsequent changes
+  }, [autoStart, document, fixture, speed, variableDelay, onEvent]);
 
   // ========== Patch Application ==========
   /**
