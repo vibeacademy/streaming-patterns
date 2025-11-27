@@ -134,11 +134,13 @@ export function useCollaborativeDocument(
    * (agent_patch, user_patch, acknowledgment) triggers different state updates.
    *
    * CRITICAL FIX for Issue #129: We use a ref to prevent the stream from restarting
-   * when state changes trigger re-renders. The stream should only start ONCE.
-   * This is the same pattern used to fix Issue #123 (Multi-Turn Memory Timeline).
+   * when state changes trigger re-renders. The stream should only start ONCE per
+   * component lifecycle. The ref is NEVER reset in cleanup - only the demoKey
+   * change (which unmounts/remounts the component) will start a new stream.
    */
   useEffect(() => {
     // CRITICAL: Prevent duplicate streams - only start if not already running
+    // Once streamActiveRef is true, it stays true for this component instance
     if (!autoStart || !document || streamActiveRef.current) return;
     streamActiveRef.current = true;
 
@@ -225,7 +227,8 @@ export function useCollaborativeDocument(
       } finally {
         if (!cancelled) {
           setIsStreaming(false);
-          streamActiveRef.current = false; // Allow stream to restart on next mount
+          // NOTE: We do NOT reset streamActiveRef here - the stream has completed
+          // naturally and should not restart. Only component remount resets it.
         }
       }
     })();
@@ -233,7 +236,9 @@ export function useCollaborativeDocument(
     return () => {
       cancelled = true;
       setIsStreaming(false);
-      streamActiveRef.current = false; // Reset on cleanup so stream can start again
+      // CRITICAL: Do NOT reset streamActiveRef in cleanup!
+      // The ref persists across re-renders and prevents duplicate streams.
+      // Only component unmount (via demoKey change) creates a fresh ref.
     };
     // We include document in dependencies to trigger when it's initialized,
     // but streamActiveRef prevents the stream from restarting during the same session
