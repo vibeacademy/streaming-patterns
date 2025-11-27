@@ -182,9 +182,13 @@ const DeletedTextSpan = memo(function DeletedTextSpan({
  * Educational Note: This function demonstrates how to split document text into
  * authorship spans and render each with appropriate styling. The algorithm:
  * 1. Sort authorship spans by start position
- * 2. Interleave deletion spans at their positions
- * 3. Iterate through text, creating span elements for each authorship region
+ * 2. For each authorship span, check if any deletion markers fall INSIDE it
+ * 3. Split authorship spans around deletion markers as needed
  * 4. Handle gaps between spans (unattributed text)
+ *
+ * Key insight: Deletion markers can appear INSIDE an authorship span (e.g., when
+ * user deletes part of agent-authored text). We must split the authorship span
+ * around the deletion marker.
  */
 function renderTextWithAuthorship(
   content: string,
@@ -229,29 +233,50 @@ function renderTextWithAuthorship(
   let currentPos = 0;
   let deletionIndex = 0;
 
-  // Render each authorship span, interleaving deletions
-  sortedSpans.forEach((span, index) => {
-    // Render any deletions that occur before this span
-    while (deletionIndex < sortedDeletions.length && sortedDeletions[deletionIndex].position <= span.start) {
+  // Helper to render a piece of text with authorship
+  const renderTextPiece = (
+    text: string,
+    author: AuthorshipSpan['author'],
+    _patchId: string,
+    keyPrefix: string
+  ): void => {
+    if (text.length > 0) {
+      elements.push(
+        <AuthorshipTextSpan key={keyPrefix} text={text} author={author} />
+      );
+    }
+  };
+
+  // Helper to render a deletion marker
+  const renderDeletion = (del: DeletionSpan, keyIndex: number): void => {
+    elements.push(
+      <DeletedTextSpan
+        key={`del-${del.patchId}-${keyIndex}`}
+        text={del.deletedContent}
+        originalAuthor={del.originalAuthor}
+      />
+    );
+  };
+
+  // Render each authorship span, checking for deletions inside
+  sortedSpans.forEach((span, spanIndex) => {
+    // Render any deletions that occur BEFORE this span starts
+    while (
+      deletionIndex < sortedDeletions.length &&
+      sortedDeletions[deletionIndex].position < span.start
+    ) {
       const del = sortedDeletions[deletionIndex];
       // Render any gap before the deletion
       if (currentPos < del.position) {
         const gapText = content.substring(currentPos, del.position);
         elements.push(
-          <span key={`gap-before-del-${index}-${deletionIndex}`} className={styles.textSpan}>
+          <span key={`gap-before-del-${spanIndex}-${deletionIndex}`} className={styles.textSpan}>
             {gapText}
           </span>
         );
         currentPos = del.position;
       }
-      // Render the deletion
-      elements.push(
-        <DeletedTextSpan
-          key={`del-${del.patchId}-${deletionIndex}`}
-          text={del.deletedContent}
-          originalAuthor={del.originalAuthor}
-        />
-      );
+      renderDeletion(del, deletionIndex);
       deletionIndex++;
     }
 
@@ -259,21 +284,56 @@ function renderTextWithAuthorship(
     if (currentPos < span.start) {
       const gapText = content.substring(currentPos, span.start);
       elements.push(
-        <span key={`gap-${index}`} className={styles.textSpan}>
+        <span key={`gap-${spanIndex}`} className={styles.textSpan}>
           {gapText}
         </span>
       );
+      currentPos = span.start;
     }
 
-    // Render the authorship span
-    const spanText = content.substring(span.start, span.end);
-    elements.push(
-      <AuthorshipTextSpan
-        key={`span-${span.patchId}-${index}`}
-        text={spanText}
-        author={span.author}
-      />
-    );
+    // Now render this authorship span, splitting around any deletions INSIDE it
+    let spanPos = span.start;
+    let pieceIndex = 0;
+
+    while (spanPos < span.end) {
+      // Check if there's a deletion at or after spanPos but before span.end
+      if (
+        deletionIndex < sortedDeletions.length &&
+        sortedDeletions[deletionIndex].position >= spanPos &&
+        sortedDeletions[deletionIndex].position < span.end
+      ) {
+        const del = sortedDeletions[deletionIndex];
+
+        // Render text from spanPos to deletion position
+        if (spanPos < del.position) {
+          const textBefore = content.substring(spanPos, del.position);
+          renderTextPiece(
+            textBefore,
+            span.author,
+            span.patchId,
+            `span-${span.patchId}-${spanIndex}-piece-${pieceIndex}`
+          );
+          pieceIndex++;
+        }
+
+        // Render the deletion marker
+        renderDeletion(del, deletionIndex);
+        deletionIndex++;
+
+        // Continue from the deletion position
+        spanPos = del.position;
+      } else {
+        // No more deletions inside this span, render the rest
+        const remainingText = content.substring(spanPos, span.end);
+        renderTextPiece(
+          remainingText,
+          span.author,
+          span.patchId,
+          `span-${span.patchId}-${spanIndex}-piece-${pieceIndex}`
+        );
+        spanPos = span.end;
+      }
+    }
 
     currentPos = span.end;
   });
@@ -291,14 +351,7 @@ function renderTextWithAuthorship(
       );
       currentPos = del.position;
     }
-    // Render the deletion
-    elements.push(
-      <DeletedTextSpan
-        key={`del-end-${del.patchId}-${deletionIndex}`}
-        text={del.deletedContent}
-        originalAuthor={del.originalAuthor}
-      />
-    );
+    renderDeletion(del, deletionIndex);
     deletionIndex++;
   }
 
