@@ -56,7 +56,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'goals',
       operation: 'insert',
       content: '\n\nKey Objectives:\n1. Deliver iOS and Android apps with core PM features (tasks, projects, teams)',
-      position: { start: 86, end: 86 },
+      position: { start: 85, end: 85 },
       metadata: {
         source: 'agent',
         confidence: 0.9,
@@ -73,7 +73,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'goals',
       operation: 'insert',
       content: '\n2. Achieve 10,000 active mobile users by Q2 2025',
-      position: { start: 176, end: 176 },
+      position: { start: 181, end: 181 },
       metadata: {
         source: 'agent',
         confidence: 0.85,
@@ -81,7 +81,8 @@ export const projectCharterCollaboration: StreamEvent[] = [
     },
   },
 
-  // User: Edit the timeline to be more aggressive (supersedes agent's Q2 → Q1)
+  // User: Edit the timeline to be more aggressive (Q2 2025 → March 2025)
+  // Note: This replaces just the date portion at word boundaries for clean highlighting
   {
     type: 'user_patch',
     timestamp: 1699545605000,
@@ -89,9 +90,8 @@ export const projectCharterCollaboration: StreamEvent[] = [
       patchId: 'patch-004',
       sectionId: 'goals',
       operation: 'replace',
-      content: '10,000 active mobile users by March 2025',
-      position: { start: 193, end: 231 },
-      supersedes: 'patch-003', // User is correcting agent's timeline
+      content: 'March 2025',
+      position: { start: 223, end: 230 }, // Replace "Q2 2025" with "March 2025"
     },
   },
 
@@ -107,6 +107,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
   },
 
   // Agent: Add key objective 3 (adapted to user's timeline)
+  // Position adjusted: after user edit changed "Q2 2025" (7) to "March 2025" (10), +3 chars
   {
     type: 'agent_patch',
     timestamp: 1699545607000,
@@ -115,7 +116,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'goals',
       operation: 'insert',
       content: '\n3. Launch with parity feature set to web app by January 2025',
-      position: { start: 231, end: 231 },
+      position: { start: 233, end: 233 },
       metadata: {
         source: 'agent',
         confidence: 0.9,
@@ -160,7 +161,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'scope',
       operation: 'insert',
       content: '\n\nIn Scope:\n- User authentication (OAuth 2.0 + biometric)\n- Task management (create, edit, assign, complete)\n- Project dashboard with real-time updates\n- Team collaboration (comments, mentions, notifications)',
-      position: { start: 52, end: 52 },
+      position: { start: 51, end: 51 },
       metadata: {
         source: 'agent',
         confidence: 0.9,
@@ -177,7 +178,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'scope',
       operation: 'insert',
       content: '\n\nOut of Scope (defer to future releases):\n- Gantt chart views\n- Time tracking\n- Budget management',
-      position: { start: 249, end: 249 },
+      position: { start: 259, end: 259 },
       metadata: {
         source: 'agent',
         confidence: 0.85,
@@ -186,6 +187,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
   },
 
   // User: Add push notifications to in-scope (inline edit)
+  // Position 259 inserts at end of In Scope list (before Out of Scope)
   {
     type: 'user_patch',
     timestamp: 1699545615000,
@@ -194,7 +196,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'scope',
       operation: 'insert',
       content: '\n- Push notifications for task assignments and mentions',
-      position: { start: 249, end: 249 },
+      position: { start: 259, end: 259 },
     },
   },
 
@@ -246,7 +248,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'timeline',
       operation: 'insert',
       content: '\n\nPhase 1 (Weeks 1-4): Foundation\n- Authentication and user onboarding\n- Core data sync infrastructure\n- Due: November 30, 2024',
-      position: { start: 46, end: 46 },
+      position: { start: 44, end: 44 },
       metadata: {
         source: 'agent',
         confidence: 0.85,
@@ -263,7 +265,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'timeline',
       operation: 'insert',
       content: '\n\nPhase 2 (Weeks 5-8): Core Features\n- Task and project management\n- Real-time collaboration\n- Due: December 28, 2024',
-      position: { start: 177, end: 177 },
+      position: { start: 171, end: 171 },
       metadata: {
         source: 'agent',
         confidence: 0.85,
@@ -271,7 +273,8 @@ export const projectCharterCollaboration: StreamEvent[] = [
     },
   },
 
-  // User: Move Phase 2 deadline earlier
+  // User: Move Phase 2 deadline earlier (December 28 → December 20)
+  // Replaces "Due: December 28, 2024" at word boundary
   {
     type: 'user_patch',
     timestamp: 1699545625000,
@@ -280,7 +283,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'timeline',
       operation: 'replace',
       content: 'Due: December 20, 2024',
-      position: { start: 285, end: 307 },
+      position: { start: 266, end: 288 },
     },
   },
 
@@ -304,7 +307,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'timeline',
       operation: 'insert',
       content: '\n\nPhase 3 (Weeks 9-13): Polish & Launch\n- Push notifications\n- Performance optimization\n- Beta testing and bug fixes\n- Due: January 25, 2025',
-      position: { start: 307, end: 307 },
+      position: { start: 288, end: 288 },
       metadata: {
         source: 'agent',
         confidence: 0.9,
@@ -349,7 +352,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'risks',
       operation: 'insert',
       content: '\n\n1. Tight Timeline Risk\n   - Accelerated deadlines leave minimal buffer\n   - Mitigation: Hire 2 additional contract mobile developers, reduce scope if needed',
-      position: { start: 37, end: 37 },
+      position: { start: 36, end: 36 },
       metadata: {
         source: 'agent',
         confidence: 0.9,
@@ -366,7 +369,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'risks',
       operation: 'insert',
       content: '\n\n2. Platform Fragmentation\n   - iOS and Android require separate codebases\n   - Mitigation: Use React Native for code sharing, prioritize iOS first',
-      position: { start: 203, end: 203 },
+      position: { start: 194, end: 194 },
       metadata: {
         source: 'agent',
         confidence: 0.85,
@@ -383,7 +386,7 @@ export const projectCharterCollaboration: StreamEvent[] = [
       sectionId: 'risks',
       operation: 'insert',
       content: '\n\n3. User Adoption\n   - Mobile app success depends on strong value proposition\n   - Mitigation: Early beta program with existing customers, mobile-first features (offline mode)',
-      position: { start: 338, end: 338 },
+      position: { start: 342, end: 342 },
       metadata: {
         source: 'agent',
         confidence: 0.8,

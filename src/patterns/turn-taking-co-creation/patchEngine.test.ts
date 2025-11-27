@@ -423,6 +423,199 @@ describe('buildAuthorshipSpans', () => {
 
     expect(spans).toHaveLength(0);
   });
+
+  it('should exclude superseded patches', () => {
+    const section: DocumentSection = {
+      id: 'section-1',
+      title: 'Test Section',
+      content: 'Launch mobile app by March 2025.',
+      order: 0,
+      patches: [
+        {
+          id: 'patch-1',
+          sectionId: 'section-1',
+          author: 'agent',
+          operation: 'insert',
+          content: 'Launch mobile app by Q2 2025.',
+          position: { start: 0, end: 0 },
+          timestamp: 1000,
+        },
+        {
+          id: 'patch-2',
+          sectionId: 'section-1',
+          author: 'user',
+          operation: 'replace',
+          content: 'Launch mobile app by March 2025.',
+          position: { start: 0, end: 29 },
+          timestamp: 1001,
+          supersedes: 'patch-1', // User's edit supersedes agent's
+        },
+      ],
+    };
+
+    const spans = buildAuthorshipSpans(section);
+
+    // Only the user patch should be active (patch-1 is superseded)
+    expect(spans).toHaveLength(1);
+    expect(spans[0].author).toBe('user');
+    expect(spans[0].start).toBe(0);
+    expect(spans[0].end).toBe(32); // Length of "Launch mobile app by March 2025."
+  });
+
+  it('should correctly handle replace operations that overwrite authorship', () => {
+    const section: DocumentSection = {
+      id: 'section-1',
+      title: 'Test Section',
+      content: 'Hello everyone!', // Final content after replace
+      order: 0,
+      patches: [
+        {
+          id: 'patch-1',
+          sectionId: 'section-1',
+          author: 'agent',
+          operation: 'insert',
+          content: 'Hello world!',
+          position: { start: 0, end: 0 },
+          timestamp: 1000,
+        },
+        {
+          id: 'patch-2',
+          sectionId: 'section-1',
+          author: 'user',
+          operation: 'replace',
+          content: 'everyone!',
+          position: { start: 6, end: 12 }, // Replace "world!" with "everyone!"
+          timestamp: 1001,
+        },
+      ],
+    };
+
+    const spans = buildAuthorshipSpans(section);
+
+    // "Hello " (agent) + "everyone!" (user)
+    expect(spans).toHaveLength(2);
+    expect(spans[0].author).toBe('agent');
+    expect(spans[0].start).toBe(0);
+    expect(spans[0].end).toBe(6); // "Hello "
+    expect(spans[1].author).toBe('user');
+    expect(spans[1].start).toBe(6);
+    expect(spans[1].end).toBe(15); // "everyone!"
+  });
+
+  it('should correctly track position shifts from insert operations', () => {
+    const section: DocumentSection = {
+      id: 'section-1',
+      title: 'Test Section',
+      content: 'Hello beautiful world',
+      order: 0,
+      patches: [
+        {
+          id: 'patch-1',
+          sectionId: 'section-1',
+          author: 'agent',
+          operation: 'insert',
+          content: 'Hello world',
+          position: { start: 0, end: 0 },
+          timestamp: 1000,
+        },
+        {
+          id: 'patch-2',
+          sectionId: 'section-1',
+          author: 'user',
+          operation: 'insert',
+          content: ' beautiful',
+          position: { start: 5, end: 5 }, // Insert after "Hello"
+          timestamp: 1001,
+        },
+      ],
+    };
+
+    const spans = buildAuthorshipSpans(section);
+
+    // "Hello" (agent, 0-5) + " beautiful" (user, 5-15) + " world" (agent, 15-21)
+    expect(spans).toHaveLength(3);
+    expect(spans[0].author).toBe('agent');
+    expect(spans[0].start).toBe(0);
+    expect(spans[0].end).toBe(5); // "Hello"
+    expect(spans[1].author).toBe('user');
+    expect(spans[1].start).toBe(5);
+    expect(spans[1].end).toBe(15); // " beautiful"
+    expect(spans[2].author).toBe('agent');
+    expect(spans[2].start).toBe(15);
+    expect(spans[2].end).toBe(21); // " world"
+  });
+
+  it('should handle delete operations correctly', () => {
+    const section: DocumentSection = {
+      id: 'section-1',
+      title: 'Test Section',
+      content: 'Hello world',
+      order: 0,
+      patches: [
+        {
+          id: 'patch-1',
+          sectionId: 'section-1',
+          author: 'agent',
+          operation: 'insert',
+          content: 'Hello beautiful world',
+          position: { start: 0, end: 0 },
+          timestamp: 1000,
+        },
+        {
+          id: 'patch-2',
+          sectionId: 'section-1',
+          author: 'user',
+          operation: 'delete',
+          content: '',
+          position: { start: 5, end: 15 }, // Delete " beautiful"
+          timestamp: 1001,
+        },
+      ],
+    };
+
+    const spans = buildAuthorshipSpans(section);
+
+    // After delete, all remaining text is from agent
+    expect(spans).toHaveLength(1);
+    expect(spans[0].author).toBe('agent');
+    expect(spans[0].start).toBe(0);
+    expect(spans[0].end).toBe(11); // "Hello world"
+  });
+
+  it('should handle all patches being superseded', () => {
+    const section: DocumentSection = {
+      id: 'section-1',
+      title: 'Test Section',
+      content: '',
+      order: 0,
+      patches: [
+        {
+          id: 'patch-1',
+          sectionId: 'section-1',
+          author: 'agent',
+          operation: 'insert',
+          content: 'Hello',
+          position: { start: 0, end: 0 },
+          timestamp: 1000,
+        },
+        {
+          id: 'patch-2',
+          sectionId: 'section-1',
+          author: 'user',
+          operation: 'delete',
+          content: '',
+          position: { start: 0, end: 5 },
+          timestamp: 1001,
+          supersedes: 'patch-1',
+        },
+      ],
+    };
+
+    const spans = buildAuthorshipSpans(section);
+
+    // patch-1 is superseded, only patch-2 (delete) runs, which produces no content
+    expect(spans).toHaveLength(0);
+  });
 });
 
 describe('adjustPatchPosition', () => {
