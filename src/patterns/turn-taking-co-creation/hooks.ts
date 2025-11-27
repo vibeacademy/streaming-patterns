@@ -128,6 +128,10 @@ export function useCollaborativeDocument(
    *
    * Educational Note: This is the core of collaborative editing. Each event type
    * (agent_patch, user_patch, acknowledgment) triggers different state updates.
+   *
+   * CRITICAL: We only depend on autoStart to prevent infinite loops. Adding
+   * document, fixture, speed, etc. to dependencies causes the stream to restart
+   * every time state updates, creating an infinite loop.
    */
   useEffect(() => {
     if (!autoStart || !document) return;
@@ -224,7 +228,7 @@ export function useCollaborativeDocument(
       setIsStreaming(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoStart, document, fixture, speed, variableDelay, onEvent]);
+  }, [autoStart]); // Only depend on autoStart to prevent infinite loops from object recreation
 
   // ========== Patch Application ==========
   /**
