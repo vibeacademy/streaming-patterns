@@ -1,0 +1,382 @@
+/**
+ * Collaborative Editor Styles
+ *
+ * Styles for the collaborative document editor with authorship highlighting.
+ */
+
+/* Editor Container */
+.editor {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.editorTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.editorStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.statusStreaming {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primary, #3b82f6);
+  font-weight: 500;
+}
+
+.statusComplete {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-success, #10b981);
+  font-weight: 500;
+}
+
+.statusDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.statusIcon {
+  font-size: 1rem;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Editor Content */
+.editorContent {
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: var(--color-text-secondary, #6b7280);
+  font-size: 0.875rem;
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionStreaming {
+  border-color: var(--color-primary-light, #bfdbfe);
+  background-color: var(--color-primary-bg, #eff6ff);
+}
+
+.sectionComplete {
+  border-color: var(--color-border, #e5e7eb);
+}
+
+.section:hover {
+  border-color: var(--color-border-hover, #d1d5db);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+}
+
+.streamingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-primary, #3b82f6);
+}
+
+.streamingDot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.streamingText {
+  font-weight: 500;
+}
+
+.editButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-primary, #3b82f6);
+  background-color: transparent;
+  border: 1px solid var(--color-primary, #3b82f6);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.editButton:hover {
+  color: white;
+  background-color: var(--color-primary, #3b82f6);
+}
+
+.editButton:focus {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Section Content */
+.sectionContent {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text-primary, #111827);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.emptyContent {
+  color: var(--color-text-secondary, #6b7280);
+  font-style: italic;
+}
+
+/* Authorship Highlighting */
+.textSpan {
+  display: inline;
+  transition: background-color 0.2s ease;
+}
+
+.agentText {
+  background-color: var(--color-agent-bg, #dbeafe);
+  color: var(--color-agent-text, #1e40af);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.userText {
+  background-color: var(--color-user-bg, #d1fae5);
+  color: var(--color-user-text, #065f46);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* Deleted Text Styling - GitHub-style strikethrough */
+.deletedText {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+  padding: 0 2px;
+  border-radius: 2px;
+  margin: 0 1px;
+}
+
+.deletedAgentText {
+  background-color: var(--color-deleted-agent-bg, #fee2e2);
+  color: var(--color-deleted-agent-text, #991b1b);
+  text-decoration-color: var(--color-deleted-agent-text, #991b1b);
+}
+
+.deletedUserText {
+  background-color: var(--color-deleted-user-bg, #fef3c7);
+  color: var(--color-deleted-user-text, #92400e);
+  text-decoration-color: var(--color-deleted-user-text, #92400e);
+}
+
+/* Patch Count */
+.patchCount {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary, #9ca3af);
+}
+
+/* Editor Footer */
+.editorFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  background-color: var(--color-bg-secondary, #f9fafb);
+}
+
+.footerNote {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+}
+
+.agentExample {
+  background-color: var(--color-agent-bg, #dbeafe);
+  color: var(--color-agent-text, #1e40af);
+  padding: 0 4px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.userExample {
+  background-color: var(--color-user-bg, #d1fae5);
+  color: var(--color-user-text, #065f46);
+  padding: 0 4px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.deletedExample {
+  background-color: var(--color-deleted-agent-bg, #fee2e2);
+  color: var(--color-deleted-agent-text, #991b1b);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  padding: 0 4px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+/* Editing Mode Styles */
+.sectionEditing {
+  border-color: var(--color-user-text, #065f46);
+  background-color: var(--color-user-bg, #d1fae5);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  background-color: var(--color-success, #10b981);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: var(--color-success-dark, #059669);
+}
+
+.cancelButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  background-color: transparent;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cancelButton:hover {
+  background-color: var(--color-bg-secondary, #f9fafb);
+  border-color: var(--color-border-hover, #d1d5db);
+}
+
+.editTextarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text-primary, #111827);
+  background-color: white;
+  border: 2px solid var(--color-user-text, #065f46);
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+}
+
+.editTextarea:focus {
+  box-shadow: 0 0 0 3px var(--color-user-bg, #d1fae5);
+}
+
+.clickableContent {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.clickableContent:hover {
+  background-color: var(--color-bg-hover, #f3f4f6);
+}
+
+.clickableContent:focus {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+.editHint {
+  color: var(--color-text-tertiary, #9ca3af);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .editorHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .editActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+    text-align: center;
+  }
+}

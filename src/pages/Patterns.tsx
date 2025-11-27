@@ -94,17 +94,17 @@ const patterns: Pattern[] = [
     id: 'turn-taking-co-creation',
     title: 'Turn-Taking Co-Creation',
     description:
-      'Alternate between user and AI contributions to collaboratively build content.',
-    status: 'coming-soon',
+      'Alternate between user and AI contributions to collaboratively build content with real-time authorship tracking and conflict resolution.',
+    status: 'available',
     route: '/patterns/turn-taking-co-creation',
     phase: 'Phase 3 - Advanced Patterns',
-    demoScenario: 'Story Map Building',
+    demoScenario: 'Project Charter Co-Creation',
     difficulty: 'advanced',
     concepts: ['collaborative editing', 'turn-based interaction', 'draft approval'],
     techniques: [
-      'Turn indicators',
-      'Draft approval',
-      'Versioning'
+      'Bidirectional streaming',
+      'Authorship highlighting',
+      'Patch-based editing'
     ]
   },
   {

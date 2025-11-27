@@ -69,7 +69,7 @@ describe('App', () => {
       render(<App />);
 
       // Wait for lazy loaded Home component
-      const progressIndicator = await screen.findByText(/4 of 7 patterns implemented/i);
+      const progressIndicator = await screen.findByText(/5 of 7 patterns implemented/i);
       expect(progressIndicator).toBeInTheDocument();
     });
 
