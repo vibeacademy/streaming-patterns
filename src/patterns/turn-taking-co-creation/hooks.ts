@@ -26,6 +26,7 @@ import {
 import {
   applyPatch,
   buildAuthorshipSpans,
+  buildDeletionSpans,
 } from './patchEngine';
 import { initialDocument } from './fixtures';
 
@@ -324,6 +325,7 @@ export function useCollaborativeDocument(
       .map((section) => ({
         ...section,
         authorshipSpans: buildAuthorshipSpans(section),
+        deletionSpans: buildDeletionSpans(section),
         isStreaming: isStreaming && !completedSections.has(section.id),
         isComplete: completedSections.has(section.id),
       }));

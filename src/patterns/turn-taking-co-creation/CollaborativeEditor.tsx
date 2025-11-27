@@ -14,7 +14,7 @@
  */
 
 import { memo, useState, useCallback, useRef, useEffect } from 'react';
-import type { SectionWithAuthorship, AuthorshipSpan, Patch } from './types';
+import type { SectionWithAuthorship, AuthorshipSpan, DeletionSpan, Patch } from './types';
 import { Card } from '@/components/ui/Card';
 import styles from './CollaborativeEditor.module.css';
 
@@ -149,20 +149,60 @@ const AuthorshipTextSpan = memo(function AuthorshipTextSpan({
 });
 
 /**
- * Renders text content with authorship highlighting.
+ * Renders deleted text with strikethrough styling.
+ *
+ * Educational Note: Like GitHub diffs, deleted text is shown with strikethrough
+ * to help users understand what was removed. The original authorship color is
+ * preserved so users can see "I deleted agent text" vs "I deleted my own text".
+ */
+const DeletedTextSpan = memo(function DeletedTextSpan({
+  text,
+  originalAuthor,
+}: {
+  text: string;
+  originalAuthor: 'user' | 'agent';
+}): JSX.Element {
+  return (
+    <span
+      className={`${styles.deletedText} ${
+        originalAuthor === 'agent' ? styles.deletedAgentText : styles.deletedUserText
+      }`}
+      data-deleted="true"
+      data-original-author={originalAuthor}
+      title={`Deleted ${originalAuthor} text`}
+    >
+      {text}
+    </span>
+  );
+});
+
+/**
+ * Renders text content with authorship highlighting and deletion indicators.
  *
  * Educational Note: This function demonstrates how to split document text into
  * authorship spans and render each with appropriate styling. The algorithm:
- * 1. Sort spans by start position
- * 2. Iterate through text, creating span elements for each authorship region
- * 3. Handle gaps between spans (unattributed text)
+ * 1. Sort authorship spans by start position
+ * 2. Interleave deletion spans at their positions
+ * 3. Iterate through text, creating span elements for each authorship region
+ * 4. Handle gaps between spans (unattributed text)
  */
 function renderTextWithAuthorship(
   content: string,
-  authorshipSpans: AuthorshipSpan[]
+  authorshipSpans: AuthorshipSpan[],
+  deletionSpans: DeletionSpan[] = []
 ): JSX.Element[] {
   // Handle empty content
   if (!content || content.length === 0) {
+    // If there are deletions but no content, show the deletions
+    if (deletionSpans.length > 0) {
+      return deletionSpans.map((del, index) => (
+        <DeletedTextSpan
+          key={`del-${del.patchId}-${index}`}
+          text={del.deletedContent}
+          originalAuthor={del.originalAuthor}
+        />
+      ));
+    }
     return [
       <span key="empty" className={styles.emptyContent}>
         (Empty section - agent will draft content)
@@ -182,11 +222,39 @@ function renderTextWithAuthorship(
   // Sort spans by start position
   const sortedSpans = [...authorshipSpans].sort((a, b) => a.start - b.start);
 
+  // Sort deletions by position
+  const sortedDeletions = [...deletionSpans].sort((a, b) => a.position - b.position);
+
   const elements: JSX.Element[] = [];
   let currentPos = 0;
+  let deletionIndex = 0;
 
-  // Render each authorship span
+  // Render each authorship span, interleaving deletions
   sortedSpans.forEach((span, index) => {
+    // Render any deletions that occur before this span
+    while (deletionIndex < sortedDeletions.length && sortedDeletions[deletionIndex].position <= span.start) {
+      const del = sortedDeletions[deletionIndex];
+      // Render any gap before the deletion
+      if (currentPos < del.position) {
+        const gapText = content.substring(currentPos, del.position);
+        elements.push(
+          <span key={`gap-before-del-${index}-${deletionIndex}`} className={styles.textSpan}>
+            {gapText}
+          </span>
+        );
+        currentPos = del.position;
+      }
+      // Render the deletion
+      elements.push(
+        <DeletedTextSpan
+          key={`del-${del.patchId}-${deletionIndex}`}
+          text={del.deletedContent}
+          originalAuthor={del.originalAuthor}
+        />
+      );
+      deletionIndex++;
+    }
+
     // Render gap before this span (if any)
     if (currentPos < span.start) {
       const gapText = content.substring(currentPos, span.start);
@@ -209,6 +277,30 @@ function renderTextWithAuthorship(
 
     currentPos = span.end;
   });
+
+  // Render any remaining deletions after all authorship spans
+  while (deletionIndex < sortedDeletions.length) {
+    const del = sortedDeletions[deletionIndex];
+    // Render any gap before the deletion
+    if (currentPos < del.position) {
+      const gapText = content.substring(currentPos, del.position);
+      elements.push(
+        <span key={`gap-after-spans-${deletionIndex}`} className={styles.textSpan}>
+          {gapText}
+        </span>
+      );
+      currentPos = del.position;
+    }
+    // Render the deletion
+    elements.push(
+      <DeletedTextSpan
+        key={`del-end-${del.patchId}-${deletionIndex}`}
+        text={del.deletedContent}
+        originalAuthor={del.originalAuthor}
+      />
+    );
+    deletionIndex++;
+  }
 
   // Render trailing text after last span (if any)
   if (currentPos < content.length) {
@@ -369,7 +461,7 @@ const SectionEditor = memo(function SectionEditor({
             }
           }}
         >
-          {renderTextWithAuthorship(section.content, section.authorshipSpans)}
+          {renderTextWithAuthorship(section.content, section.authorshipSpans, section.deletionSpans)}
           {section.isComplete && !section.isStreaming && section.content.length > 0 && (
             <span className={styles.editHint}> (click to edit)</span>
           )}
@@ -462,7 +554,8 @@ export function CollaborativeEditor({
         <p className={styles.footerNote}>
           <strong>Authorship:</strong> Text highlighted in{' '}
           <span className={styles.agentExample}>blue</span> was drafted by the agent,{' '}
-          <span className={styles.userExample}>green</span> indicates your edits.
+          <span className={styles.userExample}>green</span> indicates your edits.{' '}
+          <span className={styles.deletedExample}>Strikethrough</span> shows deleted text.
           <br />
           <strong>Tip:</strong> Click on any completed section to add your own text!
         </p>

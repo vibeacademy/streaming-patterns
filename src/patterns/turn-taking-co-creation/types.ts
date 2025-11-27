@@ -261,11 +261,33 @@ export interface AuthorshipSpan {
 }
 
 /**
+ * Deletion span for showing strikethrough in the UI.
+ *
+ * Educational Note: Similar to GitHub diffs, we show deleted text with
+ * strikethrough to help users understand what changed. This requires
+ * tracking the original content that was deleted, not just the position.
+ */
+export interface DeletionSpan {
+  /** Position in the current document where deletion occurred */
+  position: number;
+  /** The original text that was deleted */
+  deletedContent: string;
+  /** Who authored the original text (for color-coding) */
+  originalAuthor: Author;
+  /** Who performed the deletion */
+  deletedBy: Author;
+  /** Patch ID of the delete/replace operation */
+  patchId: string;
+}
+
+/**
  * Section with authorship information for rendering.
  */
 export interface SectionWithAuthorship extends DocumentSection {
   /** Authorship spans for color-coding */
   authorshipSpans: AuthorshipSpan[];
+  /** Deletion spans for strikethrough display */
+  deletionSpans: DeletionSpan[];
   /** Whether this section is currently being edited by agent */
   isStreaming: boolean;
   /** Whether this section is complete (user can edit) */

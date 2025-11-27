@@ -203,6 +203,28 @@
   border-radius: 2px;
 }
 
+/* Deleted Text Styling - GitHub-style strikethrough */
+.deletedText {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.8;
+  padding: 0 2px;
+  border-radius: 2px;
+  margin: 0 1px;
+}
+
+.deletedAgentText {
+  background-color: var(--color-deleted-agent-bg, #fee2e2);
+  color: var(--color-deleted-agent-text, #991b1b);
+  text-decoration-color: var(--color-deleted-agent-text, #991b1b);
+}
+
+.deletedUserText {
+  background-color: var(--color-deleted-user-bg, #fef3c7);
+  color: var(--color-deleted-user-text, #92400e);
+  text-decoration-color: var(--color-deleted-user-text, #92400e);
+}
+
 /* Patch Count */
 .patchCount {
   margin-top: 0.5rem;
@@ -234,6 +256,16 @@
 .userExample {
   background-color: var(--color-user-bg, #d1fae5);
   color: var(--color-user-text, #065f46);
+  padding: 0 4px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.deletedExample {
+  background-color: var(--color-deleted-agent-bg, #fee2e2);
+  color: var(--color-deleted-agent-text, #991b1b);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
   padding: 0 4px;
   border-radius: 2px;
   font-weight: 500;

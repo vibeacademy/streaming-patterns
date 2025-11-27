@@ -13,6 +13,7 @@ import type {
   DocumentSection,
   Author,
   AuthorshipSpan,
+  DeletionSpan,
   MergeResult,
   MergeConfig,
 } from './types';
@@ -340,6 +341,121 @@ export function buildAuthorshipSpans(section: DocumentSection): AuthorshipSpan[]
 
   // Step 4: Build spans from character metadata
   return buildSpansFromCharMeta(charMeta);
+}
+
+/**
+ * Build deletion spans for a document section.
+ *
+ * Educational Note: Like GitHub diffs, we want to show deleted text with
+ * strikethrough styling. This function tracks what text was deleted by
+ * delete/replace operations, along with the original authorship.
+ *
+ * The algorithm:
+ * 1. Replay patches in order, tracking the content at each step
+ * 2. When a delete/replace operation removes text, record a deletion span
+ * 3. Track the position in the FINAL document where the deletion occurred
+ *
+ * @param section - Document section with patches
+ * @returns Array of deletion spans for strikethrough display
+ */
+export function buildDeletionSpans(section: DocumentSection): DeletionSpan[] {
+  const { patches } = section;
+  if (patches.length === 0) return [];
+
+  // Filter out superseded patches
+  const supersededIds = new Set<string>();
+  for (const patch of patches) {
+    if (patch.supersedes) {
+      supersededIds.add(patch.supersedes);
+    }
+  }
+  const activePatches = patches.filter((p) => !supersededIds.has(p.id));
+  if (activePatches.length === 0) return [];
+
+  // Sort by timestamp
+  const sortedPatches = [...activePatches].sort((a, b) => a.timestamp - b.timestamp);
+
+  // Track content and authorship as we replay
+  let content = '';
+  let charAuthors: Author[] = [];
+  const deletionSpans: DeletionSpan[] = [];
+
+  // Track cumulative position offset for deletion positions in final document
+  let positionOffset = 0;
+
+  for (const patch of sortedPatches) {
+    const { operation, position, content: patchContent, author, id: patchId } = patch;
+    const { start, end } = position;
+
+    switch (operation) {
+      case 'insert': {
+        // Insert doesn't delete anything
+        content = content.substring(0, start) + patchContent + content.substring(start);
+        const newAuthors = Array(patchContent.length).fill(author);
+        charAuthors = [
+          ...charAuthors.slice(0, start),
+          ...newAuthors,
+          ...charAuthors.slice(start),
+        ];
+        break;
+      }
+
+      case 'replace':
+      case 'delete': {
+        // These operations delete content - record it
+        const deletedContent = content.substring(start, end);
+        if (deletedContent.length > 0) {
+          // Determine original author of deleted content (majority author)
+          const deletedAuthors = charAuthors.slice(start, end);
+          const agentCount = deletedAuthors.filter((a) => a === 'agent').length;
+          const originalAuthor: Author = agentCount > deletedAuthors.length / 2 ? 'agent' : 'user';
+
+          // Calculate position in FINAL document
+          // Account for how this deletion affects subsequent positions
+          deletionSpans.push({
+            position: start + positionOffset,
+            deletedContent,
+            originalAuthor,
+            deletedBy: author,
+            patchId,
+          });
+        }
+
+        // Apply the operation
+        const newContent = operation === 'delete' ? '' : patchContent;
+        content = content.substring(0, start) + newContent + content.substring(end);
+        const newAuthors = operation === 'delete' ? [] : Array(patchContent.length).fill(author);
+        charAuthors = [
+          ...charAuthors.slice(0, start),
+          ...newAuthors,
+          ...charAuthors.slice(end),
+        ];
+
+        // Update position offset for subsequent deletions
+        // (deleted chars - inserted chars)
+        positionOffset += newContent.length - (end - start);
+        break;
+      }
+    }
+  }
+
+  // Adjust deletion positions to account for all changes
+  // We need to recalculate positions in the final document
+  // Since deletions affect subsequent positions, we process in reverse
+  const adjustedSpans: DeletionSpan[] = [];
+  let runningOffset = 0;
+
+  // Sort deletions by their patch timestamp order (already sorted)
+  for (const span of deletionSpans) {
+    adjustedSpans.push({
+      ...span,
+      position: span.position - runningOffset,
+    });
+    // Each deletion reduces subsequent positions
+    runningOffset += span.deletedContent.length;
+  }
+
+  return adjustedSpans;
 }
 
 /**
