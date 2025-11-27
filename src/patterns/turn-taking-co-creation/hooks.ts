@@ -103,9 +103,9 @@ export function useCollaborativeDocument(
   const [isStreaming, setIsStreaming] = useState(false);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
 
-  // Ref to track if stream has already started - prevents infinite loop from re-renders
+  // Ref to track if stream is currently running - prevents duplicate streams
   // CRITICAL: This prevents the stream from restarting when state changes trigger re-renders
-  const hasStreamStartedRef = useRef(false);
+  const streamActiveRef = useRef(false);
 
   // ========== Initialize Document ==========
   /**
@@ -138,9 +138,9 @@ export function useCollaborativeDocument(
    * This is the same pattern used to fix Issue #123 (Multi-Turn Memory Timeline).
    */
   useEffect(() => {
-    // CRITICAL: Prevent stream from restarting on re-renders
-    if (!autoStart || !document || hasStreamStartedRef.current) return;
-    hasStreamStartedRef.current = true;
+    // CRITICAL: Prevent duplicate streams - only start if not already running
+    if (!autoStart || !document || streamActiveRef.current) return;
+    streamActiveRef.current = true;
 
     let cancelled = false;
     setIsStreaming(true);
@@ -225,6 +225,7 @@ export function useCollaborativeDocument(
       } finally {
         if (!cancelled) {
           setIsStreaming(false);
+          streamActiveRef.current = false; // Allow stream to restart on next mount
         }
       }
     })();
@@ -232,9 +233,10 @@ export function useCollaborativeDocument(
     return () => {
       cancelled = true;
       setIsStreaming(false);
+      streamActiveRef.current = false; // Reset on cleanup so stream can start again
     };
     // We include document in dependencies to trigger when it's initialized,
-    // but hasStreamStartedRef prevents the stream from restarting on subsequent changes
+    // but streamActiveRef prevents the stream from restarting during the same session
   }, [autoStart, document, fixture, speed, variableDelay, onEvent]);
 
   // ========== Patch Application ==========
