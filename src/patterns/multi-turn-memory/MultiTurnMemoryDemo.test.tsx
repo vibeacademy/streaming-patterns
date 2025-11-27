@@ -74,4 +74,9 @@ describe('MultiTurnMemoryDemo', () => {
     render(<MultiTurnMemoryDemo />);
     expect(screen.getByText('Stream Speed:')).toBeInTheDocument();
   });
+
+  it('renders reset demo button', () => {
+    render(<MultiTurnMemoryDemo />);
+    expect(screen.getByRole('button', { name: /reset demo/i })).toBeInTheDocument();
+  });
 });
