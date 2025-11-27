@@ -175,11 +175,22 @@ const SectionEditor = memo(function SectionEditor({
   }, [isEditing, editText.length]);
 
   const handleStartEdit = useCallback(() => {
+    // eslint-disable-next-line no-console
+    console.log('[DEBUG] handleStartEdit called', {
+      isComplete: section.isComplete,
+      isStreaming: section.isStreaming,
+      sectionId: section.id,
+    });
     if (section.isComplete && !section.isStreaming) {
       setEditText(section.content);
       setIsEditing(true);
+      // eslint-disable-next-line no-console
+      console.log('[DEBUG] Editing enabled for section:', section.id);
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('[DEBUG] Cannot edit - isComplete:', section.isComplete, 'isStreaming:', section.isStreaming);
     }
-  }, [section.isComplete, section.isStreaming, section.content]);
+  }, [section.isComplete, section.isStreaming, section.content, section.id]);
 
   const handleSaveEdit = useCallback(() => {
     if (onUserEdit && editText !== section.content) {

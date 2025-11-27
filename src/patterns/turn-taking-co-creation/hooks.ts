@@ -207,7 +207,14 @@ export function useCollaborativeDocument(
 
             case 'section_complete':
               // Mark section as complete (allows user editing)
-              setCompletedSections((prev) => new Set(prev).add(event.data.sectionId));
+              // eslint-disable-next-line no-console
+              console.log('[DEBUG] Section complete:', event.data.sectionId);
+              setCompletedSections((prev) => {
+                const newSet = new Set(prev).add(event.data.sectionId);
+                // eslint-disable-next-line no-console
+                console.log('[DEBUG] Completed sections:', Array.from(newSet));
+                return newSet;
+              });
               break;
 
             case 'conflict':
