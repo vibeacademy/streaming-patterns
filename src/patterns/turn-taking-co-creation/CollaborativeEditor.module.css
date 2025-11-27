@@ -322,7 +322,8 @@
   font-family: inherit;
   font-size: 0.9375rem;
   line-height: 1.6;
-  color: var(--color-text-primary, #111827);
+  /* Hardcoded dark text color to ensure visibility on white background in all themes */
+  color: #111827;
   background-color: white;
   border: 2px solid var(--color-user-text, #065f46);
   border-radius: 6px;
@@ -332,6 +333,11 @@
 
 .editTextarea:focus {
   box-shadow: 0 0 0 3px var(--color-user-bg, #d1fae5);
+}
+
+/* Ensure placeholder text is visible in all themes */
+.editTextarea::placeholder {
+  color: #9ca3af;
 }
 
 .clickableContent {
