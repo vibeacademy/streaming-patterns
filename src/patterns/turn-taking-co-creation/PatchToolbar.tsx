@@ -232,9 +232,21 @@ export function PatchToolbar({
         {agentPendingPatches.length === 0 ? (
           <div className={styles.emptyState}>
             {isStreaming ? (
-              <p>Waiting for agent suggestions...</p>
+              <>
+                <p className={styles.emptyTitle}>Auto-accepting changes</p>
+                <p className={styles.emptyDescription}>
+                  Agent changes are being applied directly to the document.
+                  Edit any section after streaming completes to make corrections.
+                </p>
+              </>
             ) : (
-              <p>No pending suggestions. All patches have been reviewed.</p>
+              <>
+                <p className={styles.emptyTitle}>Collaboration complete</p>
+                <p className={styles.emptyDescription}>
+                  The agent has finished drafting. Click any section to edit,
+                  add your own text, or modify the agent's suggestions.
+                </p>
+              </>
             )}
           </div>
         ) : (
@@ -253,8 +265,9 @@ export function PatchToolbar({
       {/* Educational note */}
       <div className={styles.toolbarFooter}>
         <p className={styles.footerNote}>
-          Review each suggestion before accepting. Use "Why?" to understand the
-          agent's reasoning.
+          <strong>Educational Note:</strong> In a full implementation, agent
+          patches would queue here for review before being applied. This demo
+          shows auto-acceptance for simplicity.
         </p>
       </div>
     </Card>
