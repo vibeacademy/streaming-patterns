@@ -13,8 +13,8 @@
  * @module patterns/turn-taking-co-creation/CollaborativeEditor
  */
 
-import { memo } from 'react';
-import type { SectionWithAuthorship, AuthorshipSpan } from './types';
+import { memo, useState, useCallback, useRef, useEffect } from 'react';
+import type { SectionWithAuthorship, AuthorshipSpan, Patch } from './types';
 import { Card } from '@/components/ui/Card';
 import styles from './CollaborativeEditor.module.css';
 
@@ -28,8 +28,11 @@ export interface CollaborativeEditorProps {
   /** Whether any section is currently streaming */
   isStreaming: boolean;
 
-  /** Callback when user clicks on a section to edit */
-  onSectionClick?: (sectionId: string) => void;
+  /** Callback when user applies an edit to a section */
+  onUserEdit?: (
+    sectionId: string,
+    patchData: Omit<Patch, 'id' | 'author' | 'timestamp'>
+  ) => void;
 
   /** Optional CSS class name */
   className?: string;
@@ -40,7 +43,10 @@ export interface CollaborativeEditorProps {
  */
 interface SectionEditorProps {
   section: SectionWithAuthorship;
-  onClick?: () => void;
+  onUserEdit?: (
+    sectionId: string,
+    patchData: Omit<Patch, 'id' | 'author' | 'timestamp'>
+  ) => void;
 }
 
 /**
@@ -148,19 +154,89 @@ function renderTextWithAuthorship(
  *
  * Educational Note: Each section is independently editable and shows streaming state.
  * When the agent is drafting a section, we show a streaming indicator.
+ * Users can click to edit completed sections - their additions appear in green.
  */
 const SectionEditor = memo(function SectionEditor({
   section,
-  onClick,
+  onUserEdit,
 }: SectionEditorProps): JSX.Element {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Focus textarea when entering edit mode
+  useEffect(() => {
+    if (isEditing && textareaRef.current) {
+      textareaRef.current.focus();
+      // Place cursor at end
+      textareaRef.current.setSelectionRange(editText.length, editText.length);
+    }
+  }, [isEditing, editText.length]);
+
+  const handleStartEdit = useCallback(() => {
+    if (section.isComplete && !section.isStreaming) {
+      setEditText(section.content);
+      setIsEditing(true);
+    }
+  }, [section.isComplete, section.isStreaming, section.content]);
+
+  const handleSaveEdit = useCallback(() => {
+    if (onUserEdit && editText !== section.content) {
+      // Calculate what changed - for simplicity, treat it as appending new content
+      // or replacing the entire content
+      const originalContent = section.content;
+
+      if (editText.startsWith(originalContent)) {
+        // User appended to end
+        const newContent = editText.substring(originalContent.length);
+        if (newContent.length > 0) {
+          onUserEdit(section.id, {
+            sectionId: section.id,
+            operation: 'insert',
+            content: newContent,
+            position: { start: originalContent.length, end: originalContent.length },
+          });
+        }
+      } else if (editText.length > 0) {
+        // User modified content - treat as replace
+        onUserEdit(section.id, {
+          sectionId: section.id,
+          operation: 'replace',
+          content: editText,
+          position: { start: 0, end: originalContent.length },
+        });
+      }
+    }
+    setIsEditing(false);
+  }, [editText, section.content, section.id, onUserEdit]);
+
+  const handleCancelEdit = useCallback(() => {
+    setIsEditing(false);
+    setEditText('');
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === 'Escape') {
+        handleCancelEdit();
+      } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        handleSaveEdit();
+      }
+    },
+    [handleCancelEdit, handleSaveEdit]
+  );
+
   return (
     <div
       className={`${styles.section} ${
         section.isStreaming ? styles.sectionStreaming : ''
-      } ${section.isComplete ? styles.sectionComplete : ''}`}
+      } ${section.isComplete ? styles.sectionComplete : ''} ${
+        isEditing ? styles.sectionEditing : ''
+      }`}
       data-section-id={section.id}
       data-streaming={section.isStreaming}
       data-complete={section.isComplete}
+      data-editing={isEditing}
     >
       <div className={styles.sectionHeader}>
         <h3 className={styles.sectionTitle}>{section.title}</h3>
@@ -173,29 +249,71 @@ const SectionEditor = memo(function SectionEditor({
             </span>
           </div>
         )}
-        {section.isComplete && !section.isStreaming && (
+        {section.isComplete && !section.isStreaming && !isEditing && (
           <button
             className={styles.editButton}
-            onClick={onClick}
+            onClick={handleStartEdit}
             aria-label={`Edit ${section.title}`}
           >
-            Edit
+            Click to Edit
           </button>
+        )}
+        {isEditing && (
+          <div className={styles.editActions}>
+            <button
+              className={styles.saveButton}
+              onClick={handleSaveEdit}
+              aria-label="Save changes"
+            >
+              Save (⌘+Enter)
+            </button>
+            <button
+              className={styles.cancelButton}
+              onClick={handleCancelEdit}
+              aria-label="Cancel editing"
+            >
+              Cancel (Esc)
+            </button>
+          </div>
         )}
       </div>
 
-      <div
-        className={styles.sectionContent}
-        role="textbox"
-        aria-multiline="true"
-        aria-readonly={!section.isComplete}
-        aria-label={`${section.title} content`}
-      >
-        {renderTextWithAuthorship(section.content, section.authorshipSpans)}
-      </div>
+      {isEditing ? (
+        <textarea
+          ref={textareaRef}
+          className={styles.editTextarea}
+          value={editText}
+          onChange={(e) => setEditText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type your content here..."
+          aria-label={`Edit ${section.title}`}
+        />
+      ) : (
+        <div
+          className={`${styles.sectionContent} ${
+            section.isComplete && !section.isStreaming ? styles.clickableContent : ''
+          }`}
+          role="textbox"
+          aria-multiline="true"
+          aria-readonly={!section.isComplete}
+          aria-label={`${section.title} content`}
+          onClick={handleStartEdit}
+          tabIndex={section.isComplete && !section.isStreaming ? 0 : -1}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && section.isComplete && !section.isStreaming) {
+              handleStartEdit();
+            }
+          }}
+        >
+          {renderTextWithAuthorship(section.content, section.authorshipSpans)}
+          {section.isComplete && !section.isStreaming && section.content.length > 0 && (
+            <span className={styles.editHint}> (click to edit)</span>
+          )}
+        </div>
+      )}
 
       {/* Patch count for debugging/educational purposes */}
-      {section.patches.length > 0 && (
+      {section.patches.length > 0 && !isEditing && (
         <div className={styles.patchCount}>
           {section.patches.length} {section.patches.length === 1 ? 'edit' : 'edits'}
         </div>
@@ -221,14 +339,14 @@ const SectionEditor = memo(function SectionEditor({
  * <CollaborativeEditor
  *   sections={sectionsWithAuthorship}
  *   isStreaming={isAgentDrafting}
- *   onSectionClick={(sectionId) => console.log('Edit section:', sectionId)}
+ *   onUserEdit={(sectionId, patch) => applyUserEdit(sectionId, patch)}
  * />
  * ```
  */
 export function CollaborativeEditor({
   sections,
   isStreaming,
-  onSectionClick,
+  onUserEdit,
   className,
 }: CollaborativeEditorProps): JSX.Element {
   // Sort sections by order
@@ -249,7 +367,7 @@ export function CollaborativeEditor({
               <span className={styles.statusIcon} aria-hidden="true">
                 ✓
               </span>
-              Draft complete
+              Draft complete - click any section to edit
             </span>
           )}
         </div>
@@ -269,9 +387,7 @@ export function CollaborativeEditor({
             <SectionEditor
               key={section.id}
               section={section}
-              onClick={
-                onSectionClick ? () => onSectionClick(section.id) : undefined
-              }
+              onUserEdit={onUserEdit}
             />
           ))
         )}
@@ -283,6 +399,8 @@ export function CollaborativeEditor({
           <strong>Authorship:</strong> Text highlighted in{' '}
           <span className={styles.agentExample}>blue</span> was drafted by the agent,{' '}
           <span className={styles.userExample}>green</span> indicates your edits.
+          <br />
+          <strong>Tip:</strong> Click on any completed section to add your own text!
         </p>
       </div>
     </Card>

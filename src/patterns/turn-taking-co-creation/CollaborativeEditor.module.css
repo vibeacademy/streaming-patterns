@@ -239,6 +239,90 @@
   font-weight: 500;
 }
 
+/* Editing Mode Styles */
+.sectionEditing {
+  border-color: var(--color-user-text, #065f46);
+  background-color: var(--color-user-bg, #d1fae5);
+}
+
+.editActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: white;
+  background-color: var(--color-success, #10b981);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: var(--color-success-dark, #059669);
+}
+
+.cancelButton {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6b7280);
+  background-color: transparent;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cancelButton:hover {
+  background-color: var(--color-bg-secondary, #f9fafb);
+  border-color: var(--color-border-hover, #d1d5db);
+}
+
+.editTextarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--color-text-primary, #111827);
+  background-color: white;
+  border: 2px solid var(--color-user-text, #065f46);
+  border-radius: 6px;
+  resize: vertical;
+  outline: none;
+}
+
+.editTextarea:focus {
+  box-shadow: 0 0 0 3px var(--color-user-bg, #d1fae5);
+}
+
+.clickableContent {
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.clickableContent:hover {
+  background-color: var(--color-bg-hover, #f3f4f6);
+}
+
+.clickableContent:focus {
+  outline: 2px solid var(--color-primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+.editHint {
+  color: var(--color-text-tertiary, #9ca3af);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
   .editorHeader {
@@ -251,5 +335,16 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+
+  .editActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+    text-align: center;
   }
 }

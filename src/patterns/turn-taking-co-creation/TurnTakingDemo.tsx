@@ -244,17 +244,6 @@ export function TurnTakingDemo(): JSX.Element {
     setShowInspector((prev) => !prev);
   }, []);
 
-  /**
-   * Handle section click (user wants to edit).
-   */
-  const handleSectionClick = useCallback(
-    (_sectionId: string): void => {
-      // In a real implementation, this would open an editor modal
-      // For this demo, we just pass the handler
-    },
-    []
-  );
-
   return (
     <DemoContainer
       title="Turn-Taking Co-Creation Pattern"
@@ -328,7 +317,7 @@ export function TurnTakingDemo(): JSX.Element {
           <CollaborativeEditor
             sections={sectionsWithAuthorship}
             isStreaming={isStreaming}
-            onSectionClick={handleSectionClick}
+            onUserEdit={actions.applyUserEdit}
             className={styles.editor}
           />
         </div>
