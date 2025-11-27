@@ -5,7 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { TurnTakingDemo } from './TurnTakingDemo';
 
 describe('TurnTakingDemo', () => {
@@ -74,4 +75,55 @@ describe('TurnTakingDemo', () => {
     expect(screen.getByText(/Authorship Tracking/i)).toBeInTheDocument();
     expect(screen.getByText(/Patch-Based Editing/i)).toBeInTheDocument();
   });
+
+  it('should mark sections as complete after stream finishes', async () => {
+    render(<TurnTakingDemo />);
+
+    // Wait for the goals section_complete event (event #7 in fixture)
+    // At 300ms/event + variance, need ~3-4 seconds for the first section_complete
+    await waitFor(
+      () => {
+        const goalsSection = document.querySelector('[data-section-id="goals"]');
+        expect(goalsSection?.getAttribute('data-complete')).toBe('true');
+      },
+      { timeout: 8000 }
+    );
+
+    // Verify the goals section is marked complete
+    const goalsSection = document.querySelector('[data-section-id="goals"]');
+    expect(goalsSection?.getAttribute('data-complete')).toBe('true');
+  }, 15000);
+
+  it('should enable editing when clicking a complete section', async () => {
+    const user = userEvent.setup();
+    render(<TurnTakingDemo />);
+
+    // Wait for the goals section to be complete
+    await waitFor(
+      () => {
+        const goalsSection = document.querySelector('[data-section-id="goals"]');
+        expect(goalsSection?.getAttribute('data-complete')).toBe('true');
+      },
+      { timeout: 8000 }
+    );
+
+    // Find the goals section content area
+    const goalsSection = document.querySelector('[data-section-id="goals"]');
+    expect(goalsSection).not.toBeNull();
+
+    // Click on the section content to start editing
+    const sectionContent = goalsSection?.querySelector('[role="textbox"]');
+    expect(sectionContent).not.toBeNull();
+
+    await user.click(sectionContent as Element);
+
+    // After clicking, editing mode should be enabled (textarea appears)
+    await waitFor(() => {
+      const textarea = goalsSection?.querySelector('textarea');
+      expect(textarea).toBeInTheDocument();
+    });
+
+    // Verify the section is in editing mode
+    expect(goalsSection?.getAttribute('data-editing')).toBe('true');
+  }, 15000);
 });

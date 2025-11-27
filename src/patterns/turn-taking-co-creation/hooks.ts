@@ -107,6 +107,12 @@ export function useCollaborativeDocument(
   // CRITICAL: This prevents the stream from restarting when state changes trigger re-renders
   const streamActiveRef = useRef(false);
 
+  // Ref for onEvent callback to avoid dependency triggering effect re-runs
+  // Educational Note: Using a ref for callbacks that change frequently prevents
+  // the streaming effect from restarting unnecessarily
+  const onEventRef = useRef(onEvent);
+  onEventRef.current = onEvent;
+
   // ========== Initialize Document ==========
   /**
    * Initialize document structure from fixture.
@@ -138,16 +144,28 @@ export function useCollaborativeDocument(
    * component lifecycle. The ref is NEVER reset in cleanup - only the demoKey
    * change (which unmounts/remounts the component) will start a new stream.
    */
+  // Create a ref to access document without adding it to effect dependencies
+  const documentRef = useRef(document);
+  documentRef.current = document;
+
   useEffect(() => {
     // CRITICAL: Prevent duplicate streams - only start if not already running
     // Once streamActiveRef is true, it stays true for this component instance
-    if (!autoStart || !document || streamActiveRef.current) return;
+    if (!autoStart || streamActiveRef.current) return;
     streamActiveRef.current = true;
 
     let cancelled = false;
-    setIsStreaming(true);
 
     (async () => {
+      // Wait for document to be initialized (via polling)
+      // Educational Note: We use polling instead of including document in deps
+      // to avoid the cleanup/restart cycle that cancels the stream
+      while (!documentRef.current && !cancelled) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      if (cancelled) return;
+
+      setIsStreaming(true);
       try {
         const stream = createMockCollaborationStream({
           fixture,
@@ -159,8 +177,9 @@ export function useCollaborativeDocument(
           if (cancelled) break;
 
           // Notify external listeners (e.g., network inspector)
-          if (onEvent) {
-            onEvent(event);
+          // Using ref to avoid re-running effect when callback changes
+          if (onEventRef.current) {
+            onEventRef.current(event);
           }
 
           // Process event based on type
@@ -207,14 +226,7 @@ export function useCollaborativeDocument(
 
             case 'section_complete':
               // Mark section as complete (allows user editing)
-              // eslint-disable-next-line no-console
-              console.log('[DEBUG] Section complete:', event.data.sectionId);
-              setCompletedSections((prev) => {
-                const newSet = new Set(prev).add(event.data.sectionId);
-                // eslint-disable-next-line no-console
-                console.log('[DEBUG] Completed sections:', Array.from(newSet));
-                return newSet;
-              });
+              setCompletedSections((prev) => new Set(prev).add(event.data.sectionId));
               break;
 
             case 'conflict':
@@ -247,9 +259,12 @@ export function useCollaborativeDocument(
       // The ref persists across re-renders and prevents duplicate streams.
       // Only component unmount (via demoKey change) creates a fresh ref.
     };
-    // We include document in dependencies to trigger when it's initialized,
-    // but streamActiveRef prevents the stream from restarting during the same session
-  }, [autoStart, document, fixture, speed, variableDelay, onEvent]);
+    // IMPORTANT: We intentionally EXCLUDE document from dependencies!
+    // Including document causes the effect to re-run (and cleanup to be called)
+    // every time a patch updates the document state, which cancels the stream.
+    // The stream waits for document to be truthy via polling instead.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoStart, fixture, speed, variableDelay]);
 
   // ========== Patch Application ==========
   /**
