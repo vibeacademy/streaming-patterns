@@ -51,6 +51,8 @@ interface PatchItemProps {
   onAccept: () => void;
   onReject: () => void;
   onAskWhy: () => void;
+  /** Whether this patch is in the process of being auto-accepted */
+  isAccepted?: boolean;
 }
 
 /**
@@ -111,15 +113,20 @@ const PatchItem = memo(function PatchItem({
   onAccept,
   onReject,
   onAskWhy,
+  isAccepted = false,
 }: PatchItemProps): JSX.Element {
   const description = getPatchDescription(patch);
   const badgeVariant = getOperationBadge(patch.operation);
 
   return (
-    <div className={styles.patchItem} data-patch-id={patch.id}>
+    <div
+      className={`${styles.patchItem} ${isAccepted ? styles.patchItemAccepted : ''}`}
+      data-patch-id={patch.id}
+      data-accepted={isAccepted}
+    >
       <div className={styles.patchHeader}>
-        <Badge variant={badgeVariant} className={styles.operationBadge}>
-          {patch.operation}
+        <Badge variant={isAccepted ? 'success' : badgeVariant} className={styles.operationBadge}>
+          {isAccepted ? 'accepted' : patch.operation}
         </Badge>
         <span className={styles.timestamp}>
           {new Date(patch.timestamp).toLocaleTimeString()}
@@ -137,32 +144,41 @@ const PatchItem = memo(function PatchItem({
         )}
       </div>
 
-      <div className={styles.patchActions}>
-        <Button
-          onClick={onAccept}
-          variant="primary"
-          size="sm"
-          aria-label={`Accept patch ${patch.id}`}
-        >
-          Accept
-        </Button>
-        <Button
-          onClick={onReject}
-          variant="secondary"
-          size="sm"
-          aria-label={`Reject patch ${patch.id}`}
-        >
-          Reject
-        </Button>
-        <Button
-          onClick={onAskWhy}
-          variant="ghost"
-          size="sm"
-          aria-label={`Ask why for patch ${patch.id}`}
-        >
-          Why?
-        </Button>
-      </div>
+      {!isAccepted && (
+        <div className={styles.patchActions}>
+          <Button
+            onClick={onAccept}
+            variant="primary"
+            size="sm"
+            aria-label={`Accept patch ${patch.id}`}
+          >
+            Accept
+          </Button>
+          <Button
+            onClick={onReject}
+            variant="secondary"
+            size="sm"
+            aria-label={`Reject patch ${patch.id}`}
+          >
+            Reject
+          </Button>
+          <Button
+            onClick={onAskWhy}
+            variant="ghost"
+            size="sm"
+            aria-label={`Ask why for patch ${patch.id}`}
+          >
+            Why?
+          </Button>
+        </div>
+      )}
+
+      {isAccepted && (
+        <div className={styles.acceptedIndicator}>
+          <span className={styles.checkmark}>✓</span>
+          <span>Auto-accepted</span>
+        </div>
+      )}
     </div>
   );
 });
@@ -200,17 +216,25 @@ export function PatchToolbar({
   isStreaming,
   className,
 }: PatchToolbarProps): JSX.Element {
-  // Filter to only show agent patches with pending status
-  const agentPendingPatches = pendingPatches.filter(
-    (p) => p.author === 'agent' && p.status === 'pending'
+  // Show agent patches that are either pending or recently accepted
+  // Educational Note: We show both states so users can see the flow:
+  // 1. Patch appears as "pending" with action buttons
+  // 2. After AUTO_ACCEPT_DELAY, patch transitions to "accepted" state
+  // 3. Shortly after, patch is removed from the list
+  const visiblePatches = pendingPatches.filter(
+    (p) => p.author === 'agent' && (p.status === 'pending' || p.status === 'accepted')
   );
+
+  const pendingCount = pendingPatches.filter(
+    (p) => p.author === 'agent' && p.status === 'pending'
+  ).length;
 
   return (
     <Card className={`${styles.toolbar} ${className || ''}`}>
       <div className={styles.toolbarHeader}>
         <h3 className={styles.toolbarTitle}>Agent Suggestions</h3>
-        <Badge variant={agentPendingPatches.length > 0 ? 'warning' : 'neutral'}>
-          {agentPendingPatches.length} pending
+        <Badge variant={visiblePatches.length > 0 ? 'warning' : 'neutral'}>
+          {pendingCount > 0 ? `${pendingCount} pending` : visiblePatches.length > 0 ? 'accepting...' : '0 pending'}
         </Badge>
       </div>
 
@@ -227,16 +251,16 @@ export function PatchToolbar({
       <div
         className={styles.patchList}
         role="list"
-        aria-label="Pending agent patches"
+        aria-label="Agent patches"
       >
-        {agentPendingPatches.length === 0 ? (
+        {visiblePatches.length === 0 ? (
           <div className={styles.emptyState}>
             {isStreaming ? (
               <>
-                <p className={styles.emptyTitle}>Auto-accepting changes</p>
+                <p className={styles.emptyTitle}>Waiting for suggestions...</p>
                 <p className={styles.emptyDescription}>
-                  Agent changes are being applied directly to the document.
-                  Edit any section after streaming completes to make corrections.
+                  Agent suggestions will appear here as they are generated.
+                  They will be auto-accepted after a brief preview.
                 </p>
               </>
             ) : (
@@ -250,13 +274,14 @@ export function PatchToolbar({
             )}
           </div>
         ) : (
-          agentPendingPatches.map((patch) => (
+          visiblePatches.map((patch) => (
             <PatchItem
               key={patch.id}
               patch={patch}
               onAccept={() => onAcceptPatch(patch.id)}
               onReject={() => onRejectPatch(patch.id)}
               onAskWhy={() => onAskWhy(patch.id)}
+              isAccepted={patch.status === 'accepted'}
             />
           ))
         )}
@@ -265,9 +290,9 @@ export function PatchToolbar({
       {/* Educational note */}
       <div className={styles.toolbarFooter}>
         <p className={styles.footerNote}>
-          <strong>Educational Note:</strong> In a full implementation, agent
-          patches would queue here for review before being applied. This demo
-          shows auto-acceptance for simplicity.
+          <strong>Educational Note:</strong> Agent patches appear here briefly
+          before being auto-accepted. In a production system, you could pause
+          auto-acceptance to manually review each suggestion.
         </p>
       </div>
     </Card>

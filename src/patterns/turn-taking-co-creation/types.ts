@@ -234,8 +234,9 @@ export type StreamEvent =
  * - applied: Patch has been successfully applied
  * - conflict: Patch conflicts with another edit
  * - superseded: Patch was replaced by another patch
+ * - accepted: Patch was auto-accepted (briefly shown before removal)
  */
-export type PatchStatus = 'pending' | 'applied' | 'conflict' | 'superseded';
+export type PatchStatus = 'pending' | 'applied' | 'conflict' | 'superseded' | 'accepted';
 
 /**
  * Enriched patch with UI state.

@@ -99,10 +99,13 @@ export function useCollaborativeDocument(
   // Educational Note: Document is stored with sections as a Map for fast lookups.
   // Patches are tracked separately to support undo/redo and conflict detection.
   const [document, setDocument] = useState<CollaborativeDocument | null>(null);
-  const [pendingPatches] = useState<PatchWithStatus[]>([]);
+  const [pendingPatches, setPendingPatches] = useState<PatchWithStatus[]>([]);
   const [patchHistory, setPatchHistory] = useState<Patch[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set());
+
+  // Auto-accept delay (ms) - how long patches stay visible before being auto-accepted
+  const AUTO_ACCEPT_DELAY = 800;
 
   // Ref to track if stream is currently running - prevents duplicate streams
   // CRITICAL: This prevents the stream from restarting when state changes trigger re-renders
@@ -197,8 +200,41 @@ export function useCollaborativeDocument(
                 metadata: event.data.metadata,
               };
 
-              // Apply patch to document
+              // Educational Note: First add patch to pending queue so users can see it
+              // in the Agent Suggestions panel. This provides transparency into what
+              // the agent is proposing before it gets applied.
+              const patchWithStatus: PatchWithStatus = {
+                ...patch,
+                status: 'pending',
+              };
+
+              setPendingPatches((prev) => [...prev, patchWithStatus]);
+
+              // Apply patch to document immediately (optimistic)
               applyPatchToDocument(patch);
+
+              // Auto-accept after delay (visual feedback that suggestion was accepted)
+              // Educational Note: In a real implementation, patches might stay pending
+              // until the user explicitly accepts them. This demo auto-accepts for
+              // a smoother experience while still showing the suggestion flow.
+              setTimeout(() => {
+                if (!cancelled) {
+                  setPendingPatches((prev) =>
+                    prev.map((p) =>
+                      p.id === patch.id ? { ...p, status: 'accepted' } : p
+                    )
+                  );
+                  // Remove from pending after brief "accepted" state
+                  setTimeout(() => {
+                    if (!cancelled) {
+                      setPendingPatches((prev) =>
+                        prev.filter((p) => p.id !== patch.id)
+                      );
+                    }
+                  }, 300);
+                }
+              }, AUTO_ACCEPT_DELAY);
+
               break;
             }
 
