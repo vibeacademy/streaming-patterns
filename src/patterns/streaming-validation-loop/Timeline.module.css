@@ -1,0 +1,203 @@
+/**
+ * Timeline Styles
+ */
+
+.timeline {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.timelineTitle {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.emptyTimeline {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+}
+
+.emptyTimeline p {
+  margin: 0;
+}
+
+.timelineList {
+  position: relative;
+}
+
+.timelineEntry {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.timelineEntry:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.activeEntry .entryContent {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.marker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.markerDot {
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border: 3px solid #dbeafe;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.activeEntry .markerDot {
+  background: #10b981;
+  border-color: #d1fae5;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.markerLine {
+  width: 2px;
+  flex: 1;
+  min-height: 40px;
+  background: #e5e7eb;
+  margin-top: 4px;
+}
+
+.entryContent {
+  flex: 1;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+
+.entryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.entryTeam {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.entryAction {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.approveAction {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.editAction {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.skipAction {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.entryDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.entryTime {
+  font-size: 13px;
+  color: #6b7280;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+.entryDuration {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.budgetComparison {
+  margin-bottom: 12px;
+}
+
+.budgetRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.budgetLabel {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.budgetValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+}
+
+.budgetEdited {
+  color: #3b82f6;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 3px 10px;
+  background: #f3f4f6;
+  color: #6b7280;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeoutBadge {
+  background: #fef3c7;
+  color: #92400e;
+}
