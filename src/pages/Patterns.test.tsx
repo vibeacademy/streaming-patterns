@@ -126,13 +126,23 @@ describe('Patterns Page', () => {
       }
     });
 
-    it('should display other advanced patterns as coming soon', () => {
+    it('should display Turn-Taking Co-Creation as available', () => {
       renderWithRouter(<Patterns />);
 
       const turnTakingCard = screen.getByText('Turn-Taking Co-Creation').closest('div');
       expect(turnTakingCard).toBeInTheDocument();
       if (turnTakingCard) {
-        expect(within(turnTakingCard).getByText(/coming soon/i)).toBeInTheDocument();
+        expect(within(turnTakingCard).getByText(/✓ available/i)).toBeInTheDocument();
+      }
+    });
+
+    it('should display other advanced patterns as coming soon', () => {
+      renderWithRouter(<Patterns />);
+
+      const streamingValidationCard = screen.getByText('Streaming Validation Loop').closest('div');
+      expect(streamingValidationCard).toBeInTheDocument();
+      if (streamingValidationCard) {
+        expect(within(streamingValidationCard).getByText(/coming soon/i)).toBeInTheDocument();
       }
     });
   });
@@ -187,10 +197,16 @@ describe('Patterns Page', () => {
       expect(memoryCard).toHaveTextContent(/view demo/i);
     });
 
+    it('should show "View Demo" CTA for Turn-Taking Co-Creation', () => {
+      renderWithRouter(<Patterns />);
+      const turnTakingCard = screen.getByText('Turn-Taking Co-Creation').closest('a');
+      expect(turnTakingCard).toHaveTextContent(/view demo/i);
+    });
+
     it('should not show "View Demo" CTA for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const turnTakingCard = screen.getByText('Turn-Taking Co-Creation').closest('div');
-      expect(turnTakingCard).not.toHaveTextContent(/view demo/i);
+      const streamingValidationCard = screen.getByText('Streaming Validation Loop').closest('div');
+      expect(streamingValidationCard).not.toHaveTextContent(/view demo/i);
     });
   });
 
@@ -219,11 +235,17 @@ describe('Patterns Page', () => {
       expect(link).toHaveAttribute('href', '/patterns/multi-turn-memory');
     });
 
+    it('should have a clickable link for Turn-Taking Co-Creation', () => {
+      renderWithRouter(<Patterns />);
+      const link = screen.getByRole('link', { name: /view turn-taking co-creation demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/turn-taking-co-creation');
+    });
+
     it('should not have links for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const turnTakingTitle = screen.getByText('Turn-Taking Co-Creation');
-      const turnTakingCard = turnTakingTitle.closest('a');
-      expect(turnTakingCard).not.toBeInTheDocument();
+      const streamingValidationTitle = screen.getByText('Streaming Validation Loop');
+      const streamingValidationCard = streamingValidationTitle.closest('a');
+      expect(streamingValidationCard).not.toBeInTheDocument();
     });
   });
 
@@ -267,10 +289,10 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       const availableBadges = screen.getAllByLabelText(/available now/i);
-      expect(availableBadges.length).toBe(4); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, and Multi-Turn Memory Timeline
+      expect(availableBadges.length).toBe(5); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, Multi-Turn Memory Timeline, and Turn-Taking Co-Creation
 
       const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBe(3); // 3 remaining advanced patterns
+      expect(comingSoonBadges.length).toBe(2); // 2 remaining advanced patterns
     });
 
     it('should have aria-label on pattern links', () => {
@@ -286,9 +308,9 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       // Coming soon patterns are wrapped in divs with aria-disabled
-      const turnTakingTitle = screen.getByText('Turn-Taking Co-Creation');
-      const turnTakingContainer = turnTakingTitle.closest('[aria-disabled="true"]');
-      expect(turnTakingContainer).toBeInTheDocument();
+      const streamingValidationTitle = screen.getByText('Streaming Validation Loop');
+      const streamingValidationContainer = streamingValidationTitle.closest('[aria-disabled="true"]');
+      expect(streamingValidationContainer).toBeInTheDocument();
     });
 
     it('should use semantic list markup for pattern grids', () => {
