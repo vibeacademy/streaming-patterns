@@ -73,6 +73,15 @@ const MultiTurnMemoryDemo = lazy(
     )
 );
 
+const TurnTakingDemo = lazy(
+  () =>
+    import('./patterns/turn-taking-co-creation/TurnTakingDemo').then(
+      (module) => ({
+        default: module.TurnTakingDemo
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -180,6 +189,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Multi-Turn-Memory">
                     <MultiTurnMemoryDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Turn-Taking Co-Creation Pattern Demo */}
+              <Route
+                path="/patterns/turn-taking-co-creation"
+                element={
+                  <PatternErrorBoundary patternName="Turn-Taking-Co-Creation">
+                    <TurnTakingDemo />
                   </PatternErrorBoundary>
                 }
               />
