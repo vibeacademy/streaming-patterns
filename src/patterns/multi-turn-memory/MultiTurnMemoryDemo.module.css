@@ -82,6 +82,23 @@
   border-color: var(--border-hover, #555);
 }
 
+.resetButton {
+  padding: 0.5rem 1rem;
+  background: var(--surface-2, #1a1a1a);
+  border: 1px solid var(--border-color, #444);
+  border-radius: 6px;
+  color: var(--text-primary, #fff);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetButton:hover {
+  background: var(--primary, #3b82f6);
+  border-color: var(--primary, #3b82f6);
+  color: #fff;
+}
+
 .memorySection {
   background: var(--surface-1, #0a0a0a);
   border-bottom: 1px solid var(--border-color, #333);

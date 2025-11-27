@@ -16,21 +16,24 @@ import { ChatThread } from './ChatThread';
 import styles from './MultiTurnMemoryDemo.module.css';
 
 /**
- * MultiTurnMemoryDemo Component
- *
- * Educational Notes:
- * - Demonstrates memory lifecycle (create, update, prune)
- * - Shows user control over AI memory (pin/prune)
- * - Visualizes provenance (token excerpts)
- * - Implements real-time filtering
- * - Separates memory timeline from chat UI
- *
- * @returns JSX element
+ * Props for the MemoryDemoContent component
  */
-export function MultiTurnMemoryDemo(): JSX.Element {
-  const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
-  const [showFilters, setShowFilters] = useState(true);
+interface MemoryDemoContentProps {
+  speed: 'instant' | 'fast' | 'normal' | 'slow';
+  showFilters: boolean;
+}
 
+/**
+ * MemoryDemoContent Component
+ *
+ * Inner component that contains the hook and all memory-related state.
+ * Separated from the wrapper to enable proper reset via key prop.
+ *
+ * Educational Note: By putting the hook in a separate component that receives
+ * a key prop, we can force a complete remount (and hook state reset) by
+ * changing the key. This is the React-idiomatic way to reset component state.
+ */
+function MemoryDemoContent({ speed, showFilters }: MemoryDemoContentProps): JSX.Element {
   // Memoize the event callback to prevent infinite loops
   const handleEvent = useCallback((event: { type: string; data: unknown }) => {
     // Events can be captured for network inspector
@@ -52,42 +55,7 @@ export function MultiTurnMemoryDemo(): JSX.Element {
   });
 
   return (
-    <div className={styles.demo}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          <h1 className={styles.title}>Multi-Turn Memory Timeline</h1>
-          <p className={styles.subtitle}>
-            Watch the agent build and maintain memory across conversation turns
-          </p>
-        </div>
-
-        {/* Controls */}
-        <div className={styles.controls}>
-          <label className={styles.controlLabel}>
-            Stream Speed:
-            <select
-              value={speed}
-              onChange={(e) => setSpeed(e.target.value as typeof speed)}
-              className={styles.select}
-              disabled={isStreaming}
-            >
-              <option value="instant">Instant</option>
-              <option value="fast">Fast</option>
-              <option value="normal">Normal</option>
-              <option value="slow">Slow</option>
-            </select>
-          </label>
-
-          <button
-            className={styles.toggleButton}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {showFilters ? 'Hide' : 'Show'} Filters
-          </button>
-        </div>
-      </div>
-
+    <>
       {/* Memory Timeline (Sticky) */}
       <div className={styles.memorySection}>
         <div className={styles.sectionHeader}>
@@ -139,6 +107,99 @@ export function MultiTurnMemoryDemo(): JSX.Element {
           <ChatThread messages={messages} isStreaming={isStreaming} />
         </main>
       </div>
+    </>
+  );
+}
+
+/**
+ * MultiTurnMemoryDemo Component
+ *
+ * Wrapper component that manages demo-level state (speed, filters visibility, demo key).
+ * The actual memory state lives in MemoryDemoContent, which can be reset via key change.
+ *
+ * Educational Notes:
+ * - Demonstrates memory lifecycle (create, update, prune)
+ * - Shows user control over AI memory (pin/prune)
+ * - Visualizes provenance (token excerpts)
+ * - Implements real-time filtering
+ * - Separates memory timeline from chat UI
+ * - Reset functionality via component key change
+ *
+ * @returns JSX element
+ */
+export function MultiTurnMemoryDemo(): JSX.Element {
+  const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
+  const [showFilters, setShowFilters] = useState(true);
+  // Demo key for forcing reset - incrementing this remounts MemoryDemoContent
+  const [demoKey, setDemoKey] = useState(0);
+
+  /**
+   * Handle demo reset.
+   * Clears all state by remounting the content component.
+   */
+  const handleReset = useCallback((): void => {
+    setDemoKey((prev) => prev + 1);
+  }, []);
+
+  /**
+   * Handle speed change.
+   * Also resets the demo since changing speed mid-stream isn't supported.
+   */
+  const handleSpeedChange = useCallback((newSpeed: typeof speed): void => {
+    setSpeed(newSpeed);
+    setDemoKey((prev) => prev + 1);
+  }, []);
+
+  return (
+    <div className={styles.demo}>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.titleSection}>
+          <h1 className={styles.title}>Multi-Turn Memory Timeline</h1>
+          <p className={styles.subtitle}>
+            Watch the agent build and maintain memory across conversation turns
+          </p>
+        </div>
+
+        {/* Controls */}
+        <div className={styles.controls}>
+          <label className={styles.controlLabel}>
+            Stream Speed:
+            <select
+              value={speed}
+              onChange={(e) => handleSpeedChange(e.target.value as typeof speed)}
+              className={styles.select}
+            >
+              <option value="instant">Instant</option>
+              <option value="fast">Fast</option>
+              <option value="normal">Normal</option>
+              <option value="slow">Slow</option>
+            </select>
+          </label>
+
+          <button
+            className={styles.toggleButton}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            {showFilters ? 'Hide' : 'Show'} Filters
+          </button>
+
+          <button
+            className={styles.resetButton}
+            onClick={handleReset}
+            aria-label="Reset demo to beginning"
+          >
+            Reset Demo
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content - Keyed for proper reset */}
+      <MemoryDemoContent
+        key={demoKey}
+        speed={speed}
+        showFilters={showFilters}
+      />
 
       {/* Pattern Info Footer */}
       <div className={styles.footer}>
