@@ -162,6 +162,7 @@ const SectionEditor = memo(function SectionEditor({
 }: SectionEditorProps): JSX.Element {
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState('');
+  // eslint-disable-next-line no-undef
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Focus textarea when entering edit mode
@@ -216,6 +217,7 @@ const SectionEditor = memo(function SectionEditor({
   }, []);
 
   const handleKeyDown = useCallback(
+    // eslint-disable-next-line no-undef
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       if (e.key === 'Escape') {
         handleCancelEdit();
