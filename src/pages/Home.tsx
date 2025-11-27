@@ -70,10 +70,24 @@ export function Home(): JSX.Element {
       ]
     },
     {
-      id: 'coming-soon',
-      title: '3 More Patterns',
+      id: 'turn-taking-co-creation',
+      title: 'Turn-Taking Co-Creation',
       description:
-        'Turn-Taking Co-Creation, Streaming Validation Loop, and Schema-Governed Exchange.',
+        'Alternate between user and AI contributions to collaboratively build content with real-time authorship tracking.',
+      status: 'available',
+      route: '/patterns/turn-taking-co-creation',
+      demoScenario: 'Project Charter Co-Creation',
+      techniques: [
+        'Bidirectional streaming',
+        'Authorship highlighting',
+        'Patch-based editing'
+      ]
+    },
+    {
+      id: 'coming-soon',
+      title: '2 More Patterns',
+      description:
+        'Streaming Validation Loop and Schema-Governed Exchange.',
       status: 'coming-soon',
       route: '/patterns',
       demoScenario: 'Advanced streaming techniques',
