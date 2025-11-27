@@ -169,10 +169,10 @@ const SectionEditor = memo(function SectionEditor({
   useEffect(() => {
     if (isEditing && textareaRef.current) {
       textareaRef.current.focus();
-      // Place cursor at end
-      textareaRef.current.setSelectionRange(editText.length, editText.length);
+      // Let the browser handle cursor position naturally
+      // Don't force cursor to end - user expects cursor where they clicked
     }
-  }, [isEditing, editText.length]);
+  }, [isEditing]);
 
   const handleStartEdit = useCallback(() => {
     if (section.isComplete && !section.isStreaming) {
