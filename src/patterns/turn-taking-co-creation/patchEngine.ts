@@ -351,13 +351,15 @@ export function buildAuthorshipSpans(section: DocumentSection): AuthorshipSpan[]
  * delete/replace operations, along with the original authorship.
  *
  * The algorithm:
- * 1. Replay patches in order, tracking content and authorship at each step
- * 2. When a delete/replace removes text, record what was deleted and its author
- * 3. The position is where in the FINAL document the deletion indicator should appear
+ * 1. First, build the final document state by replaying all patches
+ * 2. For each delete/replace patch, figure out where the deletion marker should appear
+ *    in the final document
+ * 3. User patches (created via findMinimalDiff) have positions relative to the current
+ *    document state at edit time - they need special handling
  *
- * Position tracking is tricky: as we replay, we track how positions shift due to
- * inserts/deletes. For each deletion, we record where it would appear in the
- * final document by tracking a running offset from subsequent operations.
+ * Key insight: The deletion marker should appear at the position where the deleted
+ * text WAS before deletion, in the final document's coordinate system. This is the
+ * position AFTER all prior patches but accounting for this patch's effect.
  *
  * @param section - Document section with patches
  * @returns Array of deletion spans for strikethrough display
@@ -379,23 +381,16 @@ export function buildDeletionSpans(section: DocumentSection): DeletionSpan[] {
   // Sort by timestamp
   const sortedPatches = [...activePatches].sort((a, b) => a.timestamp - b.timestamp);
 
-  // Track content and authorship as we replay
+  // First pass: replay all patches to build content and track authorship at each step
+  // We need to know the content state BEFORE each patch to determine what was deleted
+  const contentStates: string[] = [''];
+  const authorStates: Author[][] = [[]];
+
   let content = '';
   let charAuthors: Author[] = [];
 
-  // Collect deletions with their position at time of deletion
-  const rawDeletions: Array<{
-    positionAtDeletion: number;
-    deletedContent: string;
-    originalAuthor: Author;
-    deletedBy: Author;
-    patchId: string;
-    patchIndex: number; // Index in sortedPatches for tracking subsequent shifts
-  }> = [];
-
-  for (let patchIndex = 0; patchIndex < sortedPatches.length; patchIndex++) {
-    const patch = sortedPatches[patchIndex];
-    const { operation, position, content: patchContent, author, id: patchId } = patch;
+  for (const patch of sortedPatches) {
+    const { operation, position, content: patchContent, author } = patch;
     const { start, end } = position;
 
     switch (operation) {
@@ -412,25 +407,6 @@ export function buildDeletionSpans(section: DocumentSection): DeletionSpan[] {
 
       case 'replace':
       case 'delete': {
-        const deletedContent = content.substring(start, end);
-        if (deletedContent.length > 0) {
-          // Determine original author of deleted content (majority author)
-          const deletedAuthors = charAuthors.slice(start, end);
-          const agentCount = deletedAuthors.filter((a) => a === 'agent').length;
-          const originalAuthor: Author =
-            agentCount > deletedAuthors.length / 2 ? 'agent' : 'user';
-
-          rawDeletions.push({
-            positionAtDeletion: start,
-            deletedContent,
-            originalAuthor,
-            deletedBy: author,
-            patchId,
-            patchIndex,
-          });
-        }
-
-        // Apply the operation
         const newContent = operation === 'delete' ? '' : patchContent;
         content = content.substring(0, start) + newContent + content.substring(end);
         const newAuthors =
@@ -443,54 +419,87 @@ export function buildDeletionSpans(section: DocumentSection): DeletionSpan[] {
         break;
       }
     }
+
+    contentStates.push(content);
+    authorStates.push([...charAuthors]);
   }
 
-  // Now calculate final positions for each deletion
-  // Each deletion's final position is affected by patches that come AFTER it
-  const deletionSpans: DeletionSpan[] = rawDeletions.map((del) => {
-    let finalPosition = del.positionAtDeletion;
+  // Second pass: collect deletions and calculate their final positions
+  const deletionSpans: DeletionSpan[] = [];
 
-    // Apply position shifts from subsequent patches
-    for (let i = del.patchIndex + 1; i < sortedPatches.length; i++) {
-      const subsequentPatch = sortedPatches[i];
-      const { operation, position, content: patchContent } = subsequentPatch;
-      const { start, end } = position;
+  for (let patchIndex = 0; patchIndex < sortedPatches.length; patchIndex++) {
+    const patch = sortedPatches[patchIndex];
+    const { operation, position, author, id: patchId } = patch;
+    const { start, end } = position;
 
-      // Only patches that affect positions before or at our position matter
-      if (start <= finalPosition) {
-        if (operation === 'insert') {
-          // Insert before/at our position shifts us right
-          finalPosition += patchContent.length;
-        } else if (operation === 'delete') {
-          // Delete before our position shifts us left
-          const deleteLength = end - start;
-          if (end <= finalPosition) {
-            finalPosition -= deleteLength;
-          } else if (start < finalPosition) {
-            // Partial overlap - adjust to start
-            finalPosition = start;
-          }
-        } else if (operation === 'replace') {
-          // Replace: net shift is (new length - old length)
-          const oldLength = end - start;
-          const newLength = patchContent.length;
-          if (end <= finalPosition) {
-            finalPosition += newLength - oldLength;
-          } else if (start < finalPosition) {
-            finalPosition = start + newLength;
-          }
+    if (operation !== 'delete' && operation !== 'replace') continue;
+
+    // Get the content state BEFORE this patch was applied
+    const contentBefore = contentStates[patchIndex];
+    const authorsBefore = authorStates[patchIndex];
+
+    // Extract what was deleted
+    const deletedContent = contentBefore.substring(start, end);
+    if (deletedContent.length === 0) continue;
+
+    // Determine original author of deleted content (majority author)
+    const deletedAuthors = authorsBefore.slice(start, end);
+    const agentCount = deletedAuthors.filter((a) => a === 'agent').length;
+    const originalAuthor: Author =
+      agentCount > deletedAuthors.length / 2 ? 'agent' : 'user';
+
+    // Calculate where this deletion should appear in the FINAL document
+    // The deletion marker goes at position `start` as it was in the document
+    // BEFORE this patch, but adjusted for all SUBSEQUENT patches
+    let finalPosition = start;
+
+    // Adjust for all patches that come after this one
+    for (let i = patchIndex + 1; i < sortedPatches.length; i++) {
+      const laterPatch = sortedPatches[i];
+      const laterOp = laterPatch.operation;
+      const laterStart = laterPatch.position.start;
+      const laterEnd = laterPatch.position.end;
+      const laterContent = laterPatch.content;
+
+      // We need to know where laterPatch operates relative to our deletion position
+      // Note: laterPatch positions are relative to the document state BEFORE laterPatch
+      // We track how document coordinates shift
+
+      if (laterOp === 'insert') {
+        // Insert at or before our position shifts us right
+        if (laterStart <= finalPosition) {
+          finalPosition += laterContent.length;
+        }
+      } else if (laterOp === 'delete') {
+        // Delete before our position shifts us left
+        const deleteLength = laterEnd - laterStart;
+        if (laterEnd <= finalPosition) {
+          finalPosition -= deleteLength;
+        } else if (laterStart < finalPosition) {
+          // Our position is inside the deleted range
+          finalPosition = laterStart;
+        }
+      } else if (laterOp === 'replace') {
+        // Replace: net shift is (new length - old length)
+        const oldLength = laterEnd - laterStart;
+        const newLength = laterContent.length;
+        if (laterEnd <= finalPosition) {
+          finalPosition += newLength - oldLength;
+        } else if (laterStart < finalPosition) {
+          // Our position is inside the replaced range - clamp to end of replacement
+          finalPosition = laterStart + newLength;
         }
       }
     }
 
-    return {
+    deletionSpans.push({
       position: Math.max(0, finalPosition),
-      deletedContent: del.deletedContent,
-      originalAuthor: del.originalAuthor,
-      deletedBy: del.deletedBy,
-      patchId: del.patchId,
-    };
-  });
+      deletedContent,
+      originalAuthor,
+      deletedBy: author,
+      patchId,
+    });
+  }
 
   return deletionSpans;
 }
