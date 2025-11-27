@@ -19,6 +19,80 @@ import { Card } from '@/components/ui/Card';
 import styles from './CollaborativeEditor.module.css';
 
 /**
+ * Find the minimal diff between original and edited text.
+ *
+ * Educational Note: This implements a simple but effective diff algorithm that finds
+ * the longest common prefix and suffix, then determines the changed region in between.
+ * This allows us to create granular patches that only cover what the user actually changed,
+ * preserving authorship of unchanged text.
+ *
+ * @param original - Original text before editing
+ * @param edited - Text after user's edit
+ * @returns Patch data describing the minimal change, or null if no change
+ */
+function findMinimalDiff(
+  original: string,
+  edited: string
+): { operation: 'insert' | 'replace' | 'delete'; content: string; start: number; end: number } | null {
+  // No change
+  if (original === edited) return null;
+
+  // Find longest common prefix
+  let prefixLen = 0;
+  const minLen = Math.min(original.length, edited.length);
+  while (prefixLen < minLen && original[prefixLen] === edited[prefixLen]) {
+    prefixLen++;
+  }
+
+  // Find longest common suffix (but don't overlap with prefix)
+  let suffixLen = 0;
+  while (
+    suffixLen < minLen - prefixLen &&
+    original[original.length - 1 - suffixLen] === edited[edited.length - 1 - suffixLen]
+  ) {
+    suffixLen++;
+  }
+
+  // Calculate the changed region
+  const originalStart = prefixLen;
+  const originalEnd = original.length - suffixLen;
+  const editedStart = prefixLen;
+  const editedEnd = edited.length - suffixLen;
+
+  const deletedContent = original.substring(originalStart, originalEnd);
+  const insertedContent = edited.substring(editedStart, editedEnd);
+
+  // Determine operation type
+  if (deletedContent.length === 0 && insertedContent.length > 0) {
+    // Pure insert
+    return {
+      operation: 'insert',
+      content: insertedContent,
+      start: originalStart,
+      end: originalStart,
+    };
+  } else if (deletedContent.length > 0 && insertedContent.length === 0) {
+    // Pure delete
+    return {
+      operation: 'delete',
+      content: '',
+      start: originalStart,
+      end: originalEnd,
+    };
+  } else if (deletedContent.length > 0 && insertedContent.length > 0) {
+    // Replace
+    return {
+      operation: 'replace',
+      content: insertedContent,
+      start: originalStart,
+      end: originalEnd,
+    };
+  }
+
+  return null;
+}
+
+/**
  * Props for CollaborativeEditor component
  */
 export interface CollaborativeEditorProps {
@@ -183,28 +257,16 @@ const SectionEditor = memo(function SectionEditor({
 
   const handleSaveEdit = useCallback(() => {
     if (onUserEdit && editText !== section.content) {
-      // Calculate what changed - for simplicity, treat it as appending new content
-      // or replacing the entire content
-      const originalContent = section.content;
+      // Use minimal diff to find exactly what the user changed
+      // This preserves authorship of unchanged text
+      const diff = findMinimalDiff(section.content, editText);
 
-      if (editText.startsWith(originalContent)) {
-        // User appended to end
-        const newContent = editText.substring(originalContent.length);
-        if (newContent.length > 0) {
-          onUserEdit(section.id, {
-            sectionId: section.id,
-            operation: 'insert',
-            content: newContent,
-            position: { start: originalContent.length, end: originalContent.length },
-          });
-        }
-      } else if (editText.length > 0) {
-        // User modified content - treat as replace
+      if (diff) {
         onUserEdit(section.id, {
           sectionId: section.id,
-          operation: 'replace',
-          content: editText,
-          position: { start: 0, end: originalContent.length },
+          operation: diff.operation,
+          content: diff.content,
+          position: { start: diff.start, end: diff.end },
         });
       }
     }
