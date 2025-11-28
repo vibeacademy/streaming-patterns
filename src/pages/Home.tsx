@@ -84,10 +84,24 @@ export function Home(): JSX.Element {
       ]
     },
     {
-      id: 'coming-soon',
-      title: '2 More Patterns',
+      id: 'streaming-validation-loop',
+      title: 'Streaming Validation Loop',
       description:
-        'Streaming Validation Loop and Schema-Governed Exchange.',
+        'Pause streaming at checkpoints for user approval, edits, or skip actions before continuing.',
+      status: 'available',
+      route: '/patterns/streaming-validation-loop',
+      demoScenario: 'Q1 Budget Allocation',
+      techniques: [
+        'Checkpoint pause/resume',
+        'Approve/Edit/Skip actions',
+        'Timeout handling'
+      ]
+    },
+    {
+      id: 'coming-soon',
+      title: '1 More Pattern',
+      description:
+        'Schema-Governed Exchange - structured data exchange with AI.',
       status: 'coming-soon',
       route: '/patterns',
       demoScenario: 'Advanced streaming techniques',

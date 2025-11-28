@@ -111,17 +111,17 @@ const patterns: Pattern[] = [
     id: 'streaming-validation-loop',
     title: 'Streaming Validation Loop',
     description:
-      'Validate streaming output against schema constraints and surface errors progressively.',
-    status: 'coming-soon',
+      'Pause streaming at critical checkpoints for user approval, edits, or skip actions. Demonstrates human-in-the-loop workflows with timeout handling.',
+    status: 'available',
     route: '/patterns/streaming-validation-loop',
     phase: 'Phase 3 - Advanced Patterns',
-    demoScenario: 'Task Schema Validation',
+    demoScenario: 'Q1 Budget Allocation',
     difficulty: 'advanced',
-    concepts: ['schema validation', 'error handling', 'progressive feedback'],
+    concepts: ['checkpoint validation', 'pause/resume', 'human-in-the-loop', 'approval workflows'],
     techniques: [
-      'Live validation',
-      'Error annotations',
-      'Auto-correction'
+      'Checkpoint pause/resume',
+      'Approve/Edit/Skip actions',
+      'Timeout auto-approve'
     ]
   },
   {
