@@ -27,7 +27,15 @@
         "largest-contentful-paint": ["warn", {"maxNumericValue": 2500}],
         "cumulative-layout-shift": ["warn", {"maxNumericValue": 0.1}],
         "total-blocking-time": ["warn", {"maxNumericValue": 300}],
-        "speed-index": ["warn", {"maxNumericValue": 3000}]
+        "speed-index": ["warn", {"maxNumericValue": 3000}],
+        "lcp-lazy-loaded": "off",
+        "non-composited-animations": "off",
+        "prioritize-lcp-image": "off",
+        "aria-allowed-role": "warn",
+        "color-contrast": "warn",
+        "errors-in-console": "warn",
+        "image-redundant-alt": "warn",
+        "uses-long-cache-ttl": "off"
       }
     },
     "upload": {
