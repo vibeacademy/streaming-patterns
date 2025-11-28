@@ -101,6 +101,7 @@ export function CheckpointCard({
    * Enter = approve, Esc = skip, E = edit.
    */
   useEffect(() => {
+    // eslint-disable-next-line no-undef -- KeyboardEvent is a valid DOM type
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isEditing) return; // Disable shortcuts while editing
 
