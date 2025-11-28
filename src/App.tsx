@@ -82,6 +82,15 @@ const TurnTakingDemo = lazy(
     )
 );
 
+const ValidationLoopDemo = lazy(
+  () =>
+    import('./patterns/streaming-validation-loop/ValidationLoopDemo').then(
+      (module) => ({
+        default: module.ValidationLoopDemo
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -199,6 +208,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Turn-Taking-Co-Creation">
                     <TurnTakingDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Streaming Validation Loop Pattern Demo */}
+              <Route
+                path="/patterns/streaming-validation-loop"
+                element={
+                  <PatternErrorBoundary patternName="Streaming-Validation-Loop">
+                    <ValidationLoopDemo />
                   </PatternErrorBoundary>
                 }
               />
