@@ -47,7 +47,7 @@
 ### Objectives
 - Define product vision and requirements
 - Set up repository structure and CI/CD
-- Configure agent-based workflow (github-ticket-worker, pr-reviewer-merger, agile-backlog-prioritizer)
+- Configure agent-based workflow (github-ticket-worker, pr-reviewer, agile-backlog-prioritizer)
 - Create initial project board with epics and tasks
 
 ### Deliverables
@@ -601,7 +601,7 @@ Refine user experience, complete documentation, and launch publicly
 **Mitigation**: Regular UX testing with fresh developers. Measure time-to-first-demo (target: <3 min).
 
 ### Risk: Low Quality (Rushing to Hit Dates)
-**Mitigation**: PR review process enforced by pr-reviewer-merger agent. No merging without tests + code review.
+**Mitigation**: PR review process enforced by pr-reviewer agent. No merging without tests + code review.
 
 ### Risk: Low Adoption (Developers Don't Find It Useful)
 **Mitigation**: Early feedback loops with beta users. Pivot patterns based on real developer needs.

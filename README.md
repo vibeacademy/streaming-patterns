@@ -311,7 +311,7 @@ We welcome contributions! Whether it's:
 2. Implement with tests
 3. Run `npm test && npm run lint && npm run build`
 4. Create pull request with detailed description
-5. Wait for review from `pr-reviewer-merger` agent
+5. Wait for review from `pr-reviewer` agent
 
 ---
 

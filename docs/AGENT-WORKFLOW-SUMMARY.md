@@ -17,7 +17,7 @@ This document provides a complete overview of the agent-based, trunk-based devel
 ### 2. **Agent Separation of Duties**
 - **Different agents for different roles** (write ≠ review)
 - `github-ticket-worker`: Implements features from Ready column
-- `pr-reviewer-merger`: Reviews and merges PRs (cannot review own code)
+- `pr-reviewer`: Reviews and merges PRs (cannot review own code)
 - `agile-backlog-prioritizer`: Manages backlog and priorities
 
 ### 3. **Project Board as Source of Truth**
@@ -106,7 +106,7 @@ This document provides a complete overview of the agent-based, trunk-based devel
 
 ---
 
-### Agent 3: `pr-reviewer-merger`
+### Agent 3: `pr-reviewer`
 **Role**: Tech Lead / Code Reviewer
 
 **Responsibilities**:
@@ -214,7 +214,7 @@ This document provides a complete overview of the agent-based, trunk-based devel
 ---
 
 ### Phase 3: Code Review (Quality Assurance)
-**Agent**: `pr-reviewer-merger` (DIFFERENT agent instance than implementer)
+**Agent**: `pr-reviewer` (DIFFERENT agent instance than implementer)
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -288,7 +288,7 @@ This document provides a complete overview of the agent-based, trunk-based devel
 
 **In Review**:
 - PR created and linked to ticket
-- Awaiting review by pr-reviewer-merger
+- Awaiting review by pr-reviewer
 - May have review feedback to address
 - Tests must be passing
 
@@ -361,7 +361,7 @@ PR must have:
 - [ ] Linked to ticket
 
 ### Gate 3: Merge to Main
-**Enforced by**: `pr-reviewer-merger`
+**Enforced by**: `pr-reviewer`
 
 PR must pass:
 - [ ] Code quality review (readability, maintainability)
@@ -392,7 +392,7 @@ PR must pass:
 **Used by**:
 - `agile-backlog-prioritizer`: To ensure tickets align with product goals
 - `github-ticket-worker`: To understand feature context
-- `pr-reviewer-merger`: To validate feature value
+- `pr-reviewer`: To validate feature value
 
 ---
 
@@ -424,7 +424,7 @@ PR must pass:
 
 **Used by**:
 - `github-ticket-worker`: To implement features correctly
-- `pr-reviewer-merger`: To review code against standards
+- `pr-reviewer`: To review code against standards
 
 ---
 
@@ -433,7 +433,7 @@ PR must pass:
 **Purpose**: Define agent behaviors and policies
 **Files**:
 - `github-ticket-worker.md`: Implementation agent
-- `pr-reviewer-merger.md`: Review agent
+- `pr-reviewer.md`: Review agent
 - `agile-backlog-prioritizer.md`: Backlog management agent
 
 **Used by**: Claude Code to instantiate agents with correct policies
@@ -531,7 +531,7 @@ claude mcp install sequential-thinking
 
 ### `/review-pr <number>`
 **Purpose**: Review and potentially merge a PR
-**Agent**: `pr-reviewer-merger`
+**Agent**: `pr-reviewer`
 **Output**: PR approved + merged OR changes requested
 
 ---
@@ -621,7 +621,7 @@ PR #123 created: https://github.com/vibeacademy/streaming-patterns/pull/123
 ```bash
 > /review-pr 123
 
-[pr-reviewer-merger agent - DIFFERENT instance]
+[pr-reviewer agent - DIFFERENT instance]
 ✓ Fetched PR #123 and linked issue #42
 ✓ Read diff: 8 files changed, +847 -0
 
@@ -667,7 +667,7 @@ Great work! Pattern implementation is excellent. Particularly impressed with the
 - Test coverage trend
 
 ### Quality Metrics
-(Tracked by `pr-reviewer-merger`)
+(Tracked by `pr-reviewer`)
 
 - % PRs approved on first review
 - Average PR feedback items

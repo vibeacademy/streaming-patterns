@@ -43,7 +43,7 @@ streaming-patterns/
 ├── .claude/                      # Agent policies and settings
 │   ├── agents/
 │   │   ├── github-ticket-worker.md
-│   │   ├── pr-reviewer-merger.md
+│   │   ├── pr-reviewer.md
 │   │   └── agile-backlog-prioritizer.md
 │   └── settings.local.json
 │
@@ -573,7 +573,7 @@ git commit -m "[#42] Add tests for reasoning bead line component"
 4. Push branch: `git push origin feature/issue-42-...`
 5. Create PR with template
 6. Move issue to "In Review" column
-7. Wait for `pr-reviewer-merger` agent to review
+7. Wait for `pr-reviewer` agent to review
 8. Address feedback if needed
 9. Agent merges when approved
 10. Agent moves issue to "Done" column
