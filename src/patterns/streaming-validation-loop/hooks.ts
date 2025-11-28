@@ -15,7 +15,7 @@
  * @pattern Streaming Validation Loop
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { createValidationStream, type StreamSpeed } from './mockStream';
 import type {
   Checkpoint,
@@ -109,6 +109,13 @@ export function useValidationStream(
   // Ref: Track if stream should be cancelled
   const isCancelled = useRef<boolean>(false);
 
+  // Ref: Store onEvent callback to avoid re-renders
+  // Educational Note: Using a ref prevents the callback from causing
+  // useEffect re-runs when the parent component re-renders with a new
+  // inline function reference.
+  const onEventRef = useRef(onEvent);
+  onEventRef.current = onEvent;
+
   /**
    * Approve a checkpoint with the proposed value.
    *
@@ -186,8 +193,9 @@ export function useValidationStream(
   const processEvent = useCallback(
     (event: StreamEvent) => {
       // Call event callback for network inspector
-      if (onEvent) {
-        onEvent(event);
+      // Use ref to avoid dependency on onEvent which may change every render
+      if (onEventRef.current) {
+        onEventRef.current(event);
       }
 
       switch (event.type) {
@@ -279,7 +287,7 @@ export function useValidationStream(
           break;
       }
     },
-    [onEvent]
+    [] // No dependencies - uses refs for callbacks to avoid re-renders
   );
 
   /**
@@ -337,6 +345,19 @@ export function useValidationStream(
     };
   }, [autoStart, startStream]);
 
+  // Memoize actions object to prevent unnecessary re-renders
+  // Educational Note: Without memoization, a new actions object is created
+  // on every render, which can cause useEffect dependencies to trigger.
+  const actions = useMemo(
+    () => ({
+      approve,
+      edit,
+      skip,
+      reset,
+    }),
+    [approve, edit, skip, reset]
+  );
+
   return {
     checkpoints,
     activeCheckpoint,
@@ -346,11 +367,6 @@ export function useValidationStream(
     isStreaming,
     isWaitingForApproval,
     timeline,
-    actions: {
-      approve,
-      edit,
-      skip,
-      reset,
-    },
+    actions,
   };
 }
