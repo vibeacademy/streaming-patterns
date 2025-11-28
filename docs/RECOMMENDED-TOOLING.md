@@ -15,11 +15,13 @@ MCPs provide agents with specialized capabilities for interacting with external 
 - Query project board state
 - Create, update, and move issues between columns
 - Read and create pull requests
-- Review and merge PRs
+- Review PRs (comment and approve)
 - Search code and issues
 - Read file contents from repository
 
-**Required Permissions** (already configured):
+**IMPORTANT**: Agents can review but CANNOT merge PRs. Merging is a human-only operation to enforce trunk-based development workflow and safety.
+
+**Required Permissions** (see `.claude/settings.template.json`):
 ```json
 {
   "permissions": {
@@ -35,7 +37,6 @@ MCPs provide agents with specialized capabilities for interacting with external 
       "mcp__github__create_pull_request",
       "mcp__github__pull_request_read",
       "mcp__github__pull_request_review_write",
-      "mcp__github__merge_pull_request",
       "mcp__github__update_pull_request",
       "mcp__github__get_file_contents",
       "mcp__github__list_commits",
@@ -47,10 +48,12 @@ MCPs provide agents with specialized capabilities for interacting with external 
 }
 ```
 
+**Note**: The permission `mcp__github__merge_pull_request` is intentionally EXCLUDED. Only humans can merge PRs.
+
 **Why Critical**:
 - Agents need to move issues between board columns (Backlog → Ready → In Progress → In Review → Done)
 - `github-ticket-worker` creates PRs and links them to issues
-- `pr-reviewer` reviews and merges PRs
+- `pr-reviewer` reviews PRs and provides feedback (humans perform the merge)
 - `agile-backlog-prioritizer` manages board state
 
 **Setup**:
