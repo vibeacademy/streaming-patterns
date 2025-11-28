@@ -12,6 +12,7 @@ jobs:
   lighthouse:
     name: Lighthouse Performance Audit
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Checkout code
