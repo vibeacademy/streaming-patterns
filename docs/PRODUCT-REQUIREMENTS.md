@@ -293,7 +293,7 @@ A fictional project management SaaS that uses streaming throughout:
 
 ### Risk 4: Poor Code Quality Damages Reputation
 **Mitigation:**
-- Strict PR review process (pr-reviewer-merger agent)
+- Strict PR review process (pr-reviewer agent)
 - 80%+ test coverage requirement
 - TypeScript strict mode enforced
 - Community code review from experienced React devs

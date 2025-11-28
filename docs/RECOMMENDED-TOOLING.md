@@ -50,7 +50,7 @@ MCPs provide agents with specialized capabilities for interacting with external 
 **Why Critical**:
 - Agents need to move issues between board columns (Backlog → Ready → In Progress → In Review → Done)
 - `github-ticket-worker` creates PRs and links them to issues
-- `pr-reviewer-merger` reviews and merges PRs
+- `pr-reviewer` reviews and merges PRs
 - `agile-backlog-prioritizer` manages board state
 
 **Setup**:
@@ -92,7 +92,7 @@ gh auth login
 **Use Cases**:
 - **agile-backlog-prioritizer**: Store CD3 scores, remember why tickets were prioritized/deferred
 - **github-ticket-worker**: Remember implementation decisions for related tickets
-- **pr-reviewer-merger**: Track common review feedback patterns
+- **pr-reviewer**: Track common review feedback patterns
 
 **Example Usage**:
 ```typescript
@@ -149,7 +149,7 @@ claude mcp install memory
 **Use Cases**:
 - **agile-backlog-prioritizer**: Reason through complex prioritization decisions
 - **github-ticket-worker**: Plan implementation approach for complex patterns
-- **pr-reviewer-merger**: Analyze architectural implications of PRs
+- **pr-reviewer**: Analyze architectural implications of PRs
 
 **Setup**:
 ```bash
@@ -266,7 +266,7 @@ Then:
 description: Review a pull request and merge if it meets quality standards
 ---
 
-Use the Task tool to launch the pr-reviewer-merger agent to review the specified pull request.
+Use the Task tool to launch the pr-reviewer agent to review the specified pull request.
 
 The agent will:
 1. Read the PR diff and linked issue
@@ -601,7 +601,7 @@ Create the recommended commands in `.claude/commands/`:
                     │
                     ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  pr-reviewer-merger (via /review-pr)                        │
+│  pr-reviewer (via /review-pr)                        │
 │  - Uses GitHub MCP to read PR and linked issue              │
 │  - Reviews code quality, tests, pattern implementation      │
 │  - Approves and merges if standards met                     │

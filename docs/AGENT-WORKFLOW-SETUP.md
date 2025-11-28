@@ -83,7 +83,7 @@ Agent-driven development uses AI agents to automate the entire software developm
 │                   Specialized Agents                         │
 │  1. agile-backlog-prioritizer                               │
 │  2. github-ticket-worker                                     │
-│  3. pr-reviewer-merger                                       │
+│  3. pr-reviewer                                       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -109,7 +109,7 @@ Agent-driven development uses AI agents to automate the entire software developm
   - Create pull request
   - Move ticket to In Review
 
-#### 3. **pr-reviewer-merger**
+#### 3. **pr-reviewer**
 - **Role**: Code Reviewer / Tech Lead
 - **Responsibilities**:
   - Review PRs linked to In Review tickets
@@ -322,7 +322,7 @@ You are a Software Developer implementing features from specifications.
 8. Move ticket to In Review
 ```
 
-#### `.claude/agents/pr-reviewer-merger.md`
+#### `.claude/agents/pr-reviewer.md`
 
 ```markdown
 # PR Reviewer and Merger Agent
@@ -400,7 +400,7 @@ Launch the github-ticket-worker agent to:
 #### `.claude/commands/review-pr.md`
 
 ```markdown
-Launch the pr-reviewer-merger agent to:
+Launch the pr-reviewer agent to:
 - Find pull requests linked to tickets in the In Review column on https://github.com/orgs/vibeacademy/projects/3
 - Conduct thorough code review against project standards
 - Verify tests pass, TypeScript compliance, and pattern implementation correctness
@@ -421,7 +421,7 @@ Launch the pr-reviewer-merger agent to:
 | **Ready** | Groomed, ready to work | agile-backlog-prioritizer |
 | **In Progress** | Active development | github-ticket-worker |
 | **In Review** | PR created, awaiting review | github-ticket-worker |
-| **Done** | Merged and closed | pr-reviewer-merger |
+| **Done** | Merged and closed | pr-reviewer |
 
 ### Ticket Lifecycle
 
@@ -452,7 +452,7 @@ Launch the pr-reviewer-merger agent to:
 │  In Review   │ (PR awaiting review)
 └──────┬───────┘
        │ /review-pr
-       │ (pr-reviewer-merger merges PR)
+       │ (pr-reviewer merges PR)
        ▼
 ┌─────────┐
 │  Done   │ (Completed and merged)

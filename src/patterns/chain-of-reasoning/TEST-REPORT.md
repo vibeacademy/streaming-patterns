@@ -223,5 +223,5 @@ The Chain-of-Reasoning pattern has production-ready test coverage with 99.14% co
 ---
 
 **Tested By:** github-ticket-worker agent
-**Review Required By:** pr-reviewer-merger agent
+**Review Required By:** pr-reviewer agent
 **Final Approval:** Human reviewer
