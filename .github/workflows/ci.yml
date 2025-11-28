@@ -77,9 +77,9 @@ jobs:
           path: dist/
           retention-days: 7
 
-  # Separate job for tests with sharding - matches ruleset requirement "test"
-  test:
-    name: test
+  # Run tests with sharding for parallelization
+  test-shards:
+    name: test-shards (${{ matrix.shard }}/8)
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -119,3 +119,19 @@ jobs:
           name: coverage-shard-${{ matrix.shard }}
           path: coverage/
           retention-days: 7
+
+  # Summary job that matches ruleset requirement "test"
+  # This job passes only if all test shards pass
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    needs: test-shards
+    if: always()
+    steps:
+      - name: Check test shards status
+        run: |
+          if [ "${{ needs.test-shards.result }}" != "success" ]; then
+            echo "One or more test shards failed"
+            exit 1
+          fi
+          echo "All test shards passed"
