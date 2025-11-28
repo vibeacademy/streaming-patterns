@@ -139,10 +139,10 @@ describe('Patterns Page', () => {
     it('should display other advanced patterns as coming soon', () => {
       renderWithRouter(<Patterns />);
 
-      const streamingValidationCard = screen.getByText('Streaming Validation Loop').closest('div');
-      expect(streamingValidationCard).toBeInTheDocument();
-      if (streamingValidationCard) {
-        expect(within(streamingValidationCard).getByText(/coming soon/i)).toBeInTheDocument();
+      const schemaGovernedCard = screen.getByText('Schema-Governed Exchange').closest('div');
+      expect(schemaGovernedCard).toBeInTheDocument();
+      if (schemaGovernedCard) {
+        expect(within(schemaGovernedCard).getByText(/coming soon/i)).toBeInTheDocument();
       }
     });
   });
@@ -243,9 +243,9 @@ describe('Patterns Page', () => {
 
     it('should not have links for coming soon patterns', () => {
       renderWithRouter(<Patterns />);
-      const streamingValidationTitle = screen.getByText('Streaming Validation Loop');
-      const streamingValidationCard = streamingValidationTitle.closest('a');
-      expect(streamingValidationCard).not.toBeInTheDocument();
+      const schemaGovernedTitle = screen.getByText('Schema-Governed Exchange');
+      const schemaGovernedCard = schemaGovernedTitle.closest('a');
+      expect(schemaGovernedCard).not.toBeInTheDocument();
     });
   });
 
@@ -289,10 +289,10 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       const availableBadges = screen.getAllByLabelText(/available now/i);
-      expect(availableBadges.length).toBe(5); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, Multi-Turn Memory Timeline, and Turn-Taking Co-Creation
+      expect(availableBadges.length).toBe(6); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, Multi-Turn Memory Timeline, Turn-Taking Co-Creation, and Streaming Validation Loop
 
       const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBe(2); // 2 remaining advanced patterns
+      expect(comingSoonBadges.length).toBe(1); // Schema-Governed Exchange
     });
 
     it('should have aria-label on pattern links', () => {
@@ -308,9 +308,9 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       // Coming soon patterns are wrapped in divs with aria-disabled
-      const streamingValidationTitle = screen.getByText('Streaming Validation Loop');
-      const streamingValidationContainer = streamingValidationTitle.closest('[aria-disabled="true"]');
-      expect(streamingValidationContainer).toBeInTheDocument();
+      const schemaGovernedTitle = screen.getByText('Schema-Governed Exchange');
+      const schemaGovernedContainer = schemaGovernedTitle.closest('[aria-disabled="true"]');
+      expect(schemaGovernedContainer).toBeInTheDocument();
     });
 
     it('should use semantic list markup for pattern grids', () => {
