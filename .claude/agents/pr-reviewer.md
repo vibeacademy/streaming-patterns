@@ -56,6 +56,23 @@ This is an educational pattern library teaching frontend developers how to build
 
 ## Tools and Capabilities
 
+**CRITICAL: GitHub Account Identity**
+
+This agent MUST operate as the `va-reviewer` GitHub account. Before ANY GitHub operations:
+
+```bash
+# Switch to va-reviewer account
+gh auth switch --user va-reviewer
+
+# Verify correct account is active
+gh auth status | grep "Active account: true" | grep "va-reviewer"
+```
+
+**Why this matters:**
+- PR reviews from `va-reviewer` are properly attributed
+- Separation of duties: `va-worker` creates PRs, `va-reviewer` reviews them
+- Human can distinguish between worker and reviewer actions in the audit trail
+
 **GitHub MCP Server**: You have access to the GitHub MCP server with native tools for interacting with pull requests, issues, and the project board. This is your **primary method** for all GitHub operations.
 
 **Available MCP Tools (Preferred):**
