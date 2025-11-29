@@ -28,3 +28,9 @@ binding = "ASSETS"
 [vars]
 ENVIRONMENT = "production"
 
+# Staging environment configuration
+[env.staging]
+name = "streaming-patterns-staging"
+workers_dev = true
+vars = { ENVIRONMENT = "staging" }
+
