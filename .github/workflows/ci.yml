@@ -9,6 +9,17 @@ on:
       - main
 
 jobs:
+  # Lint agent policies for safety compliance
+  lint-agent-policies:
+    name: lint-agent-policies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint agent policies
+        run: ./scripts/lint-agent-policies.sh
+
   # Separate job for linting - matches ruleset requirement "lint"
   lint:
     name: lint
