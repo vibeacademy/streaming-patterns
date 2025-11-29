@@ -170,3 +170,4 @@ A: The template is just documentation. You need to copy changes to `settings.loc
 - Agent workflow overview: `../docs/AGENT-WORKFLOW-SUMMARY.md`
 - Recommended tooling: `../docs/RECOMMENDED-TOOLING.md`
 - Architecture standards: `../CLAUDE.md`
+- Cloudflare token security: `../docs/CLOUDFLARE-TOKEN-SECURITY.md`
