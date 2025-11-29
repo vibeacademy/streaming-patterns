@@ -64,6 +64,96 @@ If you need to add new permissions:
 3. If it's a recommended permission for all users, update `settings.template.json`
 4. Document the change in this README
 
+## Bot Accounts
+
+This project uses dedicated bot accounts for AI-assisted development to maintain proper separation of concerns and satisfy branch protection requirements.
+
+### va-worker
+
+**Purpose:** Creates code changes, branches, and pull requests
+
+**GitHub Permissions:**
+- Repository access: Write
+- Fine-grained PAT permissions:
+  - Contents: Read-only
+  - Issues: Read and write
+  - Pull requests: Read and write
+  - Metadata: Read-only
+
+**What va-worker CAN do:**
+- Create feature branches
+- Push commits to feature branches
+- Create pull requests
+- Create and update issues
+
+**What va-worker CANNOT do:**
+- Push directly to main branch (blocked by branch protection)
+- Merge pull requests (blocked by branch protection)
+- Modify workflows
+- Delete branches on main
+
+**Verification:** All permissions verified on 2025-11-28 via PR #160
+
+### va-reviewer
+
+**Purpose:** Reviews pull requests and provides GO/NO-GO recommendations
+
+**GitHub Permissions:**
+- Repository access: Write (required for approvals to count)
+- Fine-grained PAT permissions:
+  - Contents: Read-only
+  - Issues: Read and write
+  - Pull requests: Read and write
+  - Metadata: Read-only
+
+**What va-reviewer CAN do:**
+- Review pull requests
+- Approve or request changes on PRs
+- Comment on PRs and issues
+- Read repository code
+
+**What va-reviewer CANNOT do:**
+- Merge pull requests (per agent policy)
+- Push to any branch
+- Create releases
+
+### Human Workflow
+
+The complete workflow:
+
+1. **va-worker** creates feature branch and PR
+2. **va-reviewer** reviews PR and provides GO/NO-GO recommendation
+3. **Human** (you) makes final approval decision and merges
+
+This ensures:
+- ✅ Bots can propose and review changes
+- ✅ Humans maintain final control over merges
+- ✅ Branch protection requirements are satisfied (Write access required for approvals)
+- ✅ Clear audit trail of who did what
+
+### PAT Storage
+
+Bot PATs should be stored securely:
+
+**Local Development:**
+```bash
+# Configure gh CLI to use bot account
+gh auth login
+# Select: GitHub.com → HTTPS → Paste token
+```
+
+**Environment Variables:**
+```bash
+# Add to ~/.zshrc or ~/.bashrc (DO NOT commit to git)
+export GITHUB_TOKEN="ghp_xxxxx"
+```
+
+**IMPORTANT:**
+- ⚠️ NEVER commit PATs to git
+- ⚠️ NEVER log PATs in console output
+- ⚠️ Set PAT expiration and rotate regularly
+- ⚠️ If compromised, revoke immediately at https://github.com/settings/tokens
+
 ### Troubleshooting
 
 **Q: Why can't agents merge PRs?**
