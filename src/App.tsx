@@ -91,6 +91,15 @@ const ValidationLoopDemo = lazy(
     )
 );
 
+const SchemaExchangeDemo = lazy(
+  () =>
+    import('./patterns/schema-governed-exchange/SchemaExchangeDemo').then(
+      (module) => ({
+        default: module.SchemaExchangeDemo
+      })
+    )
+);
+
 /**
  * Loading fallback component
  * Displayed while lazy-loaded components are being fetched
@@ -218,6 +227,16 @@ function AppRoutes(): JSX.Element {
                 element={
                   <PatternErrorBoundary patternName="Streaming-Validation-Loop">
                     <ValidationLoopDemo />
+                  </PatternErrorBoundary>
+                }
+              />
+
+              {/* Schema-Governed Exchange Pattern Demo */}
+              <Route
+                path="/patterns/schema-governed-exchange"
+                element={
+                  <PatternErrorBoundary patternName="Schema-Governed-Exchange">
+                    <SchemaExchangeDemo />
                   </PatternErrorBoundary>
                 }
               />

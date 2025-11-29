@@ -34,12 +34,17 @@ export default defineConfig({
         'dist/',
         'tests/',
         'specs/',
+        'scripts/',           // Build and utility scripts
         '**/*.config.{ts,js}',
         '**/*.d.ts',
         'src/types/**/*.ts',
         '**/*.test.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
         'src/main.tsx',
+        '**/index.ts',        // Re-export files
+        'worker/**',          // Service worker code (tested separately)
+        '**/mockStream.ts',   // Mock generators (educational infrastructure)
+        '**/fixtures.ts',     // Mock data fixtures
       ],
     },
 

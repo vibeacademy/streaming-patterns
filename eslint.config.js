@@ -52,6 +52,7 @@ export default [
         HTMLInputElement: 'readonly',
         HTMLSpanElement: 'readonly',
         HTMLLinkElement: 'readonly',
+        HTMLSelectElement: 'readonly',
         React: 'readonly',
         Element: 'readonly',
         Storage: 'readonly',

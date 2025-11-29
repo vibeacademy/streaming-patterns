@@ -26,10 +26,10 @@ describe('SchemaExchangeDemo', () => {
   it('should render scenario selector with all options', () => {
     render(<SchemaExchangeDemo />);
 
-    const scenarioSelect = screen.getByLabelText(/Scenario:/i);
+    const scenarioSelect = screen.getByLabelText(/Scenario:/i) as HTMLSelectElement;
     expect(scenarioSelect).toBeInTheDocument();
 
-    const scenarioOptions = (scenarioSelect as unknown as { options: HTMLCollectionOf<HTMLOptionElement> }).options;
+    const scenarioOptions = scenarioSelect.options;
     expect(scenarioOptions.length).toBe(4);
     expect(screen.getByText(/Valid Payload/i)).toBeInTheDocument();
     expect(screen.getByText(/Multiple Errors/i)).toBeInTheDocument();
