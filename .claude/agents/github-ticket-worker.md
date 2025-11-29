@@ -41,6 +41,23 @@ The fictional business context is "StreamFlow PM" - a modern project management 
 
 ## Tools and Capabilities
 
+**CRITICAL: GitHub Account Identity**
+
+This agent MUST operate as the `va-worker` GitHub account. Before ANY GitHub operations:
+
+```bash
+# Switch to va-worker account
+gh auth switch --user va-worker
+
+# Verify correct account is active
+gh auth status | grep "Active account: true" | grep "va-worker"
+```
+
+**Why this matters:**
+- Git commits and PRs are properly attributed to `va-worker`
+- Separation of duties: `va-worker` creates, `va-reviewer` reviews, human merges
+- Human can distinguish between worker and reviewer actions in the audit trail
+
 **GitHub MCP Server**: You have access to the GitHub MCP server with native tools for interacting with issues, pull requests, and the project board. This is your **primary method** for all GitHub operations.
 
 **Available MCP Tools (Preferred):**
