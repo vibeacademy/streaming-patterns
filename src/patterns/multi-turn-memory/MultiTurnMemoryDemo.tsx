@@ -11,6 +11,7 @@
 import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture, type EventFilter } from '@/lib/hooks/useNetworkCapture';
@@ -282,39 +283,35 @@ export function MultiTurnMemoryDemo(): JSX.Element {
         onClearEvents={clearEvents}
       />
 
-      {/* Pattern Info Footer */}
+      {/* Pattern Learning Points */}
       <div className={styles.footer}>
-        <div className={styles.infoSection}>
-          <h3 className={styles.infoTitle}>Pattern Features</h3>
-          <ul className={styles.featureList}>
-            <li>
-              <strong>Memory Lifecycle:</strong> Create, update, and prune events
-            </li>
-            <li>
-              <strong>Provenance:</strong> Hover over memories to see token excerpts
-            </li>
-            <li>
-              <strong>User Control:</strong> Pin important memories or prune irrelevant ones
-            </li>
-            <li>
-              <strong>Filtering:</strong> Filter by type, search, or pinned status
-            </li>
-            <li>
-              <strong>Multi-Turn:</strong> Memory persists and evolves across conversation
-            </li>
-          </ul>
-        </div>
-
-        <div className={styles.infoSection}>
-          <h3 className={styles.infoTitle}>Try It Out</h3>
-          <ul className={styles.actionList}>
-            <li>Hover over a memory card to see a tooltip with the token excerpt</li>
-            <li>Click the pin icon to prevent auto-pruning</li>
-            <li>Click the X to manually prune a memory</li>
-            <li>Use filters to focus on specific memory types</li>
-            <li>Watch how memories update across turns</li>
-          </ul>
-        </div>
+        <Card className={styles.learningCard}>
+          <div className={styles.cardHeader}>
+            <h4>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.learningList}>
+              <li>
+                <strong>Memory Lifecycle:</strong> Explicit create, update, and prune events make agent memory transparent and manageable
+              </li>
+              <li>
+                <strong>Provenance:</strong> Each memory links back to conversation tokens, showing where information came from
+              </li>
+              <li>
+                <strong>User Control:</strong> Users can pin important memories or prune irrelevant ones, giving agency over agent knowledge
+              </li>
+              <li>
+                <strong>Filtering:</strong> Real-time filters by type, search, or pinned status help users navigate large memory sets
+              </li>
+              <li>
+                <strong>Multi-Turn Persistence:</strong> Memory persists and evolves across conversation turns, enabling context-aware responses
+              </li>
+              <li>
+                <strong>Timeline Visualization:</strong> Separate memory panel keeps context visible without cluttering the conversation
+              </li>
+            </ul>
+          </div>
+        </Card>
       </div>
     </DemoContainer>
   );

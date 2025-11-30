@@ -16,6 +16,7 @@ import { DemoContainer } from '@/components/layout/DemoContainer';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useSchemaValidation, useSchemaHUD } from './hooks';
 import { SchemaHUD } from './SchemaHUD';
@@ -281,32 +282,35 @@ export function SchemaExchangeDemo() {
         </div>
       )}
 
-      {/* Educational Notes */}
+      {/* Pattern Learning Points */}
       <div className={styles.notes}>
-        <h3>🎓 Learning Points</h3>
-        <ul>
-          <li>
-            <strong>Progressive Validation:</strong> Schema validation runs on
-            every payload chunk, not just the complete data.
-          </li>
-          <li>
-            <strong>Partial Mode:</strong> Zod's <code>.partial()</code> allows
-            validation of incomplete data during streaming.
-          </li>
-          <li>
-            <strong>Auto-Suggestions:</strong> Common errors (e.g., "25k" → 25000)
-            trigger automatic fix suggestions.
-          </li>
-          <li>
-            <strong>Field Highlighting:</strong> Hover over errors to highlight
-            the problematic field in the schema HUD.
-          </li>
-          <li>
-            <strong>Network Events:</strong> Inspect <code>schema</code>,{' '}
-            <code>payload</code>, and <code>schema_error</code> events in the
-            inspector.
-          </li>
-        </ul>
+        <Card className={styles.learningCard}>
+          <div className={styles.cardHeader}>
+            <h4>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.learningList}>
+              <li>
+                <strong>Progressive Validation:</strong> Schema validation runs on every payload chunk during streaming, not just the complete data
+              </li>
+              <li>
+                <strong>Partial Mode:</strong> Zod's partial() allows validation of incomplete data, enabling real-time feedback as stream arrives
+              </li>
+              <li>
+                <strong>Auto-Suggestions:</strong> Common errors (e.g., "25k" → 25000) trigger automatic fix suggestions for faster correction
+              </li>
+              <li>
+                <strong>Field Highlighting:</strong> Hover over errors to highlight the problematic field in the schema HUD for quick identification
+              </li>
+              <li>
+                <strong>Type Safety:</strong> Runtime validation with Zod ensures streaming data conforms to expected schema before processing
+              </li>
+              <li>
+                <strong>Error Recovery:</strong> Auto-correction scenarios demonstrate graceful error handling during streaming
+              </li>
+            </ul>
+          </div>
+        </Card>
       </div>
     </DemoContainer>
   );

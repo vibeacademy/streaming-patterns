@@ -463,40 +463,40 @@ export function ChainOfReasoningDemo(): JSX.Element {
         </section>
       )}
 
-      {/* Educational Note */}
+      {/* Pattern Learning Points */}
       <section className={styles.educationalNote} aria-label="Learning notes">
         <Card className={styles.noteCard}>
-          <h4 className={styles.noteTitle}>Pattern Learning Points</h4>
-          <ul className={styles.noteList}>
-            <li>
-              <strong>Transparency:</strong> Users see the AI's reasoning process,
-              building trust and understanding
-            </li>
-            <li>
-              <strong>Streaming UX:</strong> Reasoning steps arrive incrementally,
-              keeping users engaged during processing
-            </li>
-            <li>
-              <strong>Confidence Indicators:</strong> Each step shows confidence
-              level (high/medium/low) through color coding
-            </li>
-            <li>
-              <strong>Traceability:</strong> The final answer references specific
-              reasoning steps (e.g., "Based on reason-1")
-            </li>
-            <li>
-              <strong>Interactivity:</strong> Users can expand reasoning details and
-              promote steps to their plan
-            </li>
-            <li>
-              <strong>Error Handling:</strong> Network errors trigger automatic retries
-              with exponential backoff, keeping the user informed of retry status
-            </li>
-            <li>
-              <strong>Error Simulation:</strong> Test different failure modes (timeout,
-              network, mid-stream) to see how the pattern handles errors gracefully
-            </li>
-          </ul>
+          <div className={styles.cardHeader}>
+            <h4 className={styles.noteTitle}>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.noteList}>
+              <li>
+                <strong>Transparency:</strong> Users see the AI's reasoning process,
+                building trust and understanding
+              </li>
+              <li>
+                <strong>Streaming UX:</strong> Reasoning steps arrive incrementally,
+                keeping users engaged during processing
+              </li>
+              <li>
+                <strong>Confidence Indicators:</strong> Each step shows confidence
+                level (high/medium/low) through color coding
+              </li>
+              <li>
+                <strong>Traceability:</strong> The final answer references specific
+                reasoning steps (e.g., "Based on reason-1")
+              </li>
+              <li>
+                <strong>Interactivity:</strong> Users can expand reasoning details and
+                promote steps to their plan
+              </li>
+              <li>
+                <strong>Error Handling:</strong> Network errors trigger automatic retries
+                with exponential backoff, keeping the user informed of retry status
+              </li>
+            </ul>
+          </div>
         </Card>
       </section>
     </DemoContainer>

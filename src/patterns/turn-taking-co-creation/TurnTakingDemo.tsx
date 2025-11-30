@@ -22,6 +22,7 @@
 import { useState, useCallback, useMemo, memo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
@@ -396,41 +397,41 @@ export function TurnTakingDemo(): JSX.Element {
         </section>
       )}
 
-      {/* Educational Note */}
+      {/* Pattern Learning Points */}
       <section className={styles.educationalNote} aria-label="Learning notes">
-        <div className={styles.noteCard}>
-          <h4 className={styles.noteTitle}>Pattern Learning Points</h4>
-          <ul className={styles.noteList}>
-            <li>
-              <strong>Bidirectional Streaming:</strong> Both agent and user can
-              propose edits simultaneously, enabling true co-creation
-            </li>
-            <li>
-              <strong>Authorship Tracking:</strong> Color-coded highlighting shows
-              who wrote each part of the document, building transparency
-            </li>
-            <li>
-              <strong>Patch-Based Editing:</strong> Changes are represented as
-              discrete patches that can be accepted, rejected, or modified
-            </li>
-            <li>
-              <strong>Turn-Taking Signals:</strong> Clear indicators show when
-              it's safe to edit vs when the agent is actively drafting
-            </li>
-            <li>
-              <strong>User Agency:</strong> Users can accept/reject agent
-              suggestions and ask "why" to understand AI reasoning
-            </li>
-            <li>
-              <strong>Conflict Resolution:</strong> When edits overlap, the system
-              applies configurable merge strategies (user priority by default)
-            </li>
-            <li>
-              <strong>Section-Level Granularity:</strong> Document is divided into
-              sections, allowing parallel work on different parts
-            </li>
-          </ul>
-        </div>
+        <Card className={styles.noteCard}>
+          <div className={styles.cardHeader}>
+            <h4 className={styles.noteTitle}>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.noteList}>
+              <li>
+                <strong>Bidirectional Streaming:</strong> Both agent and user can
+                propose edits simultaneously, enabling true co-creation
+              </li>
+              <li>
+                <strong>Authorship Tracking:</strong> Color-coded highlighting shows
+                who wrote each part of the document, building transparency
+              </li>
+              <li>
+                <strong>Patch-Based Editing:</strong> Changes are represented as
+                discrete patches that can be accepted, rejected, or modified
+              </li>
+              <li>
+                <strong>Turn-Taking Signals:</strong> Clear indicators show when
+                it's safe to edit vs when the agent is actively drafting
+              </li>
+              <li>
+                <strong>User Agency:</strong> Users can accept/reject agent
+                suggestions and ask "why" to understand AI reasoning
+              </li>
+              <li>
+                <strong>Conflict Resolution:</strong> When edits overlap, the system
+                applies configurable merge strategies (user priority by default)
+              </li>
+            </ul>
+          </div>
+        </Card>
       </section>
     </DemoContainer>
   );

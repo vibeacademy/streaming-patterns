@@ -22,6 +22,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -324,46 +325,32 @@ export function TabularStreamViewDemo(): JSX.Element {
         </section>
       )}
 
-      {/* Educational Notes */}
+      {/* Pattern Learning Points */}
       <div className={styles.educationalNotes}>
-        <h2 className={styles.notesTitle}>Pattern Implementation Notes</h2>
-        <div className={styles.notes}>
-          <div className={styles.note}>
-            <h3 className={styles.noteTitle}>Progressive Rendering</h3>
-            <p className={styles.noteText}>
-              Rows appear immediately as they arrive from the stream. Skeleton
-              loaders show anticipated rows based on <code>totalRows</code> hint
-              in the schema event.
-            </p>
+        <Card className={styles.learningCard}>
+          <div className={styles.cardHeader}>
+            <h4>Pattern Learning Points</h4>
           </div>
-
-          <div className={styles.note}>
-            <h3 className={styles.noteTitle}>Client-Side Operations</h3>
-            <p className={styles.noteText}>
-              Sorting and filtering work on whatever data has arrived so far.
-              Users can start exploring partial results before the stream completes.
-            </p>
+          <div className={styles.cardContent}>
+            <ul className={styles.learningList}>
+              <li>
+                <strong>Progressive Rendering:</strong> Rows appear immediately as they arrive from the stream, with skeleton loaders showing anticipated rows based on schema hints
+              </li>
+              <li>
+                <strong>Client-Side Operations:</strong> Sorting and filtering work on whatever data has arrived so far, allowing users to explore partial results before stream completion
+              </li>
+              <li>
+                <strong>Event Flow:</strong> Schema event defines structure, table_row events arrive progressively, and table_meta event signals completion with aggregations
+              </li>
+              <li>
+                <strong>Export Functionality:</strong> CSV export works at any time, even before stream completes, respecting current filters and sort order
+              </li>
+              <li>
+                <strong>Skeleton States:</strong> Visual placeholders maintain layout stability and communicate expected data volume during streaming
+              </li>
+            </ul>
           </div>
-
-          <div className={styles.note}>
-            <h3 className={styles.noteTitle}>Event Flow</h3>
-            <p className={styles.noteText}>
-              1. <code>schema</code> event defines table structure
-              <br />
-              2. <code>table_row</code> events arrive progressively
-              <br />
-              3. <code>table_meta</code> event signals completion with aggregations
-            </p>
-          </div>
-
-          <div className={styles.note}>
-            <h3 className={styles.noteTitle}>Export Functionality</h3>
-            <p className={styles.noteText}>
-              CSV export works at any time, even before stream completes. Exported
-              data respects current filters and sort order.
-            </p>
-          </div>
-        </div>
+        </Card>
       </div>
     </DemoContainer>
   );

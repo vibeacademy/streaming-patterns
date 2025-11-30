@@ -52,12 +52,12 @@ describe('ValidationLoopDemo', () => {
     expect(screen.getByText(/Streaming in progress/i)).toBeInTheDocument();
   });
 
-  it('should display implementation notes section', () => {
+  it('should display pattern learning points section', () => {
     render(<ValidationLoopDemo />);
 
-    expect(screen.getByText(/Implementation Notes/i)).toBeInTheDocument();
-    expect(screen.getByText(/How does the stream pause work/i)).toBeInTheDocument();
-    expect(screen.getByText(/How are timeouts handled/i)).toBeInTheDocument();
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
+    expect(screen.getByText(/Checkpoint-Based Approvals:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Timeout Handling:/i)).toBeInTheDocument();
   });
 });
 
