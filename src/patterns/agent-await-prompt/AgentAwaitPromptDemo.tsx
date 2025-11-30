@@ -268,7 +268,12 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
           )}
 
           {/* Text content */}
-          <div className={styles.messageText}>
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Streaming message"
+            className={styles.messageText}
+          >
             {text || <span className={styles.placeholder}>Waiting for stream...</span>}
           </div>
 

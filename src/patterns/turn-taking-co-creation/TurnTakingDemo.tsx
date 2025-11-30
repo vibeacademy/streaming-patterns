@@ -142,12 +142,18 @@ const CollaborativeContent = memo(function CollaborativeContent({
           className={styles.turnIndicator}
         />
 
-        <CollaborativeEditor
-          sections={sectionsWithAuthorship}
-          isStreaming={isStreaming}
-          onUserEdit={actions.applyUserEdit}
-          className={styles.editor}
-        />
+        <div
+          role="log"
+          aria-live="polite"
+          aria-label="Collaborative document editor"
+        >
+          <CollaborativeEditor
+            sections={sectionsWithAuthorship}
+            isStreaming={isStreaming}
+            onUserEdit={actions.applyUserEdit}
+            className={styles.editor}
+          />
+        </div>
       </div>
 
       {/* Right Column: Sidebar */}

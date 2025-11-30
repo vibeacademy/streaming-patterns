@@ -254,11 +254,17 @@ export function SchemaExchangeDemo() {
 
         {/* Right Panel - Payload & Errors */}
         <div className={styles.rightPanel}>
-          <PayloadViewer
-            payload={payload}
-            errors={allErrors}
-            isComplete={isComplete}
-          />
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Streaming JSON payload"
+          >
+            <PayloadViewer
+              payload={payload}
+              errors={allErrors}
+              isComplete={isComplete}
+            />
+          </div>
 
           {allErrors.length > 0 && (
             <div className={styles.errorSection}>
