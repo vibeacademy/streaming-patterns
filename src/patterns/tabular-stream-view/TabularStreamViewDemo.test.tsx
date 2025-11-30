@@ -184,17 +184,15 @@ describe('TabularStreamViewDemo', () => {
     expect(restartButton.tagName).toBe('BUTTON');
   });
 
-  it('should render educational notes', () => {
+  it('should render pattern learning points', () => {
     render(<TabularStreamViewDemo />);
 
-    expect(screen.getByText(/Pattern Implementation Notes/i)).toBeInTheDocument();
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
 
-    // Use getAllByText and check that at least one exists (matches heading in notes section)
-    const progressiveRenderingElements = screen.getAllByText(/Progressive Rendering/i);
-    expect(progressiveRenderingElements.length).toBeGreaterThan(0);
-
-    expect(screen.getByText(/Client-Side Operations/i)).toBeInTheDocument();
-    expect(screen.getByText(/Event Flow/i)).toBeInTheDocument();
+    // Check for key learning concepts
+    expect(screen.getByText(/Progressive Rendering:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Client-Side Operations:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Event Flow:/i)).toBeInTheDocument();
   });
 
   it('should show table controls', async () => {

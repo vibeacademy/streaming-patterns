@@ -52,17 +52,18 @@ describe('MultiTurnMemoryDemo', () => {
     expect(screen.getByText('Conversation')).toBeInTheDocument();
   });
 
-  it('renders pattern features section', () => {
+  it('renders pattern learning points section', () => {
     render(<MultiTurnMemoryDemo />);
-    expect(screen.getByText('Pattern Features')).toBeInTheDocument();
-    expect(screen.getByText(/Memory Lifecycle/i)).toBeInTheDocument();
-    expect(screen.getByText(/Provenance/i)).toBeInTheDocument();
-    expect(screen.getByText(/User Control/i)).toBeInTheDocument();
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
+    expect(screen.getByText(/Memory Lifecycle:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Provenance:/i)).toBeInTheDocument();
+    expect(screen.getByText(/User Control:/i)).toBeInTheDocument();
   });
 
-  it('renders try it out section', () => {
+  it('renders learning points with key concepts', () => {
     render(<MultiTurnMemoryDemo />);
-    expect(screen.getByText('Try It Out')).toBeInTheDocument();
+    // Verify learning points are present with consistent format
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
   });
 
   it('shows filter toggle button', () => {

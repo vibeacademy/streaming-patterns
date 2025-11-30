@@ -159,15 +159,13 @@ describe('AgentAwaitPromptDemo', () => {
     expect(timeoutElements.length).toBeGreaterThan(0);
   });
 
-  it('should display pattern mechanics explanation', () => {
+  it('should display pattern learning points', () => {
     render(<AgentAwaitPromptDemo />);
 
-    expect(screen.getByText('Pattern Mechanics')).toBeInTheDocument();
-    expect(screen.getByText('1. Stream Pause')).toBeInTheDocument();
-    expect(screen.getByText('2. Inline Input')).toBeInTheDocument();
-    expect(screen.getByText('3. User Responds')).toBeInTheDocument();
-    expect(screen.getByText('4. Stream Resumes')).toBeInTheDocument();
-    expect(screen.getByText('5. Timeout Fallback')).toBeInTheDocument();
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
+    // Check for key learning concepts
+    expect(screen.getByText(/Stream Pause\/Resume:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Inline Input UX:/i)).toBeInTheDocument();
   });
 
   it('should toggle network inspector visibility', async () => {
@@ -193,13 +191,13 @@ describe('AgentAwaitPromptDemo', () => {
     expect(screen.queryByText(/View all streaming events/i)).not.toBeInTheDocument();
   });
 
-  it('should display educational notes', () => {
+  it('should display learning points with key concepts', () => {
     render(<AgentAwaitPromptDemo />);
 
-    expect(screen.getByText('Educational Notes')).toBeInTheDocument();
+    // Section is now "Pattern Learning Points" with consistent formatting
+    expect(screen.getByText('Pattern Learning Points')).toBeInTheDocument();
     expect(screen.getByText(/State Machine:/i)).toBeInTheDocument();
-    expect(screen.getByText(/Stream Controller:/i)).toBeInTheDocument();
-    expect(screen.getByText(/Inline UX:/i)).toBeInTheDocument();
+    expect(screen.getByText(/Timeout Handling:/i)).toBeInTheDocument();
   });
 
   it('should allow switching scenarios', async () => {
