@@ -21,7 +21,7 @@
   font-size: 3rem;
   font-weight: 800;
   margin: 0 0 1rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: var(--brand-gradient-primary);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -84,7 +84,7 @@
 }
 
 .patternLink:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -121,8 +121,8 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--color-success-50);
+  color: var(--color-success-700);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -133,8 +133,8 @@
   flex-direction: column;
   transition: box-shadow 0.2s ease;
   opacity: 0.85;
-  background: linear-gradient(to bottom right, #ffffff, #f9fafb);
-  border: 1px dashed #d1d5db;
+  background: linear-gradient(to bottom right, var(--color-bg-primary), var(--color-bg-secondary));
+  border: var(--border-width-thin) dashed var(--color-border-medium);
 }
 
 .comingSoonCard:hover {
@@ -147,8 +147,8 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--color-warning-50);
+  color: var(--color-warning-700);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -197,13 +197,13 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: #3b82f6;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
 .patternCta {
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
   margin-top: auto;
 }
 
