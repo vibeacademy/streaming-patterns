@@ -27,7 +27,6 @@ export function ValidationBadge({
       aria-label={`Validation status: ${label}`}
       title={description}
     >
-      <span className={styles.indicator} aria-hidden="true" />
       <span className={styles.label}>{label}</span>
       {showDescription && (
         <span className={styles.description}>{description}</span>
