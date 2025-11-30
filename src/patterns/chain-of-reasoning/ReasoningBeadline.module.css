@@ -144,7 +144,7 @@
 }
 
 .summary {
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   font-weight: 600;
   color: var(--color-neutral-900);
   line-height: 1.4;
