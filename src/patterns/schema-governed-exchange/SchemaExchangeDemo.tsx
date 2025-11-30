@@ -14,6 +14,7 @@
 import { useState, useCallback } from 'react';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
+import { Button } from '@/components/ui/Button';
 import { useSchemaValidation, useSchemaHUD } from './hooks';
 import { SchemaHUD } from './SchemaHUD';
 import { PayloadViewer } from './PayloadViewer';
@@ -148,28 +149,31 @@ export function SchemaExchangeDemo() {
 
         <div className={styles.buttonGroup}>
           {!isStreaming ? (
-            <button
+            <Button
               onClick={handleStart}
-              className={`${styles.button} ${styles.buttonPrimary}`}
+              variant="primary"
+              size="md"
             >
               ▶ Start Stream
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={handleStop}
-              className={`${styles.button} ${styles.buttonDanger}`}
+              variant="secondary"
+              size="md"
             >
               ⏸ Stop Stream
-            </button>
+            </Button>
           )}
 
-          <button
+          <Button
             onClick={handleReset}
-            className={`${styles.button} ${styles.buttonSecondary}`}
+            variant="secondary"
+            size="md"
             disabled={isStreaming}
           >
             🔄 Reset
-          </button>
+          </Button>
         </div>
       </div>
 
