@@ -6,8 +6,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
   padding: 1rem;
 }
 
@@ -26,22 +26,46 @@
 }
 
 .scrollContainer::-webkit-scrollbar-track {
-  background: var(--surface-2, #1a1a1a);
+  background: #e5e7eb;
   border-radius: 4px;
 }
 
 .scrollContainer::-webkit-scrollbar-thumb {
-  background: var(--surface-4, #333);
+  background: #9ca3af;
   border-radius: 4px;
 }
 
 .scrollContainer::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-5, #444);
+  background: #6b7280;
 }
 
 .empty {
   text-align: center;
   padding: 2rem;
-  color: var(--text-tertiary, #666);
+  color: #6b7280;
   font-size: 0.875rem;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .timeline {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .scrollContainer::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+
+  .scrollContainer::-webkit-scrollbar-thumb {
+    background: #4b5563;
+  }
+
+  .scrollContainer::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+
+  .empty {
+    color: #9ca3af;
+  }
 }
