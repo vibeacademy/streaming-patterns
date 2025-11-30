@@ -32,5 +32,8 @@ ENVIRONMENT = "production"
 [env.staging]
 name = "streaming-patterns-staging"
 workers_dev = true
+# Explicitly disable routes for staging (uses workers.dev subdomain)
+# This prevents Cloudflare API error 10013 when routes are inherited from parent config
+routes = []
 vars = { ENVIRONMENT = "staging" }
 
