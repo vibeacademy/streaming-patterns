@@ -174,6 +174,8 @@ export function useSchemaValidation(options: MockStreamOptions = {}) {
 
   /**
    * Handle schema error events from stream
+   *
+   * Deduplicates errors by field - only keeps the most recent error for each field.
    */
   const handleSchemaError = useCallback((event: SchemaErrorEvent) => {
     const error: ValidationError = {
@@ -184,7 +186,12 @@ export function useSchemaValidation(options: MockStreamOptions = {}) {
       code: event.data.code,
     };
 
-    setStreamErrors((prev) => [...prev, error]);
+    setStreamErrors((prev) => {
+      // Remove any existing error for this field
+      const filtered = prev.filter(e => e.field !== error.field);
+      // Add the new error
+      return [...filtered, error];
+    });
   }, []);
 
   return {
