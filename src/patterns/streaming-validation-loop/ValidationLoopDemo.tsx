@@ -12,6 +12,8 @@
  */
 
 import { useState, useEffect } from 'react';
+import { DemoContainer } from '@/components/layout/DemoContainer';
+import { Button } from '@/components/ui/Button';
 import { useValidationStream } from './hooks';
 import { CheckpointCard } from './CheckpointCard';
 import { Timeline } from './Timeline';
@@ -68,14 +70,11 @@ export function ValidationLoopDemo() {
   }, [activeCheckpoint, actions]);
 
   return (
-    <div className={styles.demo}>
-      {/* Header */}
-      <header className={styles.header}>
-        <h1>Streaming Validation Loop</h1>
-        <p className={styles.subtitle}>
-          Budget allocation with checkpoint approvals
-        </p>
-      </header>
+    <DemoContainer
+      title="Streaming Validation Loop Pattern"
+      description="Budget allocation with checkpoint approvals"
+      maxWidth="2xl"
+    >
 
       {/* Pattern explanation */}
       <section className={styles.explanation}>
@@ -196,13 +195,14 @@ export function ValidationLoopDemo() {
 
       {/* Controls */}
       <div className={styles.controls}>
-        <button
+        <Button
           onClick={actions.reset}
-          className={styles.resetButton}
+          variant="secondary"
+          size="sm"
           disabled={isStreaming && !isWaitingForApproval}
         >
           Reset Demo
-        </button>
+        </Button>
         {isStreaming && (
           <div className={styles.streamingStatus} aria-live="polite">
             <div className={styles.pulse} />
@@ -243,7 +243,7 @@ export function ValidationLoopDemo() {
           </p>
         </details>
       </section>
-    </div>
+    </DemoContainer>
   );
 }
 

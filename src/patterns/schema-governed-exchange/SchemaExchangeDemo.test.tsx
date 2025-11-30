@@ -18,7 +18,7 @@ describe('SchemaExchangeDemo', () => {
   it('should render the demo with initial state', () => {
     render(<SchemaExchangeDemo />);
 
-    expect(screen.getByText('Schema-Governed Exchange')).toBeInTheDocument();
+    expect(screen.getByText('Schema-Governed Exchange Pattern')).toBeInTheDocument();
     expect(screen.getByText(/Real-time validation/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Start Stream/i })).toBeInTheDocument();
   });

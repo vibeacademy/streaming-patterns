@@ -19,6 +19,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { DemoContainer } from '@/components/layout/DemoContainer';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { useAwaitPromptStream } from './hooks';
@@ -196,15 +197,11 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
   const stateIndicator = getStateIndicator();
 
   return (
-    <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <h1 className={styles.title}>Agent-Await-Prompt Pattern</h1>
-        <p className={styles.subtitle}>
-          Interactive streaming with pause/resume mechanics. The AI can pause
-          mid-stream to request missing information from the user.
-        </p>
-      </div>
+    <DemoContainer
+      title="Agent-Await-Prompt Pattern"
+      description="Interactive streaming with pause/resume mechanics"
+      maxWidth="2xl"
+    >
 
       {/* Scenario selector */}
       <div className={styles.controls}>
@@ -359,6 +356,6 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
           </li>
         </ul>
       </div>
-    </div>
+    </DemoContainer>
   );
 }

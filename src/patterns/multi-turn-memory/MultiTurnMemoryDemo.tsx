@@ -9,6 +9,8 @@
  */
 
 import { useState, useCallback } from 'react';
+import { DemoContainer } from '@/components/layout/DemoContainer';
+import { Button } from '@/components/ui/Button';
 import { useMemoryTimeline } from './hooks';
 import { MemoryTimeline } from './MemoryTimeline';
 import { MemoryFilters } from './MemoryFilters';
@@ -151,47 +153,42 @@ export function MultiTurnMemoryDemo(): JSX.Element {
   }, []);
 
   return (
-    <div className={styles.demo}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          <h1 className={styles.title}>Multi-Turn Memory Timeline</h1>
-          <p className={styles.subtitle}>
-            Watch the agent build and maintain memory across conversation turns
-          </p>
-        </div>
-
-        {/* Controls */}
-        <div className={styles.controls}>
-          <label className={styles.controlLabel}>
-            Stream Speed:
-            <select
-              value={speed}
-              onChange={(e) => handleSpeedChange(e.target.value as typeof speed)}
-              className={styles.select}
-            >
-              <option value="instant">Instant</option>
-              <option value="fast">Fast</option>
-              <option value="normal">Normal</option>
-              <option value="slow">Slow</option>
-            </select>
-          </label>
-
-          <button
-            className={styles.toggleButton}
-            onClick={() => setShowFilters(!showFilters)}
+    <DemoContainer
+      title="Multi-Turn Memory Pattern"
+      description="Watch the agent build and maintain memory across conversation turns"
+      maxWidth="full"
+    >
+      {/* Controls */}
+      <div className={styles.controls}>
+        <label className={styles.controlLabel}>
+          Stream Speed:
+          <select
+            value={speed}
+            onChange={(e) => handleSpeedChange(e.target.value as typeof speed)}
+            className={styles.select}
           >
-            {showFilters ? 'Hide' : 'Show'} Filters
-          </button>
+            <option value="instant">Instant</option>
+            <option value="fast">Fast</option>
+            <option value="normal">Normal</option>
+            <option value="slow">Slow</option>
+          </select>
+        </label>
 
-          <button
-            className={styles.resetButton}
-            onClick={handleReset}
-            aria-label="Reset demo to beginning"
-          >
-            Reset Demo
-          </button>
-        </div>
+        <button
+          className={styles.toggleButton}
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          {showFilters ? 'Hide' : 'Show'} Filters
+        </button>
+
+        <Button
+          onClick={handleReset}
+          variant="secondary"
+          size="sm"
+          aria-label="Reset demo to beginning"
+        >
+          Reset Demo
+        </Button>
       </div>
 
       {/* Main Content - Keyed for proper reset */}
@@ -235,7 +232,7 @@ export function MultiTurnMemoryDemo(): JSX.Element {
           </ul>
         </div>
       </div>
-    </div>
+    </DemoContainer>
   );
 }
 
