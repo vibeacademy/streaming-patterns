@@ -79,9 +79,9 @@
   transform: translateY(-4px);
 }
 
-.patternLink:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+.patternLink:focus-visible {
+  box-shadow: var(--shadow-focus);
+  outline: none;
   border-radius: 8px;
 }
 

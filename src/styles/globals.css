@@ -127,9 +127,9 @@ a:hover {
   text-decoration: underline;
 }
 
-a:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+a:focus-visible {
+  box-shadow: var(--shadow-focus);
+  outline: none;
   border-radius: var(--border-radius-sm);
 }
 
@@ -214,9 +214,8 @@ hr {
 /* Focus visible for keyboard navigation */
 /* Enhanced for better visibility and WCAG 2.1 compliance */
 :focus-visible {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 3px;
-  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+  box-shadow: var(--shadow-focus);
+  outline: none;
   border-radius: var(--border-radius-sm);
 }
 
