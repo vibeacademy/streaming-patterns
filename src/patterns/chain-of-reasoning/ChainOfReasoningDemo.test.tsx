@@ -99,15 +99,14 @@ describe.skip('ChainOfReasoningDemo', () => {
       expect(screen.getByText('Reasoning Steps')).toBeInTheDocument();
     });
 
-    it('should render Network Inspector by default', () => {
+    it('should hide Network Inspector by default', () => {
       render(<ChainOfReasoningDemo />);
 
-      expect(screen.getByText('Network Inspector')).toBeInTheDocument();
-      expect(
-        screen.getByText(
-          /Real-time visualization of stream events for debugging and learning/i
-        )
-      ).toBeInTheDocument();
+      // Inspector should be hidden by default
+      expect(screen.queryByText('Network Inspector')).not.toBeInTheDocument();
+
+      // Toggle button should be present
+      expect(screen.getByRole('button', { name: /Show Inspector/i })).toBeInTheDocument();
     });
 
     it('should render educational notes section', () => {
@@ -205,8 +204,13 @@ describe.skip('ChainOfReasoningDemo', () => {
       });
     }, 10000);
 
-    it('should capture events in Network Inspector', async () => {
+    it('should capture events in Network Inspector when visible', async () => {
+      const user = userEvent.setup();
       render(<ChainOfReasoningDemo />);
+
+      // Show the inspector
+      const toggleButton = screen.getByRole('button', { name: /Show Inspector/i });
+      await user.click(toggleButton);
 
       // Wait for events to be captured
       await waitFor(
@@ -289,35 +293,36 @@ describe.skip('ChainOfReasoningDemo', () => {
       const user = userEvent.setup();
       render(<ChainOfReasoningDemo />);
 
+      // Inspector should be hidden initially
+      expect(screen.queryByText('Stream Events')).not.toBeInTheDocument();
+
+      // Find the show button
       const toggleButton = screen.getByRole('button', {
-        name: /Hide Network Inspector/i,
+        name: /Show Inspector/i,
       });
 
-      // Inspector should be visible initially
-      expect(screen.getByText('Stream Events')).toBeInTheDocument();
-
-      // Click to hide
+      // Click to show
       await user.click(toggleButton);
 
-      // Inspector should be hidden
+      // Inspector should be visible
       await waitFor(() => {
-        expect(screen.queryByText('Stream Events')).not.toBeInTheDocument();
+        expect(screen.getByText('Stream Events')).toBeInTheDocument();
       });
 
       // Button text should change
       expect(
-        screen.getByRole('button', { name: /Show Network Inspector/i })
+        screen.getByRole('button', { name: /Hide Inspector/i })
       ).toBeInTheDocument();
 
-      // Click to show again
-      const showButton = screen.getByRole('button', {
-        name: /Show Network Inspector/i,
+      // Click to hide again
+      const hideButton = screen.getByRole('button', {
+        name: /Hide Inspector/i,
       });
-      await user.click(showButton);
+      await user.click(hideButton);
 
-      // Inspector should be visible again
+      // Inspector should be hidden again
       await waitFor(() => {
-        expect(screen.getByText('Stream Events')).toBeInTheDocument();
+        expect(screen.queryByText('Stream Events')).not.toBeInTheDocument();
       });
     });
 
@@ -598,7 +603,7 @@ describe.skip('ChainOfReasoningDemo', () => {
         screen.getByRole('button', { name: /Reset demo to beginning/i })
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('button', { name: /Hide Network Inspector/i })
+        screen.getByRole('button', { name: /Show Inspector/i })
       ).toBeInTheDocument();
     });
 
@@ -609,7 +614,7 @@ describe.skip('ChainOfReasoningDemo', () => {
       expect(normalButton).toHaveAttribute('aria-pressed');
 
       const toggleButton = screen.getByRole('button', {
-        name: /Hide Network Inspector/i,
+        name: /Show Inspector/i,
       });
       expect(toggleButton).toHaveAttribute('aria-pressed');
     });

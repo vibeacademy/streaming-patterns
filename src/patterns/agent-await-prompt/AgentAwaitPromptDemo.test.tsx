@@ -170,12 +170,27 @@ describe('AgentAwaitPromptDemo', () => {
     expect(screen.getByText('5. Timeout Fallback')).toBeInTheDocument();
   });
 
-  it('should display Network Inspector', () => {
+  it('should toggle network inspector visibility', async () => {
+    const user = userEvent.setup();
     render(<AgentAwaitPromptDemo />);
 
-    // Network Inspector heading may appear multiple times due to pattern library structure
-    const networkInspectors = screen.getAllByText('Network Inspector');
-    expect(networkInspectors.length).toBeGreaterThan(0);
+    // Inspector should be hidden by default
+    expect(screen.queryByText(/View all streaming events/i)).not.toBeInTheDocument();
+
+    // Find and click the toggle button
+    const toggleButton = screen.getByRole('button', { name: /show inspector/i });
+    expect(toggleButton).toBeInTheDocument();
+
+    // Click to show inspector
+    await user.click(toggleButton);
+
+    // Inspector should now be visible (check for description text that's unique to the inspector section)
+    expect(screen.getByText(/View all streaming events/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /hide inspector/i })).toBeInTheDocument();
+
+    // Click again to hide
+    await user.click(screen.getByRole('button', { name: /hide inspector/i }));
+    expect(screen.queryByText(/View all streaming events/i)).not.toBeInTheDocument();
   });
 
   it('should display educational notes', () => {

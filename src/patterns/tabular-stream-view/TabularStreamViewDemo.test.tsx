@@ -10,6 +10,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { TabularStreamViewDemo } from './TabularStreamViewDemo';
 
 // Mock NetworkInspector to avoid dependency issues
@@ -111,8 +112,36 @@ describe('TabularStreamViewDemo', () => {
     expect(screen.getByText(/export as csv/i)).toBeInTheDocument();
   });
 
-  it('should integrate with network inspector', async () => {
+  it('should toggle network inspector visibility', async () => {
+    const user = userEvent.setup();
     render(<TabularStreamViewDemo />);
+
+    // Inspector should be hidden by default
+    expect(screen.queryByTestId('network-inspector')).not.toBeInTheDocument();
+
+    // Find and click the toggle button
+    const toggleButton = screen.getByRole('button', { name: /show inspector/i });
+    expect(toggleButton).toBeInTheDocument();
+
+    // Click to show inspector
+    await user.click(toggleButton);
+
+    // Inspector should now be visible
+    expect(screen.getByTestId('network-inspector')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /hide inspector/i })).toBeInTheDocument();
+
+    // Click again to hide
+    await user.click(screen.getByRole('button', { name: /hide inspector/i }));
+    expect(screen.queryByTestId('network-inspector')).not.toBeInTheDocument();
+  });
+
+  it('should integrate with network inspector when visible', async () => {
+    const user = userEvent.setup();
+    render(<TabularStreamViewDemo />);
+
+    // Show the inspector
+    const toggleButton = screen.getByRole('button', { name: /show inspector/i });
+    await user.click(toggleButton);
 
     // Wait for stream to start and capture events
     await waitFor(

@@ -130,7 +130,7 @@ export function ChainOfReasoningDemo(): JSX.Element {
     useState<ReasoningStreamConfig['simulateError']>('none');
 
   // State: Whether Network Inspector is visible
-  const [showInspector, setShowInspector] = useState(true);
+  const [showInspector, setShowInspector] = useState(false);
 
   // Network capture for debugging and visualization
   const { events, captureEvent, clearEvents, filter, setFilter } =

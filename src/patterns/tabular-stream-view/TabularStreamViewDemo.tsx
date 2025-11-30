@@ -117,6 +117,7 @@ export function TabularStreamViewDemo(): JSX.Element {
   // Demo controls state
   const [speed, setSpeed] = useState<DemoSpeed>('normal');
   const [isRestarting, setIsRestarting] = useState(false);
+  const [showInspector, setShowInspector] = useState(false);
 
   // Network capture for inspector
   const { captureEvent, filteredEvents, clearEvents } = useNetworkCapture();
@@ -202,6 +203,16 @@ export function TabularStreamViewDemo(): JSX.Element {
       title="Tabular Stream View Pattern"
       description="Progressive rendering of structured table data as it streams in"
       maxWidth="full"
+      actions={
+        <Button
+          onClick={() => setShowInspector(!showInspector)}
+          variant="ghost"
+          size="sm"
+          aria-pressed={showInspector}
+        >
+          {showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        </Button>
+      }
     >
 
         {/* Demo Controls */}
@@ -304,10 +315,14 @@ export function TabularStreamViewDemo(): JSX.Element {
       )}
 
       {/* Network Inspector */}
-      <NetworkInspector
-        events={filteredEvents}
-        title="Stream Events"
-      />
+      {showInspector && (
+        <section className={styles.inspectorSection}>
+          <NetworkInspector
+            events={filteredEvents}
+            title="Stream Events"
+          />
+        </section>
+      )}
 
       {/* Educational Notes */}
       <div className={styles.educationalNotes}>
