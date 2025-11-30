@@ -19,7 +19,7 @@ export const validProjectPayload: ProjectSetupPayload = {
     '550e8400-e29b-41d4-a716-446655440001', // Design team
     '550e8400-e29b-41d4-a716-446655440002', // Engineering team
   ],
-  deadline: '2025-06-30T23:59:59Z',
+  deadline: '2026-06-30T23:59:59Z',
   priority: 'high',
   deliverables: [
     'UI/UX Mockups',
@@ -129,7 +129,7 @@ export const successfulValidationStream: SchemaStreamEvent[] = [
           '550e8400-e29b-41d4-a716-446655440001',
           '550e8400-e29b-41d4-a716-446655440002',
         ],
-        deadline: '2025-06-30T23:59:59Z',
+        deadline: '2026-06-30T23:59:59Z',
         priority: 'high',
         deliverables: ['UI/UX Mockups', 'Interactive Prototype'],
       },
@@ -396,7 +396,7 @@ export const correctedValidationStream: SchemaStreamEvent[] = [
         projectName: 'AI Assistant Integration',  // Fixed: now 3+ chars
         budget: 75000,  // Fixed: now a number
         teamIds: ['550e8400-e29b-41d4-a716-446655440001'],  // Fixed: now array
-        deadline: '2025-12-31T23:59:59Z',  // Fixed: future date
+        deadline: '2026-12-31T23:59:59Z',  // Fixed: future date
         priority: 'high',  // Fixed: valid enum
       } as unknown as Record<string, unknown>,
       complete: true,

@@ -101,7 +101,7 @@ export const projectSetupSchemaDefinition: SchemaDefinition = {
       description: 'Redesign mobile app for better UX',
       budget: 50000,
       teamIds: ['550e8400-e29b-41d4-a716-446655440001'],
-      deadline: '2025-12-31T23:59:59Z',
+      deadline: '2027-12-31T23:59:59Z',
       priority: 'high',
       deliverables: ['UI Mockups', 'Prototype', 'Production Release'],
       tags: ['mobile', 'ux', 'redesign'],
@@ -217,7 +217,7 @@ export const projectSetupJsonSchema = {
       type: 'string',
       format: 'date-time',
       description: 'Optional project deadline (ISO 8601, must be in future)',
-      example: '2025-12-31T23:59:59Z',
+      example: '2027-12-31T23:59:59Z',
     },
     priority: {
       type: 'string',
