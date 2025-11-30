@@ -194,7 +194,12 @@ export function ValidationLoopDemo() {
               <p>Budget analyses will appear here as the stream progresses...</p>
             </div>
           ) : (
-            <div className={styles.analysesList}>
+            <div
+              role="log"
+              aria-live="polite"
+              aria-label="Streaming budget analyses"
+              className={styles.analysesList}
+            >
               {Array.from(analyses.entries()).map(([team, analysis]) => (
                 <div key={team} className={styles.analysisCard}>
                   <h4>{team} Team</h4>
@@ -234,7 +239,12 @@ export function ValidationLoopDemo() {
           {allocations.length > 0 && (
             <div className={styles.allocations}>
               <h3>Approved Allocations</h3>
-              <div className={styles.allocationsList}>
+              <div
+                role="log"
+                aria-live="polite"
+                aria-label="Approved budget allocations"
+                className={styles.allocationsList}
+              >
                 {allocations.map((allocation) => (
                   <div key={allocation.team} className={styles.allocationCard}>
                     <div className={styles.allocationHeader}>

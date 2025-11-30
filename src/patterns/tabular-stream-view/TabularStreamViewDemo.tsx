@@ -294,14 +294,20 @@ export function TabularStreamViewDemo(): JSX.Element {
           />
 
           {/* Streaming Table */}
-          <StreamingTable
-            schema={schema}
-            rows={visibleRows}
-            isStreaming={isStreaming}
-            isComplete={isComplete}
-            sort={sort}
-            onSort={handleHeaderSort}
-          />
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Streaming table rows"
+          >
+            <StreamingTable
+              schema={schema}
+              rows={visibleRows}
+              isStreaming={isStreaming}
+              isComplete={isComplete}
+              sort={sort}
+              onSort={handleHeaderSort}
+            />
+          </div>
 
           {/* Completion Footer */}
           <CompletionFooter
