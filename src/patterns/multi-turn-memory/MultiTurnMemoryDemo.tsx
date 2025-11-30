@@ -308,7 +308,7 @@ export function MultiTurnMemoryDemo(): JSX.Element {
         <div className={styles.infoSection}>
           <h3 className={styles.infoTitle}>Try It Out</h3>
           <ul className={styles.actionList}>
-            <li>Hover over a memory card to see the token excerpt</li>
+            <li>Hover over a memory card to see a tooltip with the token excerpt</li>
             <li>Click the pin icon to prevent auto-pruning</li>
             <li>Click the X to manually prune a memory</li>
             <li>Use filters to focus on specific memory types</li>
