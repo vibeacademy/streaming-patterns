@@ -21,8 +21,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
    * - primary: Main action button (filled, high emphasis)
    * - secondary: Secondary actions (outlined, medium emphasis)
    * - ghost: Tertiary actions (text only, low emphasis)
+   * - danger: Destructive actions (filled, red, high emphasis)
    */
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
 
   /**
    * Size of the button

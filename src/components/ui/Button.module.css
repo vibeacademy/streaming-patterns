@@ -80,15 +80,15 @@
 /* Secondary Button */
 .button--secondary {
   background-color: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-medium);
 
   &:hover:not(:disabled) {
-    background-color: var(--color-primary-50);
+    background-color: var(--color-neutral-100);
   }
 
   &:active:not(:disabled) {
-    background-color: var(--color-primary-100);
+    background-color: var(--color-neutral-200);
   }
 }
 
@@ -104,6 +104,29 @@
 
   &:active:not(:disabled) {
     background-color: var(--color-neutral-200);
+  }
+}
+
+/* Danger Button */
+.button--danger {
+  background-color: var(--color-error-500);
+  color: white;
+  border-color: var(--color-error-500);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-error-600);
+    border-color: var(--color-error-600);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--color-error-700);
+    border-color: var(--color-error-700);
+  }
+
+  &:disabled {
+    background-color: var(--color-error-300);
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
