@@ -202,8 +202,10 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 2rem;
-  background: var(--surface-1, #0a0a0a);
-  border-top: 1px solid var(--border-color, #333);
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-top: 2rem;
 }
 
 .infoSection {
@@ -235,6 +237,48 @@
 
 .featureList strong {
   color: var(--text-primary, #fff);
+}
+
+/* Learning Card Styles */
+.learningCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.cardHeader h4 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.cardContent {
+  color: #374151;
+}
+
+.learningList {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.learningList li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.learningList li:last-child {
+  margin-bottom: 0;
+}
+
+.learningList strong {
+  font-weight: 600;
+  color: #111827;
 }
 
 /* Responsive */
