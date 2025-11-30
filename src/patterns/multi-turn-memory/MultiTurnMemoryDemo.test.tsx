@@ -9,7 +9,7 @@ import { MultiTurnMemoryDemo } from './MultiTurnMemoryDemo';
 describe('MultiTurnMemoryDemo', () => {
   it('renders without crashing', () => {
     render(<MultiTurnMemoryDemo />);
-    expect(screen.getByText('Multi-Turn Memory Timeline')).toBeInTheDocument();
+    expect(screen.getByText('Multi-Turn Memory Pattern')).toBeInTheDocument();
   });
 
   it('displays the pattern subtitle', () => {
