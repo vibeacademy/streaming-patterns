@@ -43,8 +43,8 @@
   align-items: center;
   gap: 1rem;
   padding: var(--space-4, 1rem);
-  background-color: var(--color-bg-secondary, #1a1a1a);
-  border: 1px solid var(--color-border-light, #333);
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: var(--border-radius-lg, 8px);
   margin-bottom: var(--space-6, 1.5rem);
 }
@@ -120,8 +120,8 @@
 }
 
 .memorySection {
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .sectionHeader {
@@ -129,14 +129,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-color, #333);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .sectionTitle {
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary, #fff);
+  color: #1f2937;
 }
 
 .memoryStats {
@@ -163,8 +163,8 @@
 
 .sidebar {
   padding: 1.5rem;
-  background: var(--surface-1, #0a0a0a);
-  border-right: 1px solid var(--border-color, #333);
+  background: #f9fafb;
+  border-right: 1px solid #e5e7eb;
 }
 
 .main {
@@ -177,8 +177,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .streamingBadge {
@@ -218,7 +218,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary, #fff);
+  color: #1f2937;
 }
 
 .featureList,
@@ -227,7 +227,7 @@
   padding-left: 1.25rem;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: var(--text-secondary, #999);
+  color: #4b5563;
 }
 
 .featureList li,
@@ -236,7 +236,7 @@
 }
 
 .featureList strong {
-  color: var(--text-primary, #fff);
+  color: #111827;
 }
 
 /* Learning Card Styles */
@@ -279,6 +279,55 @@
 .learningList strong {
   font-weight: 600;
   color: #111827;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .controls {
+    background-color: #1f2937;
+    border-color: #374151;
+  }
+
+  .memorySection {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .sectionHeader {
+    border-color: #374151;
+  }
+
+  .sectionTitle {
+    color: #f3f4f6;
+  }
+
+  .sidebar {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .chatHeader {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .infoTitle {
+    color: #f3f4f6;
+  }
+
+  .featureList strong {
+    color: #f3f4f6;
+  }
+
+  .featureList,
+  .actionList {
+    color: #9ca3af;
+  }
+
+  .footer {
+    background: #111827;
+    border-color: #374151;
+  }
 }
 
 /* Responsive */
