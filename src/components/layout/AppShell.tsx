@@ -55,7 +55,7 @@ export function AppShell({
   return (
     <div className={classNames}>
       {/* Skip to main content link for accessibility */}
-      <a href="#main-content" className="skip-to-main">
+      <a href="#main-content" className={styles.skipLink}>
         Skip to main content
       </a>
 

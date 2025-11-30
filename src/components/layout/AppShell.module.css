@@ -9,6 +9,28 @@
   background-color: var(--color-bg-secondary);
 }
 
+/* ===== SKIP LINK ===== */
+
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  z-index: var(--z-index-modal);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--border-radius-md);
+}
+
+.skipLink:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+  box-shadow: var(--shadow-focus);
+  outline: 2px solid var(--color-primary-700);
+  outline-offset: 2px;
+}
+
 /* ===== HEADER ===== */
 
 .header {
