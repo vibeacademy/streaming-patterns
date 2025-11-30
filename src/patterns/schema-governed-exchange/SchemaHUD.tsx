@@ -26,9 +26,6 @@ export function SchemaHUD({ schema, state, onToggleCollapse }: SchemaHUDProps) {
     <div className={styles.hud}>
       <div className={styles.header}>
         <div className={styles.title}>
-          <span className={styles.icon} aria-hidden="true">
-            📋
-          </span>
           <h3 className={styles.titleText}>Schema</h3>
         </div>
         <button

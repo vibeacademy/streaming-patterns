@@ -51,9 +51,6 @@ export function ErrorHighlighter({ errors, onHighlightField }: ErrorHighlighterP
 
             {error.suggestion && (
               <div className={styles.suggestion}>
-                <span className={styles.suggestionIcon} aria-hidden="true">
-                  💡
-                </span>
                 <span className={styles.suggestionText}>
                   <strong>Suggestion:</strong> {error.suggestion}
                 </span>
