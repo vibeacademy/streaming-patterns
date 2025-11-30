@@ -213,9 +213,9 @@
   color: var(--color-primary-700);
 }
 
-.detailsSummary:focus {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 2px;
+.detailsSummary:focus-visible {
+  box-shadow: var(--shadow-focus);
+  outline: none;
   border-radius: var(--radius-sm);
 }
 
@@ -344,8 +344,8 @@
 
 /* Focus visible for keyboard navigation */
 .bead:focus-visible {
-  outline: 2px solid var(--color-primary-500);
-  outline-offset: 4px;
+  box-shadow: var(--shadow-focus);
+  outline: none;
   border-radius: var(--radius-md);
 }
 
