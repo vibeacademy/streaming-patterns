@@ -64,10 +64,12 @@
   font-size: var(--font-size-sm);
   line-height: 1.6;
   color: var(--color-neutral-200);
+  white-space: pre-wrap;
 }
 
 .json code {
   font-family: inherit;
+  white-space: pre-wrap;
 }
 
 .indent {
