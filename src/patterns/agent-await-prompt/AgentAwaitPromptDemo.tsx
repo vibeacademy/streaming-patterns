@@ -20,6 +20,7 @@
 
 import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
+import { Button } from '@/components/ui/Button';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -135,6 +136,9 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
   // Selected scenario
   const [selectedScenario, setSelectedScenario] = useState(DEMO_SCENARIOS[0]);
 
+  // Network inspector visibility
+  const [showInspector, setShowInspector] = useState(false);
+
   // Memoize event handler to prevent stream from restarting on every render
   const handleEvent = useCallback(
     (event: PatternStreamEvent) => {
@@ -202,6 +206,16 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
       title="Agent-Await-Prompt Pattern"
       description="Interactive streaming with pause/resume mechanics"
       maxWidth="2xl"
+      actions={
+        <Button
+          onClick={() => setShowInspector(!showInspector)}
+          variant="ghost"
+          size="sm"
+          aria-pressed={showInspector}
+        >
+          {showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        </Button>
+      }
     >
 
       {/* Scenario selector */}
@@ -324,14 +338,16 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
         </div>
 
         {/* Network Inspector */}
-        <div className={styles.networkInspector}>
-          <h2 className={styles.inspectorTitle}>Network Inspector</h2>
-          <p className={styles.inspectorDescription}>
-            View all streaming events including pause (<code>await_input</code>)
-            and resume (<code>input_submission</code>) events.
-          </p>
-          <NetworkInspector events={filteredEvents} />
-        </div>
+        {showInspector && (
+          <div className={styles.networkInspector}>
+            <h2 className={styles.inspectorTitle}>Network Inspector</h2>
+            <p className={styles.inspectorDescription}>
+              View all streaming events including pause (<code>await_input</code>)
+              and resume (<code>input_submission</code>) events.
+            </p>
+            <NetworkInspector events={filteredEvents} />
+          </div>
+        )}
       </div>
 
       {/* Educational notes */}

@@ -29,6 +29,7 @@ import styles from './SchemaExchangeDemo.module.css';
 export function SchemaExchangeDemo() {
   const [scenario, setScenario] = useState<StreamScenario>('successful');
   const [speed, setSpeed] = useState<StreamSpeed>('normal');
+  const [showInspector, setShowInspector] = useState(false);
 
   // Network capture for inspector
   const { captureEvent, events, clearEvents } = useNetworkCapture();
@@ -99,6 +100,16 @@ export function SchemaExchangeDemo() {
       title="Schema-Governed Exchange Pattern"
       description="Real-time validation of streaming JSON payloads against Zod schemas"
       maxWidth="full"
+      actions={
+        <Button
+          onClick={() => setShowInspector(!showInspector)}
+          variant="ghost"
+          size="sm"
+          aria-pressed={showInspector}
+        >
+          {showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        </Button>
+      }
     >
       {/* Validation Badge */}
       <div className={styles.validationHeader}>
@@ -260,13 +271,15 @@ export function SchemaExchangeDemo() {
       </div>
 
       {/* Network Inspector */}
-      <div className={styles.inspector}>
-        <NetworkInspector
-          events={events}
-          onClearEvents={clearEvents}
-          title="Stream Events"
-        />
-      </div>
+      {showInspector && (
+        <div className={styles.inspector}>
+          <NetworkInspector
+            events={events}
+            onClearEvents={clearEvents}
+            title="Stream Events"
+          />
+        </div>
+      )}
 
       {/* Educational Notes */}
       <div className={styles.notes}>

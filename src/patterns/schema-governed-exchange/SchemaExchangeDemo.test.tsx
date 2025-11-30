@@ -197,9 +197,27 @@ describe('SchemaExchangeDemo', () => {
     );
   });
 
-  it('should render network inspector', () => {
+  it('should toggle network inspector visibility', async () => {
+    const user = userEvent.setup();
     render(<SchemaExchangeDemo />);
+
+    // Inspector should be hidden by default
+    expect(screen.queryByTestId('network-inspector')).not.toBeInTheDocument();
+
+    // Find and click the toggle button
+    const toggleButton = screen.getByRole('button', { name: /show inspector/i });
+    expect(toggleButton).toBeInTheDocument();
+
+    // Click to show inspector
+    await user.click(toggleButton);
+
+    // Inspector should now be visible
     expect(screen.getByTestId('network-inspector')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /hide inspector/i })).toBeInTheDocument();
+
+    // Click again to hide
+    await user.click(screen.getByRole('button', { name: /hide inspector/i }));
+    expect(screen.queryByTestId('network-inspector')).not.toBeInTheDocument();
   });
 
   it('should render educational notes', () => {

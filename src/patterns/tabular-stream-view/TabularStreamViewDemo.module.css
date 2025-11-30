@@ -157,6 +157,11 @@
   gap: 24px;
 }
 
+/* Network Inspector Section */
+.inspectorSection {
+  margin-top: 24px;
+}
+
 /* Educational Notes */
 .educationalNotes {
   margin-top: 32px;
