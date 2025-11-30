@@ -18,8 +18,8 @@
 }
 
 .heroTitle {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
   margin: 0 0 1rem;
   background: var(--brand-gradient-primary);
   background-clip: text;
@@ -29,10 +29,10 @@
 }
 
 .heroSubtitle {
-  font-size: 1.5rem;
+  font-size: var(--font-size-2xl);
   color: var(--color-text-secondary);
   margin: 0 0 1.5rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .heroDescription {
@@ -53,8 +53,8 @@
 }
 
 .sectionTitle {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   margin: 0 0 0.5rem;
   color: var(--color-text-primary);
 }
