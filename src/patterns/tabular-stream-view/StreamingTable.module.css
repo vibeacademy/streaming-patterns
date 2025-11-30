@@ -35,7 +35,7 @@
 
 /* Header Cell */
 .headerCell {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   text-align: left;
   font-weight: 600;
   color: #374151;
@@ -68,7 +68,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .headerLabel {
@@ -128,7 +128,7 @@
 
 /* Data Cell */
 .dataCell {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   color: #1f2937;
   border-right: 1px solid #f3f4f6;
 }
@@ -147,7 +147,7 @@
 }
 
 .skeletonCell {
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   border-right: 1px solid #f3f4f6;
 }
 
@@ -183,7 +183,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
+  padding: var(--space-12) var(--space-6);
   color: #6b7280;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
@@ -191,7 +191,7 @@
 }
 
 .emptyCell {
-  padding: 48px 24px;
+  padding: var(--space-12) var(--space-6);
   text-align: center;
   color: #6b7280;
   font-style: italic;
@@ -201,8 +201,8 @@
 .streamingIndicator {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
   background: #eff6ff;
   border-top: 1px solid #dbeafe;
   color: #1e40af;
@@ -231,7 +231,7 @@
   .headerCell,
   .dataCell,
   .skeletonCell {
-    padding: 8px 12px;
+    padding: var(--space-2) var(--space-3);
   }
 
   .table {
