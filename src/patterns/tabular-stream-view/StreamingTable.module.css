@@ -242,3 +242,29 @@
     font-size: 12px;
   }
 }
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .headerCell.sortable {
+    transition: none;
+  }
+
+  .sortIndicator {
+    transition: none;
+  }
+
+  .dataRow {
+    transition: none;
+    animation: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+
+  .spinner {
+    animation: none;
+    /* Show static spinner when motion is reduced */
+    border-top-color: var(--color-info-700);
+  }
+}
