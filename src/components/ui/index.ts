@@ -18,3 +18,6 @@ export type { BadgeProps } from './Badge';
 
 export { Spinner } from './Spinner';
 export type { SpinnerProps } from './Spinner';
+
+export { ScenarioCard } from './ScenarioCard';
+export type { ScenarioCardProps } from './ScenarioCard';

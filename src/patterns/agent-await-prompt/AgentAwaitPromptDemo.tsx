@@ -22,6 +22,7 @@ import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useAwaitPromptStream } from './hooks';
 import { InlineInputFields } from './InlineInputFields';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
@@ -229,6 +230,13 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
             {stateIndicator.text}
           </span>
         </div>
+      </div>
+
+      {/* Scenario Context */}
+      <div className={styles.scenario}>
+        <ScenarioCard
+          description="StreamFlow PM discovers missing project metadata during setup and pauses to request it inline."
+        />
       </div>
 
       {/* Main content area */}

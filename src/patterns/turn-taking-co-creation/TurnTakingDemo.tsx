@@ -22,6 +22,7 @@
 import { useState, useCallback, useMemo, memo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
@@ -355,6 +356,13 @@ export function TurnTakingDemo(): JSX.Element {
             Reset Demo
           </Button>
         </div>
+      </section>
+
+      {/* Scenario Context */}
+      <section className={styles.scenarioSection} aria-label="Demo scenario">
+        <ScenarioCard
+          description="AI and user collaborate in real-time to co-create a project charter with visible authorship."
+        />
       </section>
 
       {/* Main Content - Keyed for proper reset */}

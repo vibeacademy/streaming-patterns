@@ -24,6 +24,7 @@ import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useTabularStream } from './hooks';
 import { StreamingTable } from './StreamingTable';
 import { TableControls } from './TableControls';
@@ -234,13 +235,9 @@ export function TabularStreamViewDemo(): JSX.Element {
 
       {/* Scenario Description */}
       <div className={styles.scenario}>
-        <h2 className={styles.scenarioTitle}>Scenario: Team Capacity Planning</h2>
-        <p className={styles.scenarioDescription}>
-          StreamFlow PM analyzes your engineering team's availability for Q1 2025.
-          The AI streams results progressively, showing each team member's capacity,
-          skills, and hourly rates. You can sort and filter the data even before
-          the stream completes.
-        </p>
+        <ScenarioCard
+          description="StreamFlow PM analyzes your engineering team's availability for Q1 2025, streaming results progressively."
+        />
       </div>
 
       {/* Error Display */}

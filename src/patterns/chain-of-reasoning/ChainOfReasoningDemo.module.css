@@ -95,6 +95,12 @@
   color: var(--color-text-secondary);
 }
 
+/* ===== SCENARIO SECTION ===== */
+
+.scenarioSection {
+  margin-bottom: var(--space-6);
+}
+
 /* ===== PROMPT SECTION ===== */
 
 .promptSection {

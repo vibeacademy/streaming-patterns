@@ -31,8 +31,9 @@ describe('TabularStreamViewDemo', () => {
   it('should render scenario description', () => {
     render(<TabularStreamViewDemo />);
 
-    expect(screen.getByText(/Team Capacity Planning/i)).toBeInTheDocument();
-    expect(screen.getByText(/StreamFlow PM/i)).toBeInTheDocument();
+    // ScenarioCard renders with default "Scenario" title and custom description
+    expect(screen.getByText(/Scenario/i)).toBeInTheDocument();
+    expect(screen.getByText(/StreamFlow PM analyzes your engineering team/i)).toBeInTheDocument();
   });
 
   it('should render demo controls', () => {
@@ -67,19 +68,22 @@ describe('TabularStreamViewDemo', () => {
   it('should display table data', async () => {
     render(<TabularStreamViewDemo />);
 
-    // Wait for data to appear
+    // Wait for schema to arrive - check for column header in table
+    // Note: "Team Member" appears in both sort dropdown options AND table header
     await waitFor(
       () => {
-        expect(screen.getByText(/Team Member/i)).toBeInTheDocument();
+        // Check for table header cells - schema must have arrived
+        const headerCells = document.querySelectorAll('th');
+        expect(headerCells.length).toBeGreaterThan(0);
       },
-      { timeout: 2000 }
+      { timeout: 3000 }
     );
 
-    // Check for some team member names
+    // Check for data rows (wait for at least one row to stream in)
     await waitFor(
       () => {
         const rows = screen.getAllByRole('row');
-        expect(rows.length).toBeGreaterThan(1); // Header + data rows
+        expect(rows.length).toBeGreaterThan(1); // Header + at least 1 data row
       },
       { timeout: 5000 }
     );

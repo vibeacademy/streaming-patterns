@@ -14,6 +14,7 @@
 import { useState, useEffect } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useValidationStream } from './hooks';
 import { CheckpointCard } from './CheckpointCard';
 import { Timeline } from './Timeline';
@@ -75,6 +76,13 @@ export function ValidationLoopDemo() {
       description="Budget allocation with checkpoint approvals"
       maxWidth="2xl"
     >
+
+      {/* Scenario Context */}
+      <section className={styles.scenario}>
+        <ScenarioCard
+          description="AI allocates Q1 budget across engineering teams with checkpoint approvals at each decision point."
+        />
+      </section>
 
       {/* Pattern explanation */}
       <section className={styles.explanation}>
