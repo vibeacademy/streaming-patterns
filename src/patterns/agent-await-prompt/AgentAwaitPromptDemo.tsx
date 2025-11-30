@@ -21,6 +21,7 @@
 import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -291,51 +292,6 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
           )}
         </div>
 
-        {/* Pattern explanation */}
-        <div className={styles.explanation}>
-          <h2 className={styles.explanationTitle}>Pattern Mechanics</h2>
-          <div className={styles.explanationContent}>
-            <div className={styles.mechanicItem}>
-              <h3 className={styles.mechanicTitle}>1. Stream Pause</h3>
-              <p className={styles.mechanicDescription}>
-                The AI detects missing information and emits an{' '}
-                <code>await_input</code> event, pausing the stream.
-              </p>
-            </div>
-
-            <div className={styles.mechanicItem}>
-              <h3 className={styles.mechanicTitle}>2. Inline Input</h3>
-              <p className={styles.mechanicDescription}>
-                Input fields appear embedded in the conversation, requesting
-                specific data from the user.
-              </p>
-            </div>
-
-            <div className={styles.mechanicItem}>
-              <h3 className={styles.mechanicTitle}>3. User Responds</h3>
-              <p className={styles.mechanicDescription}>
-                User fills out required (and optional) fields and submits. An{' '}
-                <code>input_submission</code> event is emitted.
-              </p>
-            </div>
-
-            <div className={styles.mechanicItem}>
-              <h3 className={styles.mechanicTitle}>4. Stream Resumes</h3>
-              <p className={styles.mechanicDescription}>
-                The AI receives the input and continues streaming from where it
-                paused. A <code>resume</code> event acknowledges the input.
-              </p>
-            </div>
-
-            <div className={styles.mechanicItem}>
-              <h3 className={styles.mechanicTitle}>5. Timeout Fallback</h3>
-              <p className={styles.mechanicDescription}>
-                If the user doesn't respond within the timeout, the AI continues
-                with default behavior (if configured).
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Network Inspector */}
         {showInspector && (
@@ -350,35 +306,35 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
         )}
       </div>
 
-      {/* Educational notes */}
+      {/* Pattern Learning Points */}
       <div className={styles.educationalNotes}>
-        <h2 className={styles.notesTitle}>Educational Notes</h2>
-        <ul className={styles.notesList}>
-          <li>
-            <strong>State Machine:</strong> The stream transitions through
-            states: <code>idle</code> → <code>streaming</code> →{' '}
-            <code>awaiting_input</code> → <code>resuming</code> →{' '}
-            <code>completed</code>
-          </li>
-          <li>
-            <strong>Stream Controller:</strong> The pause/resume mechanism uses
-            a controller that manages a Promise. The stream awaits this Promise,
-            and external code resolves it when input is submitted.
-          </li>
-          <li>
-            <strong>Inline UX:</strong> Input fields appear embedded in the
-            message flow, maintaining conversation context rather than using
-            modals or separate forms.
-          </li>
-          <li>
-            <strong>Timeout Handling:</strong> Visual countdown shows urgency.
-            Configurable fallback behavior when timeout expires.
-          </li>
-          <li>
-            <strong>Validation:</strong> Required fields are enforced before
-            submission. Type-specific validation (number, date, email, etc.).
-          </li>
-        </ul>
+        <Card className={styles.learningCard}>
+          <div className={styles.cardHeader}>
+            <h4>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.learningList}>
+              <li>
+                <strong>Stream Pause/Resume:</strong> Agent can pause mid-stream using await_input events and resume after receiving user input
+              </li>
+              <li>
+                <strong>Inline Input UX:</strong> Input fields appear embedded in the conversation flow, maintaining context without modals or separate forms
+              </li>
+              <li>
+                <strong>State Machine:</strong> Stream transitions through idle → streaming → awaiting_input → resuming → completed states
+              </li>
+              <li>
+                <strong>Timeout Handling:</strong> Visual countdown shows urgency with configurable fallback behavior when timeout expires
+              </li>
+              <li>
+                <strong>Field Validation:</strong> Required fields are enforced before submission with type-specific validation
+              </li>
+              <li>
+                <strong>Promise-Based Control:</strong> Pause/resume mechanism uses a Promise that the stream awaits until user input resolves it
+              </li>
+            </ul>
+          </div>
+        </Card>
       </div>
     </DemoContainer>
   );

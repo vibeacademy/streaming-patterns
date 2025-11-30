@@ -14,6 +14,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
@@ -303,37 +304,35 @@ export function ValidationLoopDemo() {
         )}
       </div>
 
-      {/* Educational annotations */}
+      {/* Pattern Learning Points */}
       <section className={styles.annotations}>
-        <h2>Implementation Notes</h2>
-        <details>
-          <summary>How does the stream pause work?</summary>
-          <p>
-            The stream generator uses an async generator function with{' '}
-            <code>await</code> to pause execution at checkpoint events. When a
-            checkpoint is emitted, the generator awaits a Promise that resolves
-            when the user responds (approve/edit/skip). This creates a natural
-            pause/resume flow without complex state machines.
-          </p>
-        </details>
-        <details>
-          <summary>How are timeouts handled?</summary>
-          <p>
-            Each checkpoint has a <code>timeoutMs</code> property. The UI tracks
-            elapsed time and auto-approves when the timeout expires. In production
-            systems, the server would also enforce timeouts to prevent indefinite
-            waiting.
-          </p>
-        </details>
-        <details>
-          <summary>What happens when the user edits a value?</summary>
-          <p>
-            Edit actions resolve the checkpoint Promise with the edited value.
-            The stream resumes with this new value, which cascades to all
-            downstream processing. The timeline shows edited checkpoints with a
-            badge and budget comparison.
-          </p>
-        </details>
+        <Card className={styles.learningCard}>
+          <div className={styles.cardHeader}>
+            <h4>Pattern Learning Points</h4>
+          </div>
+          <div className={styles.cardContent}>
+            <ul className={styles.learningList}>
+              <li>
+                <strong>Checkpoint-Based Approvals:</strong> Stream pauses at critical decision points, waiting for user approval, edits, or skip actions before continuing
+              </li>
+              <li>
+                <strong>Promise-Based Pausing:</strong> Async generator awaits a Promise at each checkpoint, which resolves when user responds, creating natural pause/resume flow
+              </li>
+              <li>
+                <strong>Timeout Handling:</strong> Each checkpoint has a timeout that auto-approves if user doesn't respond, preventing indefinite waiting
+              </li>
+              <li>
+                <strong>Edit Cascading:</strong> User edits at checkpoints cascade to all downstream processing, with timeline showing edited values and comparisons
+              </li>
+              <li>
+                <strong>Human-in-the-Loop:</strong> Pattern enables critical human oversight for high-stakes decisions like budget allocation
+              </li>
+              <li>
+                <strong>Timeline Visualization:</strong> Complete approval history shows all decisions, edits, and their impact on final plan
+              </li>
+            </ul>
+          </div>
+        </Card>
       </section>
     </DemoContainer>
   );
