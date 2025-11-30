@@ -139,7 +139,7 @@
 .fieldDescription {
   margin: 0 0 var(--space-2) 0;
   font-size: var(--font-size-sm);
-  color: var(--color-neutral-700);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
