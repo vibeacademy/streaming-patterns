@@ -172,7 +172,7 @@ export function SchemaExchangeDemo() {
             size="md"
             disabled={isStreaming}
           >
-            🔄 Reset
+            Reset
           </Button>
         </div>
       </div>
