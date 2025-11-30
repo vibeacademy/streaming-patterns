@@ -176,3 +176,20 @@
     border-color: rgba(75, 85, 99, 0.5);
   }
 }
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .indicatorContent {
+    transition: none;
+  }
+
+  .streamingDot {
+    animation: none;
+  }
+
+  .progressFill {
+    animation: none;
+    /* Show static progress indicator when motion is reduced */
+    width: 50%;
+  }
+}

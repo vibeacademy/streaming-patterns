@@ -238,3 +238,33 @@
     transform: translateX(-50%) translateY(0);
   }
 }
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+
+  .actionButton {
+    transition: none;
+  }
+
+  .actionButton:hover,
+  .actionButton:active {
+    transform: none;
+  }
+
+  .provenanceTooltip,
+  .pruneConfirm {
+    animation: none;
+  }
+
+  .confirmButton,
+  .cancelButton {
+    transition: none;
+  }
+}

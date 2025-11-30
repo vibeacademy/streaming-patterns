@@ -11,9 +11,9 @@
   position: relative;
   overflow-x: auto;
   overflow-y: visible;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: white;
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-bg-primary);
 }
 
 /* Table */
@@ -26,8 +26,8 @@
 
 /* Table Head */
 .tableHead {
-  background: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  background: var(--color-bg-secondary);
+  border-bottom: var(--border-width-medium) solid var(--color-border-light);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -38,10 +38,10 @@
   padding: var(--space-3) var(--space-4);
   text-align: left;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-secondary);
   user-select: none;
   white-space: nowrap;
-  border-right: 1px solid #e5e7eb;
+  border-right: var(--border-width-thin) solid var(--color-border-light);
 }
 
 .headerCell:last-child {
@@ -55,12 +55,12 @@
 }
 
 .headerCell.sortable:hover {
-  background-color: #f3f4f6;
+  background-color: var(--color-neutral-100);
 }
 
 .headerCell.sorted {
-  background-color: #eff6ff;
-  color: #1e40af;
+  background-color: var(--color-info-50);
+  color: var(--color-info-700);
 }
 
 /* Header Content */
@@ -97,18 +97,18 @@
 
 /* Table Body */
 .tableBody {
-  background: white;
+  background: var(--color-bg-primary);
 }
 
 /* Data Row */
 .dataRow {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: var(--border-width-thin) solid var(--color-neutral-100);
   transition: background-color 0.15s ease;
   animation: fadeInRow 0.3s ease-out;
 }
 
 .dataRow:hover {
-  background-color: #f9fafb;
+  background-color: var(--color-bg-secondary);
 }
 
 .dataRow:last-child {
@@ -129,8 +129,8 @@
 /* Data Cell */
 .dataCell {
   padding: var(--space-3) var(--space-4);
-  color: #1f2937;
-  border-right: 1px solid #f3f4f6;
+  color: var(--color-text-primary);
+  border-right: var(--border-width-thin) solid var(--color-neutral-100);
 }
 
 .dataCell:last-child {
@@ -139,7 +139,7 @@
 
 /* Skeleton Row */
 .skeletonRow {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: var(--border-width-thin) solid var(--color-neutral-100);
 }
 
 .skeletonRow:last-child {
@@ -148,7 +148,7 @@
 
 .skeletonCell {
   padding: var(--space-3) var(--space-4);
-  border-right: 1px solid #f3f4f6;
+  border-right: var(--border-width-thin) solid var(--color-neutral-100);
 }
 
 .skeletonCell:last-child {
@@ -160,9 +160,9 @@
   height: 16px;
   background: linear-gradient(
     90deg,
-    #f3f4f6 0%,
-    #e5e7eb 50%,
-    #f3f4f6 100%
+    var(--color-neutral-100) 0%,
+    var(--color-neutral-200) 50%,
+    var(--color-neutral-100) 100%
   );
   background-size: 200% 100%;
   border-radius: 4px;
@@ -184,16 +184,16 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-12) var(--space-6);
-  color: #6b7280;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-secondary);
+  border: var(--border-width-thin) solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
 }
 
 .emptyCell {
   padding: var(--space-12) var(--space-6);
   text-align: center;
-  color: #6b7280;
+  color: var(--color-text-tertiary);
   font-style: italic;
 }
 
@@ -203,9 +203,9 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  background: #eff6ff;
-  border-top: 1px solid #dbeafe;
-  color: #1e40af;
+  background: var(--color-info-50);
+  border-top: var(--border-width-thin) solid var(--color-primary-100);
+  color: var(--color-info-700);
   font-size: 13px;
   font-weight: 500;
 }
@@ -214,8 +214,8 @@
   display: inline-block;
   width: 14px;
   height: 14px;
-  border: 2px solid #93c5fd;
-  border-top-color: #1e40af;
+  border: 2px solid var(--color-primary-300);
+  border-top-color: var(--color-info-700);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -240,5 +240,31 @@
 
   .headerCell {
     font-size: 12px;
+  }
+}
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .headerCell.sortable {
+    transition: none;
+  }
+
+  .sortIndicator {
+    transition: none;
+  }
+
+  .dataRow {
+    transition: none;
+    animation: none;
+  }
+
+  .skeleton {
+    animation: none;
+  }
+
+  .spinner {
+    animation: none;
+    /* Show static spinner when motion is reduced */
+    border-top-color: var(--color-info-700);
   }
 }

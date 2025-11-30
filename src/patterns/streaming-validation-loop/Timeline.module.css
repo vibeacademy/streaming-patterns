@@ -277,3 +277,14 @@
   background: #fef3c7;
   color: #92400e;
 }
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .timelineEntry {
+    animation: none;
+  }
+
+  .entryContent {
+    transition: none;
+  }
+}
