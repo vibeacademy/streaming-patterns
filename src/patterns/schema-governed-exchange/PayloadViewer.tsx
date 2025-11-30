@@ -131,15 +131,22 @@ function renderValue(
       return <span className={styles.punctuation}>[]</span>;
     }
 
+    const indent = '  '.repeat(depth);
+    const itemIndent = '  '.repeat(depth + 1);
+
     return (
       <span>
         <span className={styles.punctuation}>[</span>
+        {'\n'}
         {value.map((item, i) => (
           <span key={i}>
-            {renderValue(item, `${parentPath}[${i}].`, errors, depth)}
-            {i < value.length - 1 && <span className={styles.punctuation}>, </span>}
+            <span className={styles.indent}>{itemIndent}</span>
+            {renderValue(item, `${parentPath}[${i}].`, errors, depth + 1)}
+            {i < value.length - 1 && <span className={styles.punctuation}>,</span>}
+            {'\n'}
           </span>
         ))}
+        <span className={styles.indent}>{indent}</span>
         <span className={styles.punctuation}>]</span>
       </span>
     );
