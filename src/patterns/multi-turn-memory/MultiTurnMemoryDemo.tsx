@@ -137,7 +137,13 @@ function MemoryDemoContent({ speed, showFilters, showInspector, capturedEvents, 
             )}
           </div>
 
-          <ChatThread messages={messages} isStreaming={isStreaming} />
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Chat conversation history"
+          >
+            <ChatThread messages={messages} isStreaming={isStreaming} />
+          </div>
         </main>
       </div>
 

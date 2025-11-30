@@ -405,10 +405,16 @@ export function ChainOfReasoningDemo(): JSX.Element {
             </span>
           </div>
 
-          <ReasoningBeadline
-            reasoning={reasoning}
-            className={styles.beadline}
-          />
+          <div
+            role="log"
+            aria-live="polite"
+            aria-label="Streaming reasoning steps"
+          >
+            <ReasoningBeadline
+              reasoning={reasoning}
+              className={styles.beadline}
+            />
+          </div>
 
           {!isStreaming && reasoning.length === 0 && (
             <div className={styles.emptyState}>
@@ -431,7 +437,12 @@ export function ChainOfReasoningDemo(): JSX.Element {
             </div>
 
             <Card className={styles.answerCard}>
-              <div className={styles.answerContent}>
+              <div
+                role="log"
+                aria-live="polite"
+                aria-label="Final answer"
+                className={styles.answerContent}
+              >
                 {/*
                   Note: For MVP, we'll render the answer as plain text.
                   In a future iteration, we can add markdown rendering.
