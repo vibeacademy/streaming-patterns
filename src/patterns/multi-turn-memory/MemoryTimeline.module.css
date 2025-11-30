@@ -15,7 +15,9 @@
   display: flex;
   gap: 1rem;
   overflow-x: auto;
+  overflow-y: visible;
   padding-bottom: 0.5rem;
+  padding-top: 3rem; /* Space for tooltip to show above cards */
   scroll-behavior: smooth;
 }
 
