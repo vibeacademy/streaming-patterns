@@ -70,9 +70,13 @@ describe('MultiTurnMemoryDemo', () => {
     expect(screen.getByText(/Hide Filters|Show Filters/i)).toBeInTheDocument();
   });
 
-  it('displays speed control select', () => {
+  it('displays speed control buttons', () => {
     render(<MultiTurnMemoryDemo />);
-    expect(screen.getByText('Stream Speed:')).toBeInTheDocument();
+    expect(screen.getByText('Stream Speed')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /instant/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^fast$/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /normal/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /slow/i })).toBeInTheDocument();
   });
 
   it('renders reset demo button', () => {

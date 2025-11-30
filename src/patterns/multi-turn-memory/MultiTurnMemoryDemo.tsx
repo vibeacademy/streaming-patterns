@@ -227,19 +227,23 @@ export function MultiTurnMemoryDemo(): JSX.Element {
     >
       {/* Controls */}
       <div className={styles.controls}>
-        <label className={styles.controlLabel}>
-          Stream Speed:
-          <select
-            value={speed}
-            onChange={(e) => handleSpeedChange(e.target.value as typeof speed)}
-            className={styles.select}
-          >
-            <option value="instant">Instant</option>
-            <option value="fast">Fast</option>
-            <option value="normal">Normal</option>
-            <option value="slow">Slow</option>
-          </select>
-        </label>
+        <div className={styles.controlGroup}>
+          <label className={styles.controlLabel}>Stream Speed</label>
+          <div className={styles.speedButtons} role="group" aria-label="Stream speed selector">
+            {(['instant', 'fast', 'normal', 'slow'] as const).map((speedOption) => (
+              <Button
+                key={speedOption}
+                onClick={() => handleSpeedChange(speedOption)}
+                variant={speed === speedOption ? 'primary' : 'secondary'}
+                size="sm"
+                aria-pressed={speed === speedOption ? 'true' : 'false'}
+                title={`${speedOption.charAt(0).toUpperCase() + speedOption.slice(1)} speed`}
+              >
+                {speedOption.charAt(0).toUpperCase() + speedOption.slice(1)}
+              </Button>
+            ))}
+          </div>
+        </div>
 
         <button
           className={styles.toggleButton}

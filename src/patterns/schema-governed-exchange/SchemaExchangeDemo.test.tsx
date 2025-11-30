@@ -26,26 +26,22 @@ describe('SchemaExchangeDemo', () => {
   it('should render scenario selector with all options', () => {
     render(<SchemaExchangeDemo />);
 
-    const scenarioSelect = screen.getByLabelText(/Scenario:/i) as HTMLSelectElement;
-    expect(scenarioSelect).toBeInTheDocument();
-
-    const scenarioOptions = scenarioSelect.options;
-    expect(scenarioOptions.length).toBe(4);
-    expect(screen.getByText(/Valid Payload/i)).toBeInTheDocument();
-    expect(screen.getByText(/Multiple Errors/i)).toBeInTheDocument();
-    expect(screen.getByText(/Auto-Corrected/i)).toBeInTheDocument();
-    expect(screen.getByText(/Minimal Valid/i)).toBeInTheDocument();
+    // Check for scenario buttons
+    expect(screen.getByRole('button', { name: /✅ Valid/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /❌ Errors/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /🔧 Corrected/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /📋 Minimal/i })).toBeInTheDocument();
   });
 
   it('should render speed selector', () => {
     render(<SchemaExchangeDemo />);
 
-    const speedSelect = screen.getByLabelText(/Speed:/i);
-    expect(speedSelect).toBeInTheDocument();
+    expect(screen.getByText(/^Stream Speed$/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/Fast/i)).toBeInTheDocument();
-    expect(screen.getByText(/Normal/i)).toBeInTheDocument();
-    expect(screen.getByText(/Slow/i)).toBeInTheDocument();
+    // Check for speed buttons (look for unique text with emojis)
+    expect(screen.getByRole('button', { name: /⚡ Fast/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /▶ Normal/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /🐌 Slow/i })).toBeInTheDocument();
   });
 
   it('should show validation badge in pending state initially', () => {
@@ -67,21 +63,21 @@ describe('SchemaExchangeDemo', () => {
     });
   });
 
-  it('should disable scenario and speed selects while streaming', async () => {
+  it('should disable scenario and speed buttons while streaming', async () => {
     const user = userEvent.setup();
     render(<SchemaExchangeDemo />);
 
-    const scenarioSelect = screen.getByLabelText(/Scenario:/i);
-    const speedSelect = screen.getByLabelText(/Speed:/i);
+    const validButton = screen.getByRole('button', { name: /✅ Valid/i });
+    const fastButton = screen.getByRole('button', { name: /⚡ Fast/i });
 
-    expect(scenarioSelect).not.toBeDisabled();
-    expect(speedSelect).not.toBeDisabled();
+    expect(validButton).not.toBeDisabled();
+    expect(fastButton).not.toBeDisabled();
 
     await user.click(screen.getByRole('button', { name: /Start Stream/i }));
 
     await waitFor(() => {
-      expect(scenarioSelect).toBeDisabled();
-      expect(speedSelect).toBeDisabled();
+      expect(validButton).toBeDisabled();
+      expect(fastButton).toBeDisabled();
     });
   });
 
@@ -169,8 +165,8 @@ describe('SchemaExchangeDemo', () => {
     render(<SchemaExchangeDemo />);
 
     // Select error scenario
-    const scenarioSelect = screen.getByLabelText(/Scenario:/i);
-    await user.selectOptions(scenarioSelect, 'with-errors');
+    const errorsButton = screen.getByRole('button', { name: /❌ Errors/i });
+    await user.click(errorsButton);
 
     await user.click(screen.getByRole('button', { name: /Start Stream/i }));
 
@@ -219,16 +215,15 @@ describe('SchemaExchangeDemo', () => {
     const user = userEvent.setup();
     render(<SchemaExchangeDemo />);
 
-    const scenarioSelect = screen.getByLabelText(/Scenario:/i);
-
     // Start with successful scenario
     await user.click(screen.getByRole('button', { name: /Start Stream/i }));
     await waitFor(() => screen.getByRole('button', { name: /Stop Stream/i }));
     await user.click(screen.getByRole('button', { name: /Stop Stream/i }));
 
     // Change to error scenario
-    await user.selectOptions(scenarioSelect, 'with-errors');
-    expect(scenarioSelect).toHaveValue('with-errors');
+    const errorsButton = screen.getByRole('button', { name: /❌ Errors/i });
+    await user.click(errorsButton);
+    expect(errorsButton).toHaveAttribute('aria-pressed', 'true');
 
     // Start new stream
     await user.click(screen.getByRole('button', { name: /Start Stream/i }));
@@ -239,10 +234,10 @@ describe('SchemaExchangeDemo', () => {
     const user = userEvent.setup();
     render(<SchemaExchangeDemo />);
 
-    const speedSelect = screen.getByLabelText(/Speed:/i);
-    await user.selectOptions(speedSelect, 'fast');
+    const fastButton = screen.getByRole('button', { name: /⚡ Fast/i });
+    await user.click(fastButton);
 
-    expect(speedSelect).toHaveValue('fast');
+    expect(fastButton).toHaveAttribute('aria-pressed', 'true');
 
     await user.click(screen.getByRole('button', { name: /Start Stream/i }));
 
