@@ -21,7 +21,7 @@ export function PayloadViewer({ payload, errors, isComplete }: PayloadViewerProp
     return (
       <div className={styles.emptyState}>
         <span className={styles.emptyIcon} aria-hidden="true">
-          ⏳
+          ⋯
         </span>
         <p>Waiting for payload...</p>
       </div>
