@@ -98,17 +98,17 @@ export function Home(): JSX.Element {
       ]
     },
     {
-      id: 'coming-soon',
-      title: '1 More Pattern',
+      id: 'schema-governed-exchange',
+      title: 'Schema-Governed Exchange',
       description:
-        'Schema-Governed Exchange - structured data exchange with AI.',
-      status: 'coming-soon',
-      route: '/patterns',
-      demoScenario: 'Advanced streaming techniques',
+        'Validate streaming JSON against schemas with real-time error detection and auto-fix suggestions.',
+      status: 'available',
+      route: '/patterns/schema-governed-exchange',
+      demoScenario: 'Project Setup Validation',
       techniques: [
-        'View full catalog',
-        'Track progress',
-        'Stay updated'
+        'Progressive validation',
+        'Schema visualization',
+        'Auto-fix suggestions'
       ]
     }
   ];

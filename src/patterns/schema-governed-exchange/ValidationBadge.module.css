@@ -1,0 +1,127 @@
+/**
+ * ValidationBadge Component Styles
+ *
+ * Color-coded status indicators for schema validation.
+ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border: 2px solid;
+  transition: all 0.2s ease-out;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.label {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.description {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* Green - Valid */
+.badge--green {
+  background-color: var(--color-success-50);
+  border-color: var(--color-success-500);
+  color: var(--color-success-900);
+}
+
+.badge--green .indicator {
+  background-color: var(--color-success-500);
+  box-shadow: 0 0 4px var(--color-success-500);
+}
+
+/* Amber - Partial */
+.badge--amber {
+  background-color: var(--color-warning-50);
+  border-color: var(--color-warning-500);
+  color: var(--color-warning-900);
+}
+
+.badge--amber .indicator {
+  background-color: var(--color-warning-500);
+  box-shadow: 0 0 4px var(--color-warning-500);
+}
+
+/* Red - Invalid */
+.badge--red {
+  background-color: var(--color-error-50);
+  border-color: var(--color-error-500);
+  color: var(--color-error-900);
+}
+
+.badge--red .indicator {
+  background-color: var(--color-error-500);
+  box-shadow: 0 0 4px var(--color-error-500);
+  animation: pulseFast 1s ease-in-out infinite;
+}
+
+@keyframes pulseFast {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Gray - Pending */
+.badge--gray {
+  background-color: var(--color-neutral-50);
+  border-color: var(--color-neutral-300);
+  color: var(--color-neutral-700);
+}
+
+.badge--gray .indicator {
+  background-color: var(--color-neutral-400);
+  animation: none;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    animation: none;
+  }
+
+  .badge--red .indicator {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .badge {
+    border-width: 3px;
+  }
+
+  .indicator {
+    border: 2px solid currentColor;
+  }
+}

@@ -128,17 +128,17 @@ const patterns: Pattern[] = [
     id: 'schema-governed-exchange',
     title: 'Schema-Governed Exchange',
     description:
-      'Ensure structured data exchange between user and AI using predefined schemas.',
-    status: 'coming-soon',
+      'Validate streaming JSON payloads against schemas in real-time with progressive validation, error highlighting, and auto-fix suggestions using Zod.',
+    status: 'available',
     route: '/patterns/schema-governed-exchange',
     phase: 'Phase 3 - Advanced Patterns',
-    demoScenario: 'Structured Task Creation',
+    demoScenario: 'Project Setup Validation',
     difficulty: 'advanced',
-    concepts: ['type safety', 'schema enforcement', 'structured communication'],
+    concepts: ['runtime validation', 'type safety', 'progressive validation', 'error recovery'],
     techniques: [
-      'Schema enforcement',
-      'Type validation',
-      'Format guidance'
+      'Schema HUD visualization',
+      'Progressive Zod validation',
+      'Error highlighting with suggestions'
     ]
   }
 ];

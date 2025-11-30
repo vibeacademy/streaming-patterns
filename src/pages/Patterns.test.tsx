@@ -136,13 +136,23 @@ describe('Patterns Page', () => {
       }
     });
 
-    it('should display other advanced patterns as coming soon', () => {
+    it('should display Streaming Validation Loop as available', () => {
       renderWithRouter(<Patterns />);
 
-      const schemaGovernedCard = screen.getByText('Schema-Governed Exchange').closest('div');
-      expect(schemaGovernedCard).toBeInTheDocument();
-      if (schemaGovernedCard) {
-        expect(within(schemaGovernedCard).getByText(/coming soon/i)).toBeInTheDocument();
+      const validationCard = screen.getByText('Streaming Validation Loop').closest('div');
+      expect(validationCard).toBeInTheDocument();
+      if (validationCard) {
+        expect(within(validationCard).getByText(/✓ available/i)).toBeInTheDocument();
+      }
+    });
+
+    it('should display Schema-Governed Exchange as available', () => {
+      renderWithRouter(<Patterns />);
+
+      const schemaCard = screen.getByText('Schema-Governed Exchange').closest('div');
+      expect(schemaCard).toBeInTheDocument();
+      if (schemaCard) {
+        expect(within(schemaCard).getByText(/✓ available/i)).toBeInTheDocument();
       }
     });
   });
@@ -203,10 +213,16 @@ describe('Patterns Page', () => {
       expect(turnTakingCard).toHaveTextContent(/view demo/i);
     });
 
-    it('should not show "View Demo" CTA for coming soon patterns', () => {
+    it('should show "View Demo" CTA for Streaming Validation Loop', () => {
       renderWithRouter(<Patterns />);
-      const streamingValidationCard = screen.getByText('Streaming Validation Loop').closest('div');
-      expect(streamingValidationCard).not.toHaveTextContent(/view demo/i);
+      const validationCard = screen.getByText('Streaming Validation Loop').closest('a');
+      expect(validationCard).toHaveTextContent(/view demo/i);
+    });
+
+    it('should show "View Demo" CTA for Schema-Governed Exchange', () => {
+      renderWithRouter(<Patterns />);
+      const schemaCard = screen.getByText('Schema-Governed Exchange').closest('a');
+      expect(schemaCard).toHaveTextContent(/view demo/i);
     });
   });
 
@@ -241,11 +257,16 @@ describe('Patterns Page', () => {
       expect(link).toHaveAttribute('href', '/patterns/turn-taking-co-creation');
     });
 
-    it('should not have links for coming soon patterns', () => {
+    it('should have a clickable link for Streaming Validation Loop', () => {
       renderWithRouter(<Patterns />);
-      const schemaGovernedTitle = screen.getByText('Schema-Governed Exchange');
-      const schemaGovernedCard = schemaGovernedTitle.closest('a');
-      expect(schemaGovernedCard).not.toBeInTheDocument();
+      const link = screen.getByRole('link', { name: /view streaming validation loop demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/streaming-validation-loop');
+    });
+
+    it('should have a clickable link for Schema-Governed Exchange', () => {
+      renderWithRouter(<Patterns />);
+      const link = screen.getByRole('link', { name: /view schema-governed exchange demo/i });
+      expect(link).toHaveAttribute('href', '/patterns/schema-governed-exchange');
     });
   });
 
@@ -289,10 +310,7 @@ describe('Patterns Page', () => {
       renderWithRouter(<Patterns />);
 
       const availableBadges = screen.getAllByLabelText(/available now/i);
-      expect(availableBadges.length).toBe(6); // Chain-of-Reasoning, Agent-Await-Prompt, Tabular Stream View, Multi-Turn Memory Timeline, Turn-Taking Co-Creation, and Streaming Validation Loop
-
-      const comingSoonBadges = screen.getAllByLabelText(/coming soon/i);
-      expect(comingSoonBadges.length).toBe(1); // Schema-Governed Exchange
+      expect(availableBadges.length).toBe(7); // All 7 patterns are now available
     });
 
     it('should have aria-label on pattern links', () => {
@@ -304,13 +322,12 @@ describe('Patterns Page', () => {
       expect(link).toBeInTheDocument();
     });
 
-    it('should mark coming soon cards as disabled', () => {
+    it('should have clickable links for all available patterns', () => {
       renderWithRouter(<Patterns />);
 
-      // Coming soon patterns are wrapped in divs with aria-disabled
-      const schemaGovernedTitle = screen.getByText('Schema-Governed Exchange');
-      const schemaGovernedContainer = schemaGovernedTitle.closest('[aria-disabled="true"]');
-      expect(schemaGovernedContainer).toBeInTheDocument();
+      // All 7 patterns should now be available and have links
+      const patternLinks = screen.getAllByRole('link', { name: /view.*demo/i });
+      expect(patternLinks.length).toBe(7);
     });
 
     it('should use semantic list markup for pattern grids', () => {
