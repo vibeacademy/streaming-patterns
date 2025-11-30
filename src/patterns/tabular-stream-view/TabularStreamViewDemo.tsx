@@ -20,6 +20,8 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
+import { DemoContainer } from '@/components/layout/DemoContainer';
+import { Button } from '@/components/ui/Button';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -196,15 +198,11 @@ export function TabularStreamViewDemo(): JSX.Element {
   );
 
   return (
-    <div className={styles.demo}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          <h1 className={styles.title}>Tabular Stream View</h1>
-          <p className={styles.subtitle}>
-            Progressive rendering of structured table data as it streams in
-          </p>
-        </div>
+    <DemoContainer
+      title="Tabular Stream View Pattern"
+      description="Progressive rendering of structured table data as it streams in"
+      maxWidth="full"
+    >
 
         {/* Demo Controls */}
         <div className={styles.demoControls}>
@@ -225,15 +223,15 @@ export function TabularStreamViewDemo(): JSX.Element {
             </select>
           </div>
 
-          <button
-            className={styles.restartButton}
+          <Button
             onClick={handleRestart}
+            variant="secondary"
+            size="sm"
             disabled={isStreaming || isRestarting}
           >
-            🔄 Restart
-          </button>
+            Restart
+          </Button>
         </div>
-      </div>
 
       {/* Scenario Description */}
       <div className={styles.scenario}>
@@ -333,7 +331,7 @@ export function TabularStreamViewDemo(): JSX.Element {
           </div>
         </div>
       </div>
-    </div>
+    </DemoContainer>
   );
 }
 

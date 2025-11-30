@@ -12,6 +12,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { DemoContainer } from '@/components/layout/DemoContainer';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { Button } from '@/components/ui/Button';
@@ -94,22 +95,18 @@ export function SchemaExchangeDemo() {
   ];
 
   return (
-    <div className={styles.demo}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.titleSection}>
-          <h1 className={styles.title}>Schema-Governed Exchange</h1>
-          <p className={styles.description}>
-            Real-time validation of streaming JSON payloads against Zod schemas.
-            Watch errors get detected and suggestions appear as data streams in.
-          </p>
-        </div>
-
+    <DemoContainer
+      title="Schema-Governed Exchange Pattern"
+      description="Real-time validation of streaming JSON payloads against Zod schemas"
+      maxWidth="full"
+    >
+      {/* Validation Badge */}
+      <div className={styles.validationHeader}>
         <ValidationBadge
           validationResult={validationResult}
           showDescription={true}
         />
-      </header>
+      </div>
 
       {/* Controls */}
       <div className={styles.controls}>
@@ -251,7 +248,7 @@ export function SchemaExchangeDemo() {
           </li>
         </ul>
       </div>
-    </div>
+    </DemoContainer>
   );
 }
 

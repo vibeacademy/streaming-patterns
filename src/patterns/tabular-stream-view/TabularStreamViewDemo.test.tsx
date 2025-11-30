@@ -141,8 +141,8 @@ describe('TabularStreamViewDemo', () => {
   it('should have restart button', () => {
     render(<TabularStreamViewDemo />);
 
-    // Restart button should be present
-    const restartButton = screen.getByText(/restart/i);
+    // Restart button should be present (using getByRole to get the button element, not the inner span)
+    const restartButton = screen.getByRole('button', { name: /restart/i });
     expect(restartButton).toBeInTheDocument();
 
     // Button should be a button element
