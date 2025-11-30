@@ -111,46 +111,93 @@ export function SchemaExchangeDemo() {
       {/* Controls */}
       <div className={styles.controls}>
         <div className={styles.controlGroup}>
-          <label htmlFor="scenario-select" className={styles.label}>
-            Scenario:
-          </label>
-          <select
-            id="scenario-select"
-            value={scenario}
-            onChange={(e) => setScenario(e.target.value as StreamScenario)}
-            disabled={isStreaming}
-            className={styles.select}
-          >
-            <option value="successful">✅ Valid Payload</option>
-            <option value="with-errors">❌ Multiple Errors</option>
-            <option value="corrected">🔧 Auto-Corrected</option>
-            <option value="minimal">📋 Minimal Valid</option>
-          </select>
+          <label className={styles.label}>Scenario</label>
+          <div className={styles.speedButtons} role="group" aria-label="Scenario selector">
+            <Button
+              onClick={() => setScenario('successful')}
+              variant={scenario === 'successful' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={scenario === 'successful' ? 'true' : 'false'}
+              title="Valid Payload - No errors"
+            >
+              ✅ Valid
+            </Button>
+            <Button
+              onClick={() => setScenario('with-errors')}
+              variant={scenario === 'with-errors' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={scenario === 'with-errors' ? 'true' : 'false'}
+              title="Multiple Errors - Various validation failures"
+            >
+              ❌ Errors
+            </Button>
+            <Button
+              onClick={() => setScenario('corrected')}
+              variant={scenario === 'corrected' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={scenario === 'corrected' ? 'true' : 'false'}
+              title="Auto-Corrected - Errors fixed during stream"
+            >
+              🔧 Corrected
+            </Button>
+            <Button
+              onClick={() => setScenario('minimal')}
+              variant={scenario === 'minimal' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={scenario === 'minimal' ? 'true' : 'false'}
+              title="Minimal Valid - Only required fields"
+            >
+              📋 Minimal
+            </Button>
+          </div>
         </div>
 
         <div className={styles.controlGroup}>
-          <label htmlFor="speed-select" className={styles.label}>
-            Speed:
-          </label>
-          <select
-            id="speed-select"
-            value={speed}
-            onChange={(e) => setSpeed(e.target.value as StreamSpeed)}
-            disabled={isStreaming}
-            className={styles.select}
-          >
-            <option value="fast">⚡ Fast</option>
-            <option value="normal">▶ Normal</option>
-            <option value="slow">🐌 Slow</option>
-          </select>
+          <label className={styles.label}>Stream Speed</label>
+          <div className={styles.speedButtons} role="group" aria-label="Stream speed selector">
+            <Button
+              onClick={() => setSpeed('fast')}
+              variant={speed === 'fast' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={speed === 'fast' ? 'true' : 'false'}
+              title="Fast speed"
+            >
+              ⚡ Fast
+            </Button>
+            <Button
+              onClick={() => setSpeed('normal')}
+              variant={speed === 'normal' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={speed === 'normal' ? 'true' : 'false'}
+              title="Normal speed"
+            >
+              ▶ Normal
+            </Button>
+            <Button
+              onClick={() => setSpeed('slow')}
+              variant={speed === 'slow' ? 'primary' : 'secondary'}
+              size="sm"
+              disabled={isStreaming}
+              aria-pressed={speed === 'slow' ? 'true' : 'false'}
+              title="Slow speed"
+            >
+              🐌 Slow
+            </Button>
+          </div>
         </div>
 
-        <div className={styles.buttonGroup}>
+        <div className={styles.actionButtons}>
           {!isStreaming ? (
             <Button
               onClick={handleStart}
               variant="primary"
-              size="md"
+              size="sm"
             >
               ▶ Start Stream
             </Button>
@@ -158,7 +205,7 @@ export function SchemaExchangeDemo() {
             <Button
               onClick={handleStop}
               variant="secondary"
-              size="md"
+              size="sm"
             >
               ⏸ Stop Stream
             </Button>
@@ -167,7 +214,7 @@ export function SchemaExchangeDemo() {
           <Button
             onClick={handleReset}
             variant="secondary"
-            size="md"
+            size="sm"
             disabled={isStreaming}
           >
             Reset

@@ -206,21 +206,40 @@ export function TabularStreamViewDemo(): JSX.Element {
 
         {/* Demo Controls */}
         <div className={styles.demoControls}>
-          <div className={styles.speedControl}>
-            <label className={styles.controlLabel} htmlFor="speed-select">
-              Demo Speed:
-            </label>
-            <select
-              id="speed-select"
-              className={styles.speedSelect}
-              value={speed}
-              onChange={(e) => handleSpeedChange(e.target.value as DemoSpeed)}
-              disabled={isStreaming}
-            >
-              <option value="fast">Fast (50ms)</option>
-              <option value="normal">Normal (300ms)</option>
-              <option value="slow">Slow (1000ms)</option>
-            </select>
+          <div className={styles.controlGroup}>
+            <label className={styles.controlLabel}>Stream Speed</label>
+            <div className={styles.speedButtons} role="group" aria-label="Stream speed selector">
+              <Button
+                onClick={() => handleSpeedChange('fast')}
+                variant={speed === 'fast' ? 'primary' : 'secondary'}
+                size="sm"
+                disabled={isStreaming}
+                aria-pressed={speed === 'fast' ? 'true' : 'false'}
+                title="Fast - 50ms delay"
+              >
+                Fast
+              </Button>
+              <Button
+                onClick={() => handleSpeedChange('normal')}
+                variant={speed === 'normal' ? 'primary' : 'secondary'}
+                size="sm"
+                disabled={isStreaming}
+                aria-pressed={speed === 'normal' ? 'true' : 'false'}
+                title="Normal - 300ms delay"
+              >
+                Normal
+              </Button>
+              <Button
+                onClick={() => handleSpeedChange('slow')}
+                variant={speed === 'slow' ? 'primary' : 'secondary'}
+                size="sm"
+                disabled={isStreaming}
+                aria-pressed={speed === 'slow' ? 'true' : 'false'}
+                title="Slow - 1000ms delay"
+              >
+                Slow
+              </Button>
+            </div>
           </div>
 
           <Button

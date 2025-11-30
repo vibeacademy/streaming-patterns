@@ -39,8 +39,8 @@ describe('TabularStreamViewDemo', () => {
   it('should render demo controls', () => {
     render(<TabularStreamViewDemo />);
 
-    expect(screen.getByLabelText(/demo speed/i)).toBeInTheDocument();
-    expect(screen.getByText(/restart/i)).toBeInTheDocument();
+    expect(screen.getByText(/stream speed/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /restart/i })).toBeInTheDocument();
   });
 
   it('should stream data and complete', async () => {
@@ -129,17 +129,19 @@ describe('TabularStreamViewDemo', () => {
   it('should allow speed selection', async () => {
     render(<TabularStreamViewDemo />);
 
-    // Initially speed select should be present
-    const speedSelect = screen.getByLabelText(/demo speed/i);
-    expect(speedSelect).toBeInTheDocument();
+    // Speed buttons should be present
+    const fastButton = screen.getByRole('button', { name: /^fast$/i });
+    const normalButton = screen.getByRole('button', { name: /^normal$/i });
+    const slowButton = screen.getByRole('button', { name: /^slow$/i });
 
-    // Initial value should be 'normal'
-    expect(speedSelect).toHaveValue('normal');
+    expect(fastButton).toBeInTheDocument();
+    expect(normalButton).toBeInTheDocument();
+    expect(slowButton).toBeInTheDocument();
 
-    // Options should be available
-    expect(screen.getByRole('option', { name: /fast/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /normal/i })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: /slow/i })).toBeInTheDocument();
+    // Normal should be selected initially (primary variant)
+    expect(normalButton).toHaveAttribute('aria-pressed', 'true');
+    expect(fastButton).toHaveAttribute('aria-pressed', 'false');
+    expect(slowButton).toHaveAttribute('aria-pressed', 'false');
   });
 
   it('should have restart button', () => {

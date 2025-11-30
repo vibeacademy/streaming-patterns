@@ -53,13 +53,18 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  min-width: 180px;
 }
 
 .label {
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
+}
+
+.speedButtons {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
 .select {
@@ -94,10 +99,19 @@
   border-color: var(--color-primary-500);
 }
 
-.buttonGroup {
+.actionButtons {
   display: flex;
   gap: var(--space-2);
   margin-left: auto;
+  align-items: flex-end;
+}
+
+.scenario {
+  margin-bottom: var(--space-6);
+}
+
+.validationHeader {
+  margin-bottom: var(--space-4);
 }
 
 .content {
