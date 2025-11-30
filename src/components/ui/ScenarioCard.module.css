@@ -59,7 +59,7 @@
 
 .promptText {
   font-size: var(--font-size-sm);
-  font-family: var(--font-family-mono);
+  font-family: var(--font-mono);
   color: var(--color-text-primary);
   line-height: var(--line-height-relaxed);
   white-space: pre-wrap;
