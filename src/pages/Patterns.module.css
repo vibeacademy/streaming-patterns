@@ -195,3 +195,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Reduced Motion Support (WCAG 2.1) */
+@media (prefers-reduced-motion: reduce) {
+  .patternLink {
+    transition: none;
+  }
+
+  .patternLink:hover {
+    transform: none;
+  }
+
+  .patternCard {
+    transition: none;
+  }
+}
