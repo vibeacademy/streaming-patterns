@@ -83,14 +83,14 @@
   font-size: var(--font-size-base);
   color: white;
   border: 3px solid;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   cursor: help; /* Indicates tooltip on hover */
 }
 
 .beadNumber:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
 }
 
 /* Confidence levels - color coding */
