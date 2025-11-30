@@ -1036,8 +1036,3 @@ A: Yes, if they improve accessibility or DX. Document the choice in PR descripti
 ---
 
 **Last Updated**: Nov 9, 2024
-- pr #234 
-This branch has conflicts that must be resolved
-Use the web editor or the command line to resolve conflicts before continuing.
-
-src/patterns/chain-of-reasoning/ReasoningBeadline.module.css
