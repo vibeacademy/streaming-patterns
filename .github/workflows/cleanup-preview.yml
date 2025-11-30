@@ -55,7 +55,7 @@ jobs:
 
           # Use wrangler delete with --force flag to skip confirmation
           # Capture output and exit code
-          if OUTPUT=$(wrangler delete "${WORKER_NAME}" --force 2>&1); then
+          if OUTPUT=$(wrangler delete --name "${WORKER_NAME}" --force 2>&1); then
             echo "status=success" >> $GITHUB_OUTPUT
             echo "message=Worker deleted successfully" >> $GITHUB_OUTPUT
             echo "✅ Worker deleted successfully"
