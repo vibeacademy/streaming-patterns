@@ -11,16 +11,64 @@
  * @pattern Streaming Validation Loop
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
+import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
+import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
+import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
 import { useValidationStream } from './hooks';
 import { CheckpointCard } from './CheckpointCard';
 import { Timeline } from './Timeline';
+import type { StreamEvent as PatternStreamEvent } from './types';
 import styles from './ValidationLoopDemo.module.css';
 
 export function ValidationLoopDemo() {
+  const [showInspector, setShowInspector] = useState(false);
+
+  // Network capture for debugging and visualization
+  const { events, captureEvent, clearEvents, filter, setFilter } = useNetworkCapture();
+
+  /**
+   * Convert pattern-specific events to global StreamEvent format for network inspector.
+   */
+  const handleEventCapture = useCallback((event: PatternStreamEvent): void => {
+    // Map validation loop events to checkpoint/validation types
+    let globalEvent: GlobalStreamEvent;
+
+    if (event.type === 'checkpoint' && 'data' in event && typeof event.data === 'object' && event.data !== null) {
+      const checkpointData = event.data as { checkpointId?: string };
+      globalEvent = {
+        id: checkpointData.checkpointId || `${event.type}-${event.timestamp}`,
+        timestamp: event.timestamp,
+        type: 'checkpoint',
+        data: {
+          id: checkpointData.checkpointId || `checkpoint-${event.timestamp}`,
+          name: 'Budget Checkpoint',
+          status: 'pending',
+          criteria: JSON.stringify(event.data),
+          timestamp: event.timestamp,
+        },
+      };
+    } else {
+      // Default to validation type for other events
+      globalEvent = {
+        id: `${event.type}-${event.timestamp}`,
+        timestamp: event.timestamp,
+        type: 'validation',
+        data: {
+          checkpointId: `${event.type}-${event.timestamp}`,
+          passed: true,
+          message: JSON.stringify(event.data),
+          timestamp: event.timestamp,
+        },
+      };
+    }
+
+    captureEvent(globalEvent);
+  }, [captureEvent]);
+
   const {
     activeCheckpoint,
     analyses,
@@ -32,10 +80,7 @@ export function ValidationLoopDemo() {
     actions,
   } = useValidationStream({
     speed: 'normal',
-    onEvent: (event) => {
-      // Log events for debugging (would go to network inspector in real app)
-      console.log('Stream event:', event);
-    },
+    onEvent: handleEventCapture,
   });
 
   // Track remaining time for active checkpoint
@@ -70,11 +115,37 @@ export function ValidationLoopDemo() {
     return () => clearInterval(interval);
   }, [activeCheckpoint, actions]);
 
+  /**
+   * Handle Network Inspector toggle.
+   */
+  const handleToggleInspector = useCallback((): void => {
+    setShowInspector((prev) => !prev);
+  }, []);
+
+  /**
+   * Handle demo reset with network events clearing.
+   */
+  const handleReset = useCallback((): void => {
+    clearEvents();
+    actions.reset();
+  }, [clearEvents, actions]);
+
   return (
     <DemoContainer
       title="Streaming Validation Loop Pattern"
       description="Budget allocation with checkpoint approvals"
       maxWidth="2xl"
+      actions={
+        <Button
+          onClick={handleToggleInspector}
+          variant="ghost"
+          size="sm"
+          aria-pressed={showInspector ? 'true' : 'false'}
+          aria-label={showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        >
+          {showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        </Button>
+      }
     >
 
       {/* Scenario Context */}
@@ -201,10 +272,23 @@ export function ValidationLoopDemo() {
         </section>
       )}
 
+      {/* Network Inspector */}
+      {showInspector && (
+        <section className={styles.inspectorSection} aria-label="Network inspector">
+          <NetworkInspector
+            events={events}
+            filter={filter}
+            onFilterChange={setFilter}
+            onClearEvents={clearEvents}
+            title="Validation Stream Events"
+          />
+        </section>
+      )}
+
       {/* Controls */}
       <div className={styles.controls}>
         <Button
-          onClick={actions.reset}
+          onClick={handleReset}
           variant="secondary"
           size="sm"
           disabled={isStreaming && !isWaitingForApproval}

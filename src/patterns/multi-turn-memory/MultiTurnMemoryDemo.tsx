@@ -12,10 +12,14 @@ import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
+import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
+import { useNetworkCapture, type EventFilter } from '@/lib/hooks/useNetworkCapture';
+import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
 import { useMemoryTimeline } from './hooks';
 import { MemoryTimeline } from './MemoryTimeline';
 import { MemoryFilters } from './MemoryFilters';
 import { ChatThread } from './ChatThread';
+import type { StreamEvent as PatternStreamEvent } from './types';
 import styles from './MultiTurnMemoryDemo.module.css';
 
 /**
@@ -24,6 +28,12 @@ import styles from './MultiTurnMemoryDemo.module.css';
 interface MemoryDemoContentProps {
   speed: 'instant' | 'fast' | 'normal' | 'slow';
   showFilters: boolean;
+  showInspector: boolean;
+  capturedEvents: Array<{ event: GlobalStreamEvent; sequence: number; capturedAt: number }>;
+  onEventCapture: (event: GlobalStreamEvent) => void;
+  filter: EventFilter;
+  onFilterChange: (filter: EventFilter) => void;
+  onClearEvents: () => void;
 }
 
 /**
@@ -36,12 +46,31 @@ interface MemoryDemoContentProps {
  * a key prop, we can force a complete remount (and hook state reset) by
  * changing the key. This is the React-idiomatic way to reset component state.
  */
-function MemoryDemoContent({ speed, showFilters }: MemoryDemoContentProps): JSX.Element {
+function MemoryDemoContent({ speed, showFilters, showInspector, capturedEvents, onEventCapture, filter, onFilterChange, onClearEvents }: MemoryDemoContentProps): JSX.Element {
   // Memoize the event callback to prevent infinite loops
-  const handleEvent = useCallback((event: { type: string; data: unknown }) => {
-    // Events can be captured for network inspector
-    console.log('Memory event:', event.type, event.data);
-  }, []);
+  const handleEvent = useCallback((event: PatternStreamEvent) => {
+    // Convert pattern-specific events to global StreamEvent format for network inspector
+    // For multi-turn memory, we use the 'memory' type for all memory lifecycle events
+    const globalEvent: GlobalStreamEvent = {
+      id: `${event.type}-${event.timestamp}`,
+      timestamp: event.timestamp,
+      type: 'memory',
+      data: {
+        id: 'data' in event && typeof event.data === 'object' && event.data !== null && 'id' in event.data
+          ? String(event.data.id)
+          : `${event.type}-${event.timestamp}`,
+        operation: event.type.includes('create') ? 'create' :
+                   event.type.includes('update') ? 'update' :
+                   event.type.includes('prune') ? 'prune' : 'recall',
+        content: JSON.stringify(event.data),
+        importance: 0.5,
+        turn: 0,
+        timestamp: event.timestamp,
+      },
+    };
+
+    onEventCapture(globalEvent);
+  }, [onEventCapture]);
 
   // Use the memory timeline hook with network inspector callback
   const {
@@ -110,6 +139,19 @@ function MemoryDemoContent({ speed, showFilters }: MemoryDemoContentProps): JSX.
           <ChatThread messages={messages} isStreaming={isStreaming} />
         </main>
       </div>
+
+      {/* Network Inspector */}
+      {showInspector && (
+        <section className={styles.inspectorSection} aria-label="Network inspector">
+          <NetworkInspector
+            events={capturedEvents}
+            filter={filter}
+            onFilterChange={onFilterChange}
+            onClearEvents={onClearEvents}
+            title="Memory Stream Events"
+          />
+        </section>
+      )}
     </>
   );
 }
@@ -133,16 +175,21 @@ function MemoryDemoContent({ speed, showFilters }: MemoryDemoContentProps): JSX.
 export function MultiTurnMemoryDemo(): JSX.Element {
   const [speed, setSpeed] = useState<'instant' | 'fast' | 'normal' | 'slow'>('normal');
   const [showFilters, setShowFilters] = useState(true);
+  const [showInspector, setShowInspector] = useState(false);
   // Demo key for forcing reset - incrementing this remounts MemoryDemoContent
   const [demoKey, setDemoKey] = useState(0);
+
+  // Network capture for debugging and visualization
+  const { events, captureEvent, clearEvents, filter, setFilter } = useNetworkCapture();
 
   /**
    * Handle demo reset.
    * Clears all state by remounting the content component.
    */
   const handleReset = useCallback((): void => {
+    clearEvents();
     setDemoKey((prev) => prev + 1);
-  }, []);
+  }, [clearEvents]);
 
   /**
    * Handle speed change.
@@ -150,7 +197,15 @@ export function MultiTurnMemoryDemo(): JSX.Element {
    */
   const handleSpeedChange = useCallback((newSpeed: typeof speed): void => {
     setSpeed(newSpeed);
+    clearEvents();
     setDemoKey((prev) => prev + 1);
+  }, [clearEvents]);
+
+  /**
+   * Handle Network Inspector toggle.
+   */
+  const handleToggleInspector = useCallback((): void => {
+    setShowInspector((prev) => !prev);
   }, []);
 
   return (
@@ -158,6 +213,17 @@ export function MultiTurnMemoryDemo(): JSX.Element {
       title="Multi-Turn Memory Pattern"
       description="Watch the agent build and maintain memory across conversation turns"
       maxWidth="full"
+      actions={
+        <Button
+          onClick={handleToggleInspector}
+          variant="ghost"
+          size="sm"
+          aria-pressed={showInspector ? 'true' : 'false'}
+          aria-label={showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        >
+          {showInspector ? 'Hide Inspector' : 'Show Inspector'}
+        </Button>
+      }
     >
       {/* Controls */}
       <div className={styles.controls}>
@@ -204,6 +270,12 @@ export function MultiTurnMemoryDemo(): JSX.Element {
         key={demoKey}
         speed={speed}
         showFilters={showFilters}
+        showInspector={showInspector}
+        capturedEvents={events}
+        onEventCapture={captureEvent}
+        filter={filter}
+        onFilterChange={setFilter}
+        onClearEvents={clearEvents}
       />
 
       {/* Pattern Info Footer */}
