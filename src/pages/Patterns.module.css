@@ -33,7 +33,7 @@
 
 .progressIndicator {
   font-size: 1rem;
-  color: #3b82f6;
+  color: var(--color-primary);
   margin: 0;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .patternLink:focus {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -122,8 +122,8 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: var(--color-success-50);
+  color: var(--color-success-700);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -132,8 +132,8 @@
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: #f3f4f6;
-  color: #6b7280;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-500);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -164,8 +164,8 @@
   display: inline-block;
   padding: 0.125rem 0.5rem;
   border-radius: 4px;
-  background-color: #eff6ff;
-  color: #1e40af;
+  background-color: var(--color-info-50);
+  color: var(--color-info-700);
   font-size: 0.8125rem;
   font-weight: 500;
 }
@@ -177,7 +177,7 @@
 
 .patternCta {
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary);
   margin-top: auto;
 }
 
