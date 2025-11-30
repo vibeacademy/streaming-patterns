@@ -12,6 +12,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useValidationStream } from './hooks';
 import { CheckpointCard } from './CheckpointCard';
 import { Timeline } from './Timeline';
@@ -76,6 +77,13 @@ export function ValidationLoopDemo() {
           Budget allocation with checkpoint approvals
         </p>
       </header>
+
+      {/* Scenario Context */}
+      <section className={styles.scenario}>
+        <ScenarioCard
+          description="AI allocates Q1 budget across engineering teams with checkpoint approvals at each decision point."
+        />
+      </section>
 
       {/* Pattern explanation */}
       <section className={styles.explanation}>

@@ -23,6 +23,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { Spinner } from '@/components/ui/Spinner';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
@@ -368,14 +369,12 @@ export function ChainOfReasoningDemo(): JSX.Element {
         </div>
       </section>
 
-      {/* Demo Prompt */}
-      <section className={styles.promptSection} aria-label="Demo prompt">
-        <Card className={styles.promptCard}>
-          <div className={styles.promptHeader}>
-            <span className={styles.promptLabel}>Prompt</span>
-          </div>
-          <p className={styles.promptText}>{DEMO_PROMPT}</p>
-        </Card>
+      {/* Scenario Context */}
+      <section className={styles.scenarioSection} aria-label="Demo scenario">
+        <ScenarioCard
+          description="StreamFlow PM's AI assistant helps plan a 2-week sprint, showing its reasoning process before presenting the final plan."
+          prompt={DEMO_PROMPT}
+        />
       </section>
 
       {/* Main Content Area */}

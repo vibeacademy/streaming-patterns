@@ -28,6 +28,11 @@
   margin-bottom: 1.5rem;
 }
 
+/* Scenario Section */
+.scenarioSection {
+  margin-bottom: 1.5rem;
+}
+
 .controlGroup {
   display: flex;
   align-items: center;

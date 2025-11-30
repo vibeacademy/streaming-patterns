@@ -9,6 +9,7 @@
  */
 
 import { useState, useCallback } from 'react';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useMemoryTimeline } from './hooks';
 import { MemoryTimeline } from './MemoryTimeline';
 import { MemoryFilters } from './MemoryFilters';
@@ -192,6 +193,13 @@ export function MultiTurnMemoryDemo(): JSX.Element {
             Reset Demo
           </button>
         </div>
+      </div>
+
+      {/* Scenario Context */}
+      <div className={styles.scenario}>
+        <ScenarioCard
+          description="StreamFlow PM's agent maintains visible memory across a multi-turn project planning conversation."
+        />
       </div>
 
       {/* Main Content - Keyed for proper reset */}

@@ -15,6 +15,7 @@ import { useState, useCallback } from 'react';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { Button } from '@/components/ui/Button';
+import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { useSchemaValidation, useSchemaHUD } from './hooks';
 import { SchemaHUD } from './SchemaHUD';
 import { PayloadViewer } from './PayloadViewer';
@@ -175,6 +176,13 @@ export function SchemaExchangeDemo() {
             Reset
           </Button>
         </div>
+      </div>
+
+      {/* Scenario Context */}
+      <div className={styles.scenario}>
+        <ScenarioCard
+          description="StreamFlow PM validates incoming project setup data against a Zod schema in real-time."
+        />
       </div>
 
       {/* Main Content */}
