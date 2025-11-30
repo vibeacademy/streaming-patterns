@@ -91,7 +91,7 @@
 }
 
 .errorLine {
-  background: rgba(239, 68, 68, 0.1); /* error-500 with alpha */
+  background: color-mix(in srgb, var(--color-error-500) 10%, transparent);
   display: inline-block;
   width: 100%;
 }
