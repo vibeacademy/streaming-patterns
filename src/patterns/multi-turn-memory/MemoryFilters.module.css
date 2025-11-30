@@ -56,23 +56,23 @@
 }
 
 .typeButton.type-fact.active {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-primary-500);
+  background: color-mix(in srgb, var(--color-primary-500) 10%, transparent);
 }
 
 .typeButton.type-decision.active {
-  border-color: #22c55e;
-  background: rgba(34, 197, 94, 0.1);
+  border-color: var(--color-success-500);
+  background: color-mix(in srgb, var(--color-success-500) 10%, transparent);
 }
 
 .typeButton.type-task.active {
-  border-color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
+  border-color: var(--color-warning-500);
+  background: color-mix(in srgb, var(--color-warning-500) 10%, transparent);
 }
 
 .typeButton.type-risk.active {
-  border-color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--color-error-500);
+  background: color-mix(in srgb, var(--color-error-500) 10%, transparent);
 }
 
 .typeIcon {

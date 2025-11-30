@@ -185,8 +185,8 @@
 
 .streamingBadge {
   padding: 0.375rem 0.75rem;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: color-mix(in srgb, var(--color-primary-500) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary-500) 30%, transparent);
   border-radius: var(--border-radius-md);
   font-size: 0.75rem;
   font-weight: 600;
