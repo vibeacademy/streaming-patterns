@@ -121,23 +121,7 @@
 
 /* Scenario */
 .scenario {
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 8px;
-}
-
-.scenarioTitle {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 0 8px 0;
-}
-
-.scenarioDescription {
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0;
-  opacity: 0.95;
+  /* ScenarioCard component handles its own styling */
 }
 
 /* Error */
