@@ -4,8 +4,8 @@
 
 .viewer {
   background: var(--color-neutral-900);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-4);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -13,8 +13,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-3);
-  padding-bottom: var(--spacing-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--color-neutral-700);
 }
 
@@ -30,8 +30,8 @@
 .status {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--border-radius-sm);
 }
 
 .statusStreaming {
@@ -99,7 +99,7 @@
 .errorIndicator {
   color: var(--color-error-400);
   font-weight: bold;
-  margin-left: var(--spacing-2);
+  margin-left: var(--space-2);
   animation: blink 1s ease-in-out infinite;
 }
 
@@ -140,16 +140,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-8);
+  padding: var(--space-8);
   background: var(--color-neutral-50);
   border: 2px dashed var(--color-neutral-300);
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   color: var(--color-neutral-500);
 }
 
 .emptyIcon {
   font-size: 3rem;
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--space-2);
   animation: spin 3s linear infinite;
 }
 
@@ -186,6 +186,6 @@
   .header {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--spacing-2);
+    gap: var(--space-2);
   }
 }

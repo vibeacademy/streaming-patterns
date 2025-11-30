@@ -6,8 +6,9 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
   padding: 1rem;
 }
 
@@ -17,7 +18,7 @@
   overflow-x: auto;
   overflow-y: visible;
   padding-bottom: 0.5rem;
-  padding-top: 3rem; /* Space for tooltip to show above cards */
+  padding-top: 1rem;
   scroll-behavior: smooth;
 }
 
@@ -26,22 +27,22 @@
 }
 
 .scrollContainer::-webkit-scrollbar-track {
-  background: var(--surface-2, #1a1a1a);
+  background: var(--color-bg-tertiary);
   border-radius: 4px;
 }
 
 .scrollContainer::-webkit-scrollbar-thumb {
-  background: var(--surface-4, #333);
+  background: var(--color-border-light);
   border-radius: 4px;
 }
 
 .scrollContainer::-webkit-scrollbar-thumb:hover {
-  background: var(--surface-5, #444);
+  background: var(--color-border-medium);
 }
 
 .empty {
   text-align: center;
   padding: 2rem;
-  color: var(--text-tertiary, #666);
+  color: var(--color-text-tertiary);
   font-size: 0.875rem;
 }

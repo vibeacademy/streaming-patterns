@@ -4,8 +4,8 @@
 
 .demo {
   min-height: 100vh;
-  background: var(--background, #000);
-  color: var(--text-primary, #fff);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 .header {
@@ -25,7 +25,7 @@
   font-size: 1.875rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-secondary-500) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -34,7 +34,7 @@
 .subtitle {
   margin: 0;
   font-size: 0.9375rem;
-  color: var(--text-secondary, #999);
+  color: var(--color-text-secondary);
 }
 
 .controls {
@@ -42,37 +42,37 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
-  padding: var(--space-4, 1rem);
-  background-color: var(--color-bg-secondary, #1a1a1a);
-  border: 1px solid var(--color-border-light, #333);
-  border-radius: var(--border-radius-lg, 8px);
-  margin-bottom: var(--space-6, 1.5rem);
+  padding: var(--space-4);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-6);
 }
 
 .controlGroup {
   display: flex;
   align-items: center;
-  gap: var(--space-3, 0.75rem);
+  gap: var(--space-3);
 }
 
 .controlLabel {
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #999);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
 }
 
 .speedButtons {
   display: flex;
-  gap: var(--space-2, 0.5rem);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .select {
   padding: 0.5rem 0.75rem;
-  background: var(--surface-2, #1a1a1a);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 6px;
-  color: var(--text-primary, #fff);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
 }
@@ -84,44 +84,45 @@
 
 .toggleButton {
   padding: 0.5rem 1rem;
-  background: var(--surface-2, #1a1a1a);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 6px;
-  color: var(--text-primary, #fff);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .toggleButton:hover {
-  background: var(--surface-3, #222);
-  border-color: var(--border-hover, #555);
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-border-medium);
 }
 
 .resetButton {
   padding: 0.5rem 1rem;
-  background: var(--surface-2, #1a1a1a);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 6px;
-  color: var(--text-primary, #fff);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .resetButton:hover {
-  background: var(--primary, #3b82f6);
-  border-color: var(--primary, #3b82f6);
-  color: #fff;
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+  color: white;
 }
 
 .scenario {
-  margin-bottom: var(--space-6, 1.5rem);
+  margin-bottom: var(--space-6);
 }
 
 .memorySection {
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
 }
 
 .sectionHeader {
@@ -129,14 +130,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-color, #333);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .sectionTitle {
   font-size: 1rem;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary, #fff);
+  color: var(--color-text-primary);
 }
 
 .memoryStats {
@@ -147,11 +148,11 @@
 }
 
 .stat {
-  color: var(--text-secondary, #999);
+  color: var(--color-text-secondary);
 }
 
 .statSeparator {
-  color: var(--border-color, #444);
+  color: var(--color-border-light);
 }
 
 .content {
@@ -163,8 +164,9 @@
 
 .sidebar {
   padding: 1.5rem;
-  background: var(--surface-1, #0a0a0a);
-  border-right: 1px solid var(--border-color, #333);
+  background: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
 }
 
 .main {
@@ -177,24 +179,24 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  background: var(--surface-1, #0a0a0a);
-  border-bottom: 1px solid var(--border-color, #333);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .streamingBadge {
   padding: 0.375rem 0.75rem;
   background: rgba(59, 130, 246, 0.1);
   border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 12px;
+  border-radius: var(--border-radius-md);
   font-size: 0.75rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-primary-500);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .inspectorSection {
-  margin-top: var(--space-8, 2rem);
+  margin-top: var(--space-8);
 }
 
 .footer {
@@ -202,8 +204,10 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   padding: 2rem;
-  background: var(--surface-1, #0a0a0a);
-  border-top: 1px solid var(--border-color, #333);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+  margin-top: 2rem;
 }
 
 .infoSection {
@@ -216,7 +220,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary, #fff);
+  color: var(--color-text-primary);
 }
 
 .featureList,
@@ -225,7 +229,7 @@
   padding-left: 1.25rem;
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: var(--text-secondary, #999);
+  color: var(--color-text-secondary);
 }
 
 .featureList li,
@@ -234,7 +238,50 @@
 }
 
 .featureList strong {
-  color: var(--text-primary, #fff);
+  color: var(--color-text-primary);
+}
+
+/* Learning Card Styles */
+.learningCard {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-lg);
+}
+
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.cardHeader h4 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.cardContent {
+  color: var(--color-text-secondary);
+}
+
+.learningList {
+  margin: 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.learningList li {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.learningList li:last-child {
+  margin-bottom: 0;
+}
+
+.learningList strong {
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 /* Responsive */
@@ -250,7 +297,7 @@
 
   .sidebar {
     border-right: none;
-    border-bottom: 1px solid var(--border-color, #333);
+    border-bottom: 1px solid var(--color-border-light);
   }
 
   .footer {
