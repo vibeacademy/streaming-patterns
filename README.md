@@ -13,7 +13,7 @@ Learn to build real-time streaming experiences through working examples, annotat
 
 ## Quick Start
 
-Get up and running in under 3 minutes:
+Get up and running in under 2 minutes:
 
 ```bash
 # Clone the repository
@@ -25,11 +25,58 @@ npm install
 
 # Start development server
 npm run dev
-
-# Open http://localhost:5173 in your browser
 ```
 
+You should see output similar to:
+
+```
+  VITE v5.4.11  ready in 423 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser to explore the patterns.
+
 That's it! No API keys, no configuration, no accounts needed.
+
+### What to Try First
+
+Once the dev server is running, explore these patterns:
+
+- **[Chain-of-Reasoning](http://localhost:5173/patterns/chain-of-reasoning)**: See AI thinking in real-time with visible reasoning steps
+- **Home Page**: Browse all available patterns and their descriptions
+- **Network Inspector**: Toggle the inspector panel (available on each pattern page) to see stream events
+
+### Troubleshooting
+
+**Port 5173 already in use?**
+```bash
+# Kill the process using the port
+lsof -ti:5173 | xargs kill -9
+
+# Or specify a different port
+npm run dev -- --port 3000
+```
+
+**Node version issues?**
+```bash
+# Check your Node version (requires >=18.0.0)
+node --version
+
+# If needed, upgrade Node.js from https://nodejs.org
+```
+
+**Dependencies failing to install?**
+```bash
+# Clear npm cache and retry
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**Still having issues?** [Open an issue](https://github.com/vibeacademy/streaming-patterns/issues) or check our [documentation](./docs).
 
 ---
 
