@@ -60,13 +60,27 @@
   --color-success: var(--color-success-500);
 
   --color-warning-50: #FFFBEB;
+  --color-warning-100: #FEF3C7;
+  --color-warning-200: #FDE68A;
+  --color-warning-300: #FCD34D;
+  --color-warning-400: #FBBF24;
   --color-warning-500: #F59E0B; /* 2.32:1 - ❌ Do not use for text */
+  --color-warning-600: #D97706;
   --color-warning-700: #B45309; /* 5.5:1 - Use for text ✅ */
+  --color-warning-800: #92400E;
+  --color-warning-900: #78350F;
   --color-warning: var(--color-warning-500);
 
   --color-error-50: #FEF2F2;
+  --color-error-100: #FEE2E2;
+  --color-error-200: #FECACA;
+  --color-error-300: #FCA5A5;
+  --color-error-400: #F87171;
   --color-error-500: #EF4444; /* 5.93:1 - ✅ Safe for text */
+  --color-error-600: #DC2626;
   --color-error-700: #B91C1C;
+  --color-error-800: #991B1B;
+  --color-error-900: #7F1D1D;
   --color-error: var(--color-error-500);
 
   --color-info-50: #EFF6FF;
