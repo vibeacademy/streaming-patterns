@@ -66,13 +66,27 @@
   --color-success: var(--color-success-500);
 
   --color-warning-50: #78350F;
+  --color-warning-100: #92400E;
+  --color-warning-200: #B45309;
+  --color-warning-300: #D97706;
+  --color-warning-400: #F59E0B;
   --color-warning-500: #FBBF24;
-  --color-warning-700: #FCD34D;
+  --color-warning-600: #FCD34D;
+  --color-warning-700: #FDE68A;
+  --color-warning-800: #FEF3C7;
+  --color-warning-900: #FFFBEB;
   --color-warning: var(--color-warning-500);
 
   --color-error-50: #7F1D1D;
+  --color-error-100: #991B1B;
+  --color-error-200: #B91C1C;
+  --color-error-300: #DC2626;
+  --color-error-400: #EF4444;
   --color-error-500: #F87171;
-  --color-error-700: #FCA5A5;
+  --color-error-600: #FCA5A5;
+  --color-error-700: #FECACA;
+  --color-error-800: #FEE2E2;
+  --color-error-900: #FEF2F2;
   --color-error: var(--color-error-500);
 
   --color-info-50: #1E3A8A;

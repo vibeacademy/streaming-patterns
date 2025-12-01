@@ -263,4 +263,45 @@ describe('SchemaExchangeDemo', () => {
       expect(screen.getByText('Payload')).toBeInTheDocument();
     }, { timeout: 2000 }); // Should be faster than normal
   });
+
+  it('should deduplicate errors and show consistent error count', async () => {
+    const user = userEvent.setup();
+    render(<SchemaExchangeDemo />);
+
+    // Select error scenario which has both Zod and stream errors
+    const errorsButton = screen.getByRole('button', { name: /❌ Errors/i });
+    await user.click(errorsButton);
+
+    // Use fast speed to make test faster
+    const fastButton = screen.getByRole('button', { name: /⚡ Fast/i });
+    await user.click(fastButton);
+
+    await user.click(screen.getByRole('button', { name: /Start Stream/i }));
+
+    // Wait for stream to complete and all errors to appear
+    await waitFor(
+      () => {
+        // Wait for multiple validation errors (should be 7 in error scenario)
+        const errorHighlighterHeader = screen.queryByText(/Validation Errors \(7\)/i);
+        expect(errorHighlighterHeader).toBeInTheDocument();
+      },
+      { timeout: 10000 }
+    );
+
+    // Get error count from ErrorHighlighter header (e.g., "Validation Errors (7)")
+    const errorHighlighterHeader = screen.getByText(/Validation Errors \(\d+\)/i);
+    const highlighterMatch = errorHighlighterHeader.textContent?.match(/Validation Errors \((\d+)\)/);
+    const highlighterCount = highlighterMatch?.[1];
+
+    // Get error count from ValidationBadge description (e.g., "7 validation errors")
+    // Use getAllByText since error messages might also contain "validation error"
+    const validationBadgeDescription = screen.getByText(new RegExp(`${highlighterCount} validation error`, 'i'));
+    const badgeMatch = validationBadgeDescription.textContent?.match(/(\d+) validation error/);
+    const badgeCount = badgeMatch?.[1];
+
+    // Both counts should exist and match
+    expect(highlighterCount).toBeTruthy();
+    expect(badgeCount).toBeTruthy();
+    expect(badgeCount).toBe(highlighterCount);
+  });
 });

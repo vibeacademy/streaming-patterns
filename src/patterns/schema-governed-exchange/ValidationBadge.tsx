@@ -11,14 +11,16 @@ import styles from './ValidationBadge.module.css';
 
 export interface ValidationBadgeProps {
   validationResult: ValidationResult;
+  totalErrors?: number;
   showDescription?: boolean;
 }
 
 export function ValidationBadge({
   validationResult,
+  totalErrors,
   showDescription = true,
 }: ValidationBadgeProps) {
-  const { label, color, description } = useValidationStatus(validationResult);
+  const { label, color, description } = useValidationStatus(validationResult, totalErrors);
 
   return (
     <div
