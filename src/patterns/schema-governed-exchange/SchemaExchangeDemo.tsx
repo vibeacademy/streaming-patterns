@@ -11,7 +11,7 @@
  * - Real-time validation status indicators
  */
 
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
@@ -24,7 +24,7 @@ import { PayloadViewer } from './PayloadViewer';
 import { ValidationBadge } from './ValidationBadge';
 import { ErrorHighlighter } from './ErrorHighlighter';
 import type { StreamScenario, StreamSpeed } from './mockStream';
-import type { SchemaStreamEvent } from './types';
+import type { SchemaStreamEvent, ValidationError } from './types';
 import styles from './SchemaExchangeDemo.module.css';
 
 export function SchemaExchangeDemo() {
@@ -91,10 +91,22 @@ export function SchemaExchangeDemo() {
   }, [reset, clearEvents]);
 
   // Combine validation errors from Zod and stream
-  const allErrors = [
-    ...validationResult.errors,
-    ...streamErrors,
-  ];
+  // Deduplicate by field - prefer stream errors (they have suggestions)
+  const allErrors = React.useMemo(() => {
+    const errorMap = new Map<string, ValidationError>();
+
+    // Add Zod errors first
+    validationResult.errors.forEach(error => {
+      errorMap.set(error.field, error);
+    });
+
+    // Override with stream errors (they have better suggestions)
+    streamErrors.forEach(error => {
+      errorMap.set(error.field, error);
+    });
+
+    return Array.from(errorMap.values());
+  }, [validationResult.errors, streamErrors]);
 
   return (
     <DemoContainer
@@ -116,6 +128,7 @@ export function SchemaExchangeDemo() {
       <div className={styles.validationHeader}>
         <ValidationBadge
           validationResult={validationResult}
+          totalErrors={allErrors.length}
           showDescription={true}
         />
       </div>

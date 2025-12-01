@@ -271,13 +271,18 @@ export function useAutoFixSuggestions(errors: ValidationError[]) {
 /**
  * Hook for validation status badge
  */
-export function useValidationStatus(validationResult: ValidationResult): {
+export function useValidationStatus(
+  validationResult: ValidationResult,
+  totalErrors?: number
+): {
   status: ValidationStatus;
   label: string;
   color: 'green' | 'amber' | 'red' | 'gray';
   description: string;
 } {
   const { status, errors } = validationResult;
+  // Use totalErrors if provided, otherwise fall back to errors.length
+  const errorCount = totalErrors !== undefined ? totalErrors : errors.length;
 
   switch (status) {
     case 'valid':
@@ -301,7 +306,7 @@ export function useValidationStatus(validationResult: ValidationResult): {
         status: 'invalid',
         label: 'Invalid',
         color: 'red',
-        description: `${errors.length} validation error${errors.length === 1 ? '' : 's'}`,
+        description: `${errorCount} validation error${errorCount === 1 ? '' : 's'}`,
       };
 
     case 'pending':
