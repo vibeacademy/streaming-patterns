@@ -41,6 +41,31 @@
   font-weight: 600;
 }
 
+.comparisonLink {
+  margin: 1.5rem 0 0;
+}
+
+.comparisonButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.comparisonButton:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.comparisonButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* Section */
 .section {
   margin-bottom: 3rem;

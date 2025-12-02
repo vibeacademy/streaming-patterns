@@ -33,6 +33,13 @@ const Patterns = lazy(
     }))
 );
 
+const PatternComparison = lazy(
+  () =>
+    import('./pages/PatternComparison').then((module) => ({
+      default: module.PatternComparison
+    }))
+);
+
 /**
  * Lazy-loaded pattern demo components
  * This improves initial load time and code splitting
@@ -170,6 +177,9 @@ function AppRoutes(): JSX.Element {
 
               {/* Patterns directory */}
               <Route path="/patterns" element={<Patterns />} />
+
+              {/* Pattern Comparison Matrix */}
+              <Route path="/patterns/comparison" element={<PatternComparison />} />
 
               {/* Chain-of-Reasoning Pattern Demo */}
               <Route
