@@ -73,73 +73,87 @@ Shows the AI's "thinking" as a vertical timeline of reasoning steps before prese
 
 ---
 
-### Planned Patterns (Coming Soon)
-
-<details>
-<summary><strong>2. Agent-Await-Prompt</strong> (Phase 2)</summary>
-
+#### 2. Agent-Await-Prompt
+**Status**: ✅ Complete
 **Intent**: Agent requests missing information mid-stream instead of guessing.
 
 The AI pauses mid-stream to ask clarifying questions, then resumes once the user responds.
 
-**Demo Scenario**: Budget approval workflow pausing to request cost center
-**Stream Events**: `reasoning`, `await_input`, `resume`, `answer`
-</details>
+**Demo Scenario**: Project setup workflow pausing to request project details
+**Stream Events**: `text`, `await_input`, `input_submission`, `resume`, `timeout`
+**UI Technique**: Inline input fields with countdown timer
 
-<details>
-<summary><strong>3. Tabular Stream View</strong> (Phase 2)</summary>
+[**Try it live →**](https://streamingpatterns.com/patterns/agent-await-prompt)
 
+---
+
+#### 3. Tabular Stream View
+**Status**: ✅ Complete
 **Intent**: Stream tables row-by-row for large datasets.
 
-Shows data arriving incrementally instead of blocking on full table generation.
+Shows data arriving incrementally instead of blocking on full table generation. Users can interact with partial data (sort, filter, export) before completion.
 
-**Demo Scenario**: Team capacity report streaming 50 rows
-**Stream Events**: `table_meta`, `table_row`, `table_complete`
-</details>
+**Demo Scenario**: Team capacity report streaming 12 team members
+**Stream Events**: `schema`, `table_row`, `table_meta`
+**UI Technique**: Progressive table rendering with skeleton rows and client-side operations
 
-<details>
-<summary><strong>4. Multi-Turn Memory Timeline</strong> (Phase 3)</summary>
+[**Try it live →**](https://streamingpatterns.com/patterns/tabular-stream-view)
 
+---
+
+#### 4. Multi-Turn Memory Timeline
+**Status**: ✅ Complete
 **Intent**: Surface evolving memory across conversation turns.
 
-Visualizes how the AI's understanding evolves across multiple interactions.
+Visualizes how the AI's understanding evolves across multiple interactions. Users can pin important memories and prune irrelevant ones.
 
-**Demo Scenario**: Project retrospective with memory surfacing
-**Stream Events**: `memory_update`, `memory_reference`, `turn_complete`
-</details>
+**Demo Scenario**: Q4 planning conversation with visible memory management
+**Stream Events**: `memory.create`, `memory.update`, `memory.prune`, `message`
+**UI Technique**: Horizontal timeline with memory cards, provenance tooltips, and user controls
 
-<details>
-<summary><strong>5. Turn-Taking Co-Creation</strong> (Phase 3)</summary>
+[**Try it live →**](https://streamingpatterns.com/patterns/multi-turn-memory)
 
+---
+
+#### 5. Turn-Taking Co-Creation
+**Status**: ✅ Complete
 **Intent**: Collaborative drafting where agent and user take turns editing.
 
-Real-time collaborative editing with the AI as a co-author.
+Real-time collaborative document editing with the AI as a co-author. Shows authorship highlighting and patch management.
 
-**Demo Scenario**: Sprint retrospective document co-creation
-**Stream Events**: `draft_chunk`, `handoff`, `user_edit`, `resume`
-</details>
+**Demo Scenario**: Project charter co-creation with bidirectional editing
+**Stream Events**: `agent_patch`, `user_patch`, `patch_ack`, `section_complete`, `conflict`
+**UI Technique**: Authorship highlighting, patch review toolbar, conflict resolution
 
-<details>
-<summary><strong>6. Streaming Validation Loop</strong> (Phase 3)</summary>
+[**Try it live →**](https://streamingpatterns.com/patterns/turn-taking-co-creation)
 
+---
+
+#### 6. Streaming Validation Loop
+**Status**: ✅ Complete
 **Intent**: Checkpoint-based validation with user approval gates.
 
-The AI pauses at validation points, allowing users to approve or reject before continuing.
+The AI pauses at validation points, allowing users to approve, edit, or reject before continuing. Includes timeout handling and audit trail.
 
-**Demo Scenario**: Multi-step project plan with approval checkpoints
-**Stream Events**: `checkpoint`, `validation_request`, `approved`, `rejected`
-</details>
+**Demo Scenario**: Q1 budget allocation with approval checkpoints
+**Stream Events**: `checkpoint`, `checkpoint_response`, `checkpoint_resume`, `budget_analysis`, `final_plan`
+**UI Technique**: Checkpoint cards with countdown timers, edit mode, and timeline visualization
 
-<details>
-<summary><strong>7. Schema-Governed Exchange</strong> (Phase 3)</summary>
+[**Try it live →**](https://streamingpatterns.com/patterns/streaming-validation-loop)
 
+---
+
+#### 7. Schema-Governed Exchange
+**Status**: ✅ Complete
 **Intent**: Stream and validate JSON against predefined schemas.
 
-Ensures structured data conforms to expected schemas as it streams.
+Ensures structured data conforms to expected schemas as it streams. Provides real-time validation feedback with auto-fix suggestions.
 
-**Demo Scenario**: Structured task breakdown with schema validation
-**Stream Events**: `schema_chunk`, `validation_error`, `schema_complete`
-</details>
+**Demo Scenario**: Project setup JSON with Zod schema validation
+**Stream Events**: `schema`, `payload`, `schema_error`
+**UI Technique**: Schema HUD, validation badge, error highlighting with suggestions
+
+[**Try it live →**](https://streamingpatterns.com/patterns/schema-governed-exchange)
 
 ---
 
