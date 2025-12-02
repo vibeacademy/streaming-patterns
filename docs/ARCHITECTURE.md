@@ -51,12 +51,12 @@ React 18+ (functional components, hooks, concurrent features)
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   Pattern Demo Component                    │
-│  (e.g., ChainOfReasoningDemo.tsx)                          │
+│  (e.g., ChainOfReasoningDemo.tsx)                           │
 │                                                             │
-│  - UI Controls (speed, reset)                              │
-│  - Scenario Context                                        │
-│  - Reasoning Timeline / UI Components                      │
-│  - Network Inspector                                       │
+│  - UI Controls (speed, reset)                               │
+│  - Scenario Context                                         │
+│  - Reasoning Timeline / UI Components                       │
+│  - Network Inspector                                        │
 └───────────────────┬─────────────────────────────────────────┘
                     │
          ┌──────────┴──────────┐
