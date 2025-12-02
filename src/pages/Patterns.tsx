@@ -239,6 +239,11 @@ export function Patterns(): JSX.Element {
         <p className={styles.progressIndicator}>
           <strong>{implementedCount} of {totalCount} patterns implemented</strong>
         </p>
+        <p className={styles.comparisonLink}>
+          <Link to="/patterns/comparison" className={styles.comparisonButton}>
+            Compare All Patterns →
+          </Link>
+        </p>
       </header>
 
       {/* Foundational Patterns Section */}
