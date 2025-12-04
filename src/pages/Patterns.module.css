@@ -31,16 +31,6 @@
   margin: 0 0 1rem;
 }
 
-.progressIndicator {
-  font-size: 1rem;
-  color: var(--color-primary);
-  margin: 0;
-}
-
-.progressIndicator strong {
-  font-weight: 600;
-}
-
 .comparisonLink {
   margin: 1.5rem 0 0;
 }
@@ -186,7 +176,7 @@
 
 .difficultyBadge {
   display: inline-block;
-  padding: 0.125rem 0.5rem;
+  padding: 0.375rem 0.75rem;
   border-radius: var(--border-radius-sm);
   background-color: var(--color-info-50);
   color: var(--color-info-700);

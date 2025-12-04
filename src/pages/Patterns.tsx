@@ -223,8 +223,6 @@ export function Patterns(): JSX.Element {
     (p) => p.difficulty === 'foundational'
   );
   const advancedPatterns = patterns.filter((p) => p.difficulty === 'advanced');
-  const implementedCount = patterns.filter((p) => p.status === 'available').length;
-  const totalCount = patterns.length;
 
   return (
     <main className={styles.patterns} role="main">
@@ -235,9 +233,6 @@ export function Patterns(): JSX.Element {
           Educational patterns for building modern streaming AI interfaces.
           Each pattern demonstrates key UX techniques for handling real-time
           LLM responses in the StreamFlow PM product.
-        </p>
-        <p className={styles.progressIndicator}>
-          <strong>{implementedCount} of {totalCount} patterns implemented</strong>
         </p>
         <p className={styles.comparisonLink}>
           <Link to="/patterns/comparison" className={styles.comparisonButton}>

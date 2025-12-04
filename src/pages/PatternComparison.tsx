@@ -10,7 +10,6 @@
 
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Card } from '../components/ui/Card';
 import styles from './PatternComparison.module.css';
 
 /**
@@ -219,7 +218,6 @@ type SortDirection = 'asc' | 'desc';
 export function PatternComparison(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | 'foundational' | 'advanced'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'complete' | 'coming-soon'>('all');
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
@@ -244,11 +242,6 @@ export function PatternComparison(): JSX.Element {
     // Apply difficulty filter
     if (difficultyFilter !== 'all') {
       result = result.filter((pattern) => pattern.difficulty === difficultyFilter);
-    }
-
-    // Apply status filter
-    if (statusFilter !== 'all') {
-      result = result.filter((pattern) => pattern.status === statusFilter);
     }
 
     // Apply sorting
@@ -276,7 +269,7 @@ export function PatternComparison(): JSX.Element {
     });
 
     return result;
-  }, [searchQuery, difficultyFilter, statusFilter, sortField, sortDirection]);
+  }, [searchQuery, difficultyFilter, sortField, sortDirection]);
 
   /**
    * Handle sort column change
@@ -305,44 +298,9 @@ export function PatternComparison(): JSX.Element {
         <h1 className={styles.title}>Pattern Comparison Matrix</h1>
         <p className={styles.description}>
           Compare all 7 streaming patterns to choose the right one for your use case.
-          Filter by difficulty, status, or search for specific features.
+          Filter by difficulty or search for specific features.
         </p>
       </header>
-
-      {/* Decision Tree Helper */}
-      <Card className={styles.decisionTree}>
-        <h2 className={styles.decisionTreeTitle}>Quick Pattern Selector</h2>
-        <div className={styles.decisionTreeFlow}>
-          <div className={styles.decisionStep}>
-            <strong>Need to show AI thinking?</strong>
-            <p>→ <Link to="/patterns/chain-of-reasoning">Chain-of-Reasoning Guide</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>Need user input mid-stream?</strong>
-            <p>→ <Link to="/patterns/agent-await-prompt">Agent-Await-Prompt</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>Streaming structured data?</strong>
-            <p>→ <Link to="/patterns/tabular-stream-view">Tabular Stream View</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>Multi-turn conversation?</strong>
-            <p>→ <Link to="/patterns/multi-turn-memory">Multi-Turn Memory Timeline</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>Collaborative editing?</strong>
-            <p>→ <Link to="/patterns/turn-taking-co-creation">Turn-Taking Co-Creation</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>Approval workflow?</strong>
-            <p>→ <Link to="/patterns/streaming-validation-loop">Streaming Validation Loop</Link></p>
-          </div>
-          <div className={styles.decisionStep}>
-            <strong>JSON validation?</strong>
-            <p>→ <Link to="/patterns/schema-governed-exchange">Schema-Governed Exchange</Link></p>
-          </div>
-        </div>
-      </Card>
 
       {/* Filters and Search */}
       <div className={styles.controls}>
@@ -374,20 +332,6 @@ export function PatternComparison(): JSX.Element {
               <option value="advanced">Advanced</option>
             </select>
           </div>
-
-          <div className={styles.filterGroup}>
-            <label htmlFor="status-filter">Status:</label>
-            <select
-              id="status-filter"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              className={styles.select}
-            >
-              <option value="all">All Status</option>
-              <option value="complete">Complete</option>
-              <option value="coming-soon">Coming Soon</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -412,15 +356,6 @@ export function PatternComparison(): JSX.Element {
               </th>
               <th>
                 <button
-                  onClick={() => handleSort('status')}
-                  className={styles.sortButton}
-                  aria-label="Sort by status"
-                >
-                  Status {getSortIndicator('status')}
-                </button>
-              </th>
-              <th>
-                <button
                   onClick={() => handleSort('difficulty')}
                   className={styles.sortButton}
                   aria-label="Sort by difficulty"
@@ -438,7 +373,7 @@ export function PatternComparison(): JSX.Element {
                 </button>
               </th>
               <th>When to Use</th>
-              <th>Key Features</th>
+              <th className={styles.keyFeaturesHeader}>Key Features</th>
               <th>Demo Scenario</th>
               <th>Actions</th>
             </tr>
@@ -446,21 +381,10 @@ export function PatternComparison(): JSX.Element {
           <tbody>
             {filteredPatterns.map((pattern) => (
               <tr key={pattern.id} className={styles.patternRow}>
-                <td className={styles.patternName}>
+                <td className={styles.patternName} data-label="Pattern">
                   <strong>{pattern.name}</strong>
                 </td>
-                <td>
-                  <span
-                    className={
-                      pattern.status === 'complete'
-                        ? styles.statusComplete
-                        : styles.statusComingSoon
-                    }
-                  >
-                    {pattern.status === 'complete' ? '✓ Complete' : 'Coming Soon'}
-                  </span>
-                </td>
-                <td>
+                <td data-label="Difficulty">
                   <span
                     className={
                       pattern.difficulty === 'foundational'
@@ -471,21 +395,26 @@ export function PatternComparison(): JSX.Element {
                     {pattern.difficulty === 'foundational' ? 'Foundational' : 'Advanced'}
                   </span>
                 </td>
-                <td>
+                <td data-label="Complexity">
                   <span className={styles[`complexity${pattern.complexity.charAt(0).toUpperCase()}${pattern.complexity.slice(1)}`]}>
                     {pattern.complexity.charAt(0).toUpperCase() + pattern.complexity.slice(1)}
                   </span>
                 </td>
-                <td className={styles.whenToUse}>{pattern.whenToUse}</td>
-                <td>
-                  <ul className={styles.featureList}>
-                    {pattern.keyFeatures.map((feature, idx) => (
-                      <li key={idx}>{feature}</li>
-                    ))}
-                  </ul>
+                <td className={styles.whenToUse} data-label="When to Use">{pattern.whenToUse}</td>
+                <td data-label="Key Features">
+                  <details className={styles.featuresDetails}>
+                    <summary className={styles.featuresSummary}>
+                      {pattern.keyFeatures.length} features
+                    </summary>
+                    <ul className={styles.featureList}>
+                      {pattern.keyFeatures.map((feature, idx) => (
+                        <li key={idx}>{feature}</li>
+                      ))}
+                    </ul>
+                  </details>
                 </td>
-                <td>{pattern.demoScenario}</td>
-                <td>
+                <td data-label="Demo Scenario">{pattern.demoScenario}</td>
+                <td data-label="Actions">
                   {pattern.status === 'complete' ? (
                     <Link to={pattern.route} className={styles.viewDemoButton}>
                       View Demo
@@ -508,7 +437,6 @@ export function PatternComparison(): JSX.Element {
             onClick={() => {
               setSearchQuery('');
               setDifficultyFilter('all');
-              setStatusFilter('all');
             }}
             className={styles.clearFiltersButton}
           >
