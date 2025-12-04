@@ -303,7 +303,7 @@
 /* Action Buttons */
 .viewDemoButton {
   display: inline-block;
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-5);
   background: var(--color-primary);
   color: white;
   border-radius: var(--border-radius-md);
