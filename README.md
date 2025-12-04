@@ -367,6 +367,8 @@ We welcome contributions! Whether it's:
 3. Follow the trunk-based development workflow
 4. Ensure tests pass and coverage >80%
 
+**Have questions?** Join the discussion in [GitHub Discussions](https://github.com/vibeacademy/streaming-patterns/discussions) to ask questions, share ideas, or show off what you've built!
+
 **Development Workflow:**
 1. Create feature branch: `feature/issue-{number}-description`
 2. Implement with tests
@@ -385,6 +387,7 @@ MIT License - see [LICENSE](./LICENSE) for details.
 ## Learn More
 
 - **Live Demo**: [streamingpatterns.com](https://streamingpatterns.com)
+- **GitHub Discussions**: [Ask questions, share ideas, and show your projects](https://github.com/vibeacademy/streaming-patterns/discussions)
 - **GitHub Issues**: [Report bugs or request features](https://github.com/vibeacademy/streaming-patterns/issues)
 - **Project Board**: [Track development progress](https://github.com/orgs/vibeacademy/projects/3)
 

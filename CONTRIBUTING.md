@@ -618,9 +618,10 @@ We're here to help you contribute successfully!
 
 ### Getting Support
 
-- **Questions about code**: Open a [GitHub Discussion](https://github.com/vibeacademy/streaming-patterns/discussions)
+- **Questions about the library**: Visit [GitHub Discussions](https://github.com/vibeacademy/streaming-patterns/discussions) for Q&A, pattern ideas, and community support
 - **Bug reports**: Open a [GitHub Issue](https://github.com/vibeacademy/streaming-patterns/issues)
 - **Feature requests**: Open a [GitHub Issue](https://github.com/vibeacademy/streaming-patterns/issues) with the "enhancement" label
+- **Show & Tell**: Share projects you've built using these patterns in [GitHub Discussions](https://github.com/vibeacademy/streaming-patterns/discussions)
 - **Security issues**: See SECURITY.md (if applicable)
 
 ### Common Issues
