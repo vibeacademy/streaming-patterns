@@ -5,20 +5,20 @@
 .comparison {
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--spacing-6) var(--spacing-4);
+  padding: var(--space-6) var(--space-4);
 }
 
 /* Header */
 .header {
   text-align: center;
-  margin-bottom: var(--spacing-8);
+  margin-bottom: var(--space-8);
 }
 
 .title {
   font-size: var(--font-size-3xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--space-3);
 }
 
 .description {
@@ -33,8 +33,8 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
-  margin-bottom: var(--spacing-4);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 @media (min-width: 768px) {
@@ -52,7 +52,7 @@
 
 .searchInput {
   width: 100%;
-  padding: var(--spacing-3);
+  padding: var(--space-3);
   font-size: var(--font-size-base);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
@@ -67,14 +67,14 @@
 
 .filters {
   display: flex;
-  gap: var(--spacing-4);
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .filterGroup {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--space-2);
 }
 
 .filterGroup label {
@@ -84,7 +84,7 @@
 }
 
 .select {
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-sm);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
@@ -102,13 +102,13 @@
 .resultsCount {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--space-3);
 }
 
 /* Comparison Table */
 .tableWrapper {
   overflow-x: auto;
-  margin-bottom: var(--spacing-6);
+  margin-bottom: var(--space-6);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -126,7 +126,7 @@
 }
 
 .comparisonTable th {
-  padding: var(--spacing-3);
+  padding: var(--space-3);
   text-align: left;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
@@ -147,7 +147,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-1);
+  gap: var(--space-1);
 }
 
 .sortButton:hover {
@@ -169,7 +169,7 @@
 }
 
 .comparisonTable td {
-  padding: var(--spacing-4);
+  padding: var(--space-4);
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   vertical-align: top;
@@ -262,13 +262,13 @@
 /* Feature List */
 .featureList {
   margin: 0;
-  padding-left: var(--spacing-5);
+  padding-left: var(--space-5);
   list-style: disc;
   line-height: 1.6;
 }
 
 .featureList li {
-  margin-bottom: var(--spacing-1);
+  margin-bottom: var(--space-1);
 }
 
 /* Progressive Disclosure for Features */
@@ -297,13 +297,13 @@
 }
 
 .featuresDetails[open] .featuresSummary {
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--space-2);
 }
 
 /* Action Buttons */
 .viewDemoButton {
   display: inline-block;
-  padding: var(--spacing-3) var(--spacing-5);
+  padding: var(--space-3) var(--space-6);
   background: var(--color-primary);
   color: white;
   border-radius: var(--border-radius-md);
@@ -336,17 +336,17 @@
 /* Empty State */
 .emptyState {
   text-align: center;
-  padding: var(--spacing-8);
+  padding: var(--space-8);
   color: var(--color-text-secondary);
 }
 
 .emptyState p {
-  margin-bottom: var(--spacing-4);
+  margin-bottom: var(--space-4);
   font-size: var(--font-size-lg);
 }
 
 .clearFiltersButton {
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: var(--space-2) var(--space-4);
   background: var(--color-primary);
   color: white;
   border: none;
@@ -407,8 +407,8 @@
   }
 
   .patternRow {
-    margin-bottom: var(--spacing-4);
-    padding: var(--spacing-4);
+    margin-bottom: var(--space-4);
+    padding: var(--space-4);
     background: var(--color-background-primary);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius-lg);
@@ -423,7 +423,7 @@
   }
 
   .comparisonTable td {
-    padding: var(--spacing-2) 0;
+    padding: var(--space-2) 0;
     border: none;
     text-align: left;
     position: relative;
@@ -435,7 +435,7 @@
     position: absolute;
     left: 0;
     width: 45%;
-    padding-right: var(--spacing-2);
+    padding-right: var(--space-2);
     font-weight: var(--font-weight-semibold);
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
@@ -444,8 +444,8 @@
   .patternName {
     padding-left: 0;
     font-size: var(--font-size-lg);
-    margin-bottom: var(--spacing-2);
-    padding-bottom: var(--spacing-2);
+    margin-bottom: var(--space-2);
+    padding-bottom: var(--space-2);
     border-bottom: 1px solid var(--color-border);
   }
 
@@ -456,7 +456,7 @@
   /* Ensure touch targets are 44x44px minimum */
   .viewDemoButton {
     min-width: 100%;
-    padding: var(--spacing-3) var(--spacing-4);
+    padding: var(--space-3) var(--space-4);
     text-align: center;
   }
 
@@ -476,13 +476,13 @@
 
   .featuresSummary {
     display: block;
-    margin-bottom: var(--spacing-2);
+    margin-bottom: var(--space-2);
   }
 
   /* Adjust feature list for mobile */
   .featureList {
     padding-left: 0;
-    margin-top: var(--spacing-2);
+    margin-top: var(--space-2);
   }
 
   .whenToUse {
