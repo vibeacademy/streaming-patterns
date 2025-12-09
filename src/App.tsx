@@ -9,6 +9,7 @@
 
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/Spinner';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
@@ -267,13 +268,18 @@ function AppRoutes(): JSX.Element {
  *
  * Wrapped with ErrorBoundary to catch and handle any React errors
  * that occur during rendering, preventing white screen of death.
+ *
+ * HelmetProvider enables dynamic meta tag updates for SEO optimization
+ * on different pages, especially pattern pages with unique descriptions.
  */
 function App(): JSX.Element {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </HelmetProvider>
     </ErrorBoundary>
   );
 }

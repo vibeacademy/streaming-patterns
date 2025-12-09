@@ -13,6 +13,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { Button } from '@/components/ui/Button';
@@ -109,11 +110,13 @@ export function SchemaExchangeDemo() {
   }, [validationResult.errors, streamErrors]);
 
   return (
-    <DemoContainer
-      title="Schema-Governed Exchange Pattern"
-      description="Real-time validation of streaming JSON payloads against Zod schemas"
-      maxWidth="full"
-      actions={
+    <>
+      <PatternHelmet patternId="schema-governed-exchange" />
+      <DemoContainer
+        title="Schema-Governed Exchange Pattern"
+        description="Real-time validation of streaming JSON payloads against Zod schemas"
+        maxWidth="full"
+        actions={
         <Button
           onClick={() => setShowInspector(!showInspector)}
           variant="ghost"
@@ -332,6 +335,7 @@ export function SchemaExchangeDemo() {
         </Card>
       </div>
     </DemoContainer>
+    </>
   );
 }
 
