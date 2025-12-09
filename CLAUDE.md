@@ -953,6 +953,211 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 
 ---
 
+## SEO and Meta Tags
+
+### Dynamic Meta Tags with react-helmet-async
+
+Each pattern page has unique meta tags for SEO optimization. We use `react-helmet-async` to dynamically update meta tags based on the current route.
+
+**Why react-helmet-async?**
+- Works with React 18+ concurrent features
+- SSR-compatible (future-proof for SSG/SSR)
+- Prevents memory leaks with proper cleanup
+- SEO-friendly for single-page applications
+
+### Implementation
+
+#### 1. Pattern Metadata Configuration
+
+All pattern metadata is centralized in `/src/lib/metadata/patternMetadata.ts`:
+
+```typescript
+// /src/lib/metadata/patternMetadata.ts
+export interface PatternMetadata {
+  title: string;           // SEO-optimized page title
+  description: string;     // 150-155 characters for mobile SERP
+  keywords: string[];      // Relevant search terms
+}
+
+export const PATTERN_METADATA: Record<string, PatternMetadata> = {
+  'chain-of-reasoning': {
+    title: 'Chain-of-Reasoning Pattern | Streaming AI UX Patterns',
+    description: 'Learn to expose AI reasoning steps in real-time. Interactive React demo shows chain-of-thought streaming.',
+    keywords: ['chain of reasoning', 'AI transparency', 'streaming AI', 'React patterns']
+  },
+  // ... 6 more patterns
+};
+
+export function getPatternMetadata(patternId: string): PatternMetadata {
+  return PATTERN_METADATA[patternId] || defaultMetadata;
+}
+```
+
+**Best Practices:**
+- Keep descriptions between 150-155 characters (optimal for mobile SERP)
+- Include target audience keywords ("React developers", "TypeScript")
+- Use pattern name + core UX concept in description
+- Keywords should match common search queries
+
+#### 2. PatternHelmet Component
+
+The `PatternHelmet` component wraps `react-helmet-async` for consistency:
+
+```typescript
+// /src/components/PatternHelmet/PatternHelmet.tsx
+import { Helmet } from 'react-helmet-async';
+import { getPatternMetadata, getPatternCanonicalUrl } from '@/lib/metadata/patternMetadata';
+
+interface PatternHelmetProps {
+  patternId: string;  // e.g., 'chain-of-reasoning'
+}
+
+export function PatternHelmet({ patternId }: PatternHelmetProps) {
+  const metadata = getPatternMetadata(patternId);
+  const canonicalUrl = getPatternCanonicalUrl(patternId);
+
+  return (
+    <Helmet>
+      {/* Primary Meta Tags */}
+      <title>{metadata.title}</title>
+      <meta name="description" content={metadata.description} />
+      <meta name="keywords" content={metadata.keywords.join(', ')} />
+
+      {/* Canonical URL */}
+      <link rel="canonical" href={canonicalUrl} />
+
+      {/* Open Graph / Twitter */}
+      <meta property="og:title" content={metadata.title} />
+      <meta property="og:description" content={metadata.description} />
+      {/* ... more OG/Twitter tags */}
+    </Helmet>
+  );
+}
+```
+
+#### 3. Using PatternHelmet in Pattern Demos
+
+Every pattern demo component includes the `PatternHelmet` at the top:
+
+```typescript
+// /src/patterns/chain-of-reasoning/ChainOfReasoningDemo.tsx
+import { PatternHelmet } from '@/components/PatternHelmet';
+
+export function ChainOfReasoningDemo() {
+  return (
+    <>
+      <PatternHelmet patternId="chain-of-reasoning" />
+      <DemoContainer title="Chain-of-Reasoning Pattern">
+        {/* Pattern demo content */}
+      </DemoContainer>
+    </>
+  );
+}
+```
+
+**Important:**
+- Place `PatternHelmet` inside a React Fragment (`<>...</>`) if the component returns a single element
+- The `patternId` must match the route path (e.g., `/patterns/chain-of-reasoning` → `chain-of-reasoning`)
+- Place `PatternHelmet` before the main content to ensure meta tags load first
+
+#### 4. App-Level Setup
+
+The `HelmetProvider` wraps the entire app in `App.tsx`:
+
+```typescript
+// /src/App.tsx
+import { HelmetProvider } from 'react-helmet-async';
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <HelmetProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </HelmetProvider>
+    </ErrorBoundary>
+  );
+}
+```
+
+**Why HelmetProvider is required:**
+- Manages helmet state across the entire React tree
+- Handles SSR context (important for future SSG/SSR support)
+- Prevents memory leaks by tracking mounted components
+
+#### 5. Testing with PatternHelmet
+
+Test files must wrap components with `HelmetProvider`. Use the custom `render` function from `tests/test-utils.tsx`:
+
+```typescript
+// Good: Use custom render with HelmetProvider
+import { render, screen } from '../../../tests/test-utils';
+import { ChainOfReasoningDemo } from './ChainOfReasoningDemo';
+
+test('renders pattern with meta tags', () => {
+  render(<ChainOfReasoningDemo />);
+  expect(screen.getByText(/chain-of-reasoning/i)).toBeInTheDocument();
+});
+
+// Bad: Direct @testing-library/react render will fail
+import { render } from '@testing-library/react';  // ❌ Missing HelmetProvider
+```
+
+**Test Utils Setup:**
+```typescript
+// /tests/test-utils.tsx
+import { HelmetProvider } from 'react-helmet-async';
+
+function AllProviders({ children }: { children: React.ReactNode }) {
+  return <HelmetProvider>{children}</HelmetProvider>;
+}
+
+export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
+  return render(ui, { wrapper: AllProviders, ...options });
+}
+
+export { renderWithProviders as render };
+```
+
+### SEO Checklist for New Patterns
+
+When implementing a new pattern, ensure:
+
+- [ ] Add pattern metadata to `/src/lib/metadata/patternMetadata.ts`
+- [ ] Description is 150-155 characters (check with `description.length`)
+- [ ] Keywords include pattern name, core UX concept, and "React"
+- [ ] Add `<PatternHelmet patternId="pattern-slug" />` to demo component
+- [ ] Verify meta tags in browser DevTools (Elements → `<head>`)
+- [ ] Test with Google Search Console URL Inspection Tool
+- [ ] Update pattern tests to use `render` from `tests/test-utils`
+
+### Verifying Meta Tags
+
+**In Development:**
+```bash
+npm run dev
+# Navigate to http://localhost:5173/patterns/chain-of-reasoning
+# Open DevTools → Elements → <head>
+# Verify <title> and <meta name="description"> are correct
+```
+
+**With Google Search Console:**
+1. Visit [Google Search Console URL Inspection Tool](https://search.google.com/search-console)
+2. Enter pattern URL: `https://streamingpatterns.com/patterns/chain-of-reasoning`
+3. Click "Test Live URL"
+4. Verify meta tags are indexed correctly
+
+**With View Source:**
+```bash
+# After deploying to production
+curl https://streamingpatterns.com/patterns/chain-of-reasoning | grep "<meta name=\"description\""
+```
+
+Note: In development, view-source may show default meta tags from `index.html` because JavaScript hasn't run yet. Use DevTools Elements panel to see dynamically injected tags.
+
+---
+
 ## Security Guidelines
 
 ### 1. No Real API Keys in Code

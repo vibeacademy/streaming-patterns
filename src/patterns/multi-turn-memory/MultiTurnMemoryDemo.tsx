@@ -13,6 +13,7 @@ import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture, type EventFilter } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
@@ -216,11 +217,13 @@ export function MultiTurnMemoryDemo(): JSX.Element {
   }, []);
 
   return (
-    <DemoContainer
-      title="Multi-Turn Memory Pattern"
-      description="Watch the agent build and maintain memory across conversation turns"
-      maxWidth="full"
-      actions={
+    <>
+      <PatternHelmet patternId="multi-turn-memory" />
+      <DemoContainer
+        title="Multi-Turn Memory Pattern"
+        description="Watch the agent build and maintain memory across conversation turns"
+        maxWidth="full"
+        actions={
         <Button
           onClick={handleToggleInspector}
           variant="ghost"
@@ -320,6 +323,7 @@ export function MultiTurnMemoryDemo(): JSX.Element {
         </Card>
       </div>
     </DemoContainer>
+    </>
   );
 }
 

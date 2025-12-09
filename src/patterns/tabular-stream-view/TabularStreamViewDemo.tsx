@@ -23,6 +23,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -200,11 +201,13 @@ export function TabularStreamViewDemo(): JSX.Element {
   );
 
   return (
-    <DemoContainer
-      title="Tabular Stream View Pattern"
-      description="Progressive rendering of structured table data as it streams in"
-      maxWidth="full"
-      actions={
+    <>
+      <PatternHelmet patternId="tabular-stream-view" />
+      <DemoContainer
+        title="Tabular Stream View Pattern"
+        description="Progressive rendering of structured table data as it streams in"
+        maxWidth="full"
+        actions={
         <Button
           onClick={() => setShowInspector(!showInspector)}
           variant="ghost"
@@ -359,6 +362,7 @@ export function TabularStreamViewDemo(): JSX.Element {
         </Card>
       </div>
     </DemoContainer>
+    </>
   );
 }
 

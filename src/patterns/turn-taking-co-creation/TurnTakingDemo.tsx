@@ -24,6 +24,7 @@ import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
@@ -308,12 +309,14 @@ export function TurnTakingDemo(): JSX.Element {
   }, []);
 
   return (
-    <DemoContainer
-      title="Turn-Taking Co-Creation Pattern"
-      description="Watch AI and user collaborate in real-time to create a project charter"
-      maxWidth="full"
-      className={styles.demoContainer}
-      actions={
+    <>
+      <PatternHelmet patternId="turn-taking-co-creation" />
+      <DemoContainer
+        title="Turn-Taking Co-Creation Pattern"
+        description="Watch AI and user collaborate in real-time to create a project charter"
+        maxWidth="full"
+        className={styles.demoContainer}
+        actions={
         <div className={styles.headerActions}>
           <Button
             onClick={handleToggleInspector}
@@ -440,5 +443,6 @@ export function TurnTakingDemo(): JSX.Element {
         </Card>
       </section>
     </DemoContainer>
+    </>
   );
 }

@@ -16,6 +16,7 @@ import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
@@ -132,11 +133,13 @@ export function ValidationLoopDemo() {
   }, [clearEvents, actions]);
 
   return (
-    <DemoContainer
-      title="Streaming Validation Loop Pattern"
-      description="Budget allocation with checkpoint approvals"
-      maxWidth="2xl"
-      actions={
+    <>
+      <PatternHelmet patternId="streaming-validation-loop" />
+      <DemoContainer
+        title="Streaming Validation Loop Pattern"
+        description="Budget allocation with checkpoint approvals"
+        maxWidth="2xl"
+        actions={
         <Button
           onClick={handleToggleInspector}
           variant="ghost"
@@ -345,6 +348,7 @@ export function ValidationLoopDemo() {
         </Card>
       </section>
     </DemoContainer>
+    </>
   );
 }
 

@@ -26,6 +26,7 @@ import { Card } from '@/components/ui/Card';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
 import { Spinner } from '@/components/ui/Spinner';
 import { NetworkInspector } from '@/components/NetworkInspector/NetworkInspector';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import type { StreamEvent as GlobalStreamEvent } from '@/types/events';
 import { ReasoningBeadline } from './ReasoningBeadline';
@@ -243,20 +244,23 @@ export function ChainOfReasoningDemo(): JSX.Element {
   if (error && !isRetrying && retryCount && retryCount >= 3) {
     // Only show full-page error after all retries exhausted
     return (
-      <DemoContainer
-        title="Chain-of-Reasoning Pattern"
-        description="An error occurred while streaming the reasoning"
-        maxWidth="2xl"
-      >
-        <StreamErrorDisplay
-          error={error}
-          retryCount={retryCount}
-          isRetrying={isRetrying}
-          retryDelayMs={retryDelayMs}
-          maxRetries={3}
-          onRetry={handleReset}
-        />
-      </DemoContainer>
+      <>
+        <PatternHelmet patternId="chain-of-reasoning" />
+        <DemoContainer
+          title="Chain-of-Reasoning Pattern"
+          description="An error occurred while streaming the reasoning"
+          maxWidth="2xl"
+        >
+          <StreamErrorDisplay
+            error={error}
+            retryCount={retryCount}
+            isRetrying={isRetrying}
+            retryDelayMs={retryDelayMs}
+            maxRetries={3}
+            onRetry={handleReset}
+          />
+        </DemoContainer>
+      </>
     );
   }
 
@@ -264,12 +268,14 @@ export function ChainOfReasoningDemo(): JSX.Element {
    * Render main demo interface.
    */
   return (
-    <DemoContainer
-      title="Chain-of-Reasoning Pattern"
-      description="Watch AI think through sprint planning with visible reasoning steps"
-      maxWidth="2xl"
-      className={styles.demoContainer}
-      actions={
+    <>
+      <PatternHelmet patternId="chain-of-reasoning" />
+      <DemoContainer
+        title="Chain-of-Reasoning Pattern"
+        description="Watch AI think through sprint planning with visible reasoning steps"
+        maxWidth="2xl"
+        className={styles.demoContainer}
+        actions={
         <div className={styles.headerActions}>
           <Button
             onClick={handleToggleInspector}
@@ -511,5 +517,6 @@ export function ChainOfReasoningDemo(): JSX.Element {
         </Card>
       </section>
     </DemoContainer>
+    </>
   );
 }

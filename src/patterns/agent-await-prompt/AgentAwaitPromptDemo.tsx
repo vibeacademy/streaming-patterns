@@ -22,6 +22,7 @@ import { useState, useCallback } from 'react';
 import { DemoContainer } from '@/components/layout/DemoContainer';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { PatternHelmet } from '@/components/PatternHelmet';
 import { useNetworkCapture } from '@/lib/hooks/useNetworkCapture';
 import { NetworkInspector } from '@/components/NetworkInspector';
 import { ScenarioCard } from '@/components/ui/ScenarioCard';
@@ -203,11 +204,13 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
   const stateIndicator = getStateIndicator();
 
   return (
-    <DemoContainer
-      title="Agent-Await-Prompt Pattern"
-      description="Interactive streaming with pause/resume mechanics"
-      maxWidth="2xl"
-      actions={
+    <>
+      <PatternHelmet patternId="agent-await-prompt" />
+      <DemoContainer
+        title="Agent-Await-Prompt Pattern"
+        description="Interactive streaming with pause/resume mechanics"
+        maxWidth="2xl"
+        actions={
         <Button
           onClick={() => setShowInspector(!showInspector)}
           variant="ghost"
@@ -342,5 +345,6 @@ export default function AgentAwaitPromptDemo(): JSX.Element {
         </Card>
       </div>
     </DemoContainer>
+    </>
   );
 }

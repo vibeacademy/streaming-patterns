@@ -14,7 +14,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { render } from '../../../tests/test-utils';
 import userEvent from '@testing-library/user-event';
 import { ValidationLoopDemo } from './ValidationLoopDemo';
 import { CheckpointCard } from './CheckpointCard';
